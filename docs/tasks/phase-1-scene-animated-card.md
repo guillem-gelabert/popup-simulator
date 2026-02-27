@@ -10,9 +10,9 @@
   - [x] and orbit controls
 - [x] Add a directional light so the cube shows visible shading differences on each face
 - [x] Add a config panel with one checkbox "show cube" that hides/shows the cube
-- [ ] Replace the cube with two flat planes (different colors) that share one edge — the spine of the card
-- [ ] Make both planes visible from both sides when orbiting around
-- [ ] Add a slider in the config panel that folds the right plane around the spine, displaying the current angle (0° = fully closed, 180° = flat open)
+- [x] Replace the cube with two flat planes (different colors) that share one edge — the spine of the card
+- [x] Make both planes visible from both sides when orbiting around
+- [x] Add a slider in the config panel that folds the right plane around the spine, displaying the current angle (0° = fully closed, 180° = flat open)
 
 ## Notes
 
