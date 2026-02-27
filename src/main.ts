@@ -58,6 +58,47 @@ leftPage.pivot = new THREE.Vector3(-0.5, 0.5, 0);
 leftPage.position.x = 0.5;
 rightPage.position.x = 0.5;
 
+const parallelogramLeftGeometry = new THREE.PlaneGeometry(0.5, 0.5);
+const parallelogramLeftMaterial = new THREE.MeshStandardMaterial({
+  color: "green",
+  side: THREE.DoubleSide,
+  roughness: 0.4,
+});
+const parallelogramLeft = new THREE.Mesh(
+  parallelogramLeftGeometry,
+  parallelogramLeftMaterial,
+);
+
+parallelogramLeft.pivot = new THREE.Vector3(0.25, 0, 0);
+parallelogramLeft.position.x = -0.25;
+parallelogramLeft.position.y = 0;
+parallelogramLeft.position.z = 0;
+parallelogramLeft.rotation.x = THREE.MathUtils.degToRad(0);
+parallelogramLeft.rotation.y = THREE.MathUtils.degToRad(0);
+parallelogramLeft.rotation.z = THREE.MathUtils.degToRad(0);
+
+const parallelogramRightGeometry = new THREE.PlaneGeometry(0.5, 0.5);
+const parallelogramRightMaterial = new THREE.MeshStandardMaterial({
+  color: "blue",
+  side: THREE.DoubleSide,
+  roughness: 0.4,
+});
+const parallelogramRight = new THREE.Mesh(
+  parallelogramRightGeometry,
+  parallelogramRightMaterial,
+);
+
+parallelogramRight.pivot = new THREE.Vector3(0.25, 0, 0);
+parallelogramRight.position.x = -0.25;
+parallelogramRight.position.y = 0;
+parallelogramRight.position.z = 0;
+parallelogramRight.rotation.x = THREE.MathUtils.degToRad(0);
+parallelogramRight.rotation.y = THREE.MathUtils.degToRad(0);
+parallelogramRight.rotation.z = THREE.MathUtils.degToRad(0);
+
+leftPage.add(parallelogramLeft);
+rightPage.add(parallelogramRight);
+
 scene.add(leftPage, rightPage);
 
 camera.position.z = 5;
@@ -72,6 +113,10 @@ leftPage.rotation.y = THREE.MathUtils.degToRad(180);
 
 gui.add(parameters, "pageAngle", 0, 180, 0.01).onChange((value: number) => {
   leftPage.rotation.y = THREE.MathUtils.degToRad(180 + value);
+
+  parallelogramLeft.rotation.y = THREE.MathUtils.degToRad(-value);
+
+  parallelogramRight.rotation.y = THREE.MathUtils.degToRad(value);
 });
 
 window.addEventListener("resize", () => {
