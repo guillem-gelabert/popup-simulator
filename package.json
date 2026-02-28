@@ -9,11 +9,14 @@
     "preview": "vite preview",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "format": "prettier --write \"src/**/*.ts\" \"*.{json,js,md}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"*.{json,js,md}\""
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@types/three": "^0.183.1",
+    "@vitejs/plugin-react": "^5.1.4",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.1",
@@ -22,7 +25,11 @@
     "vite": "^7.3.1"
   },
   "dependencies": {
-    "lil-gui": "^0.21.0",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "leva": "^0.10.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "three": "^0.183.1"
   }
 }
