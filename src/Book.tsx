@@ -1,15 +1,12 @@
-import { OrbitControls } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
-import { Perf } from "r3f-perf";
+
 import Fold from "./components/Fold";
+import ViewportGizmoHelper from "./helpers/ViewportGizmoHelper";
 
 export default function Book() {
   return (
     <>
-      <Perf position="top-left" />
-
-      <OrbitControls makeDefault />
-
+      <ViewportGizmoHelper placement="top-right" />
       <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
       <ambientLight intensity={1.5} />
       <Physics debug={true}>
