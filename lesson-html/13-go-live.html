@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>13. go live</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/3d-text"><div class="sibling-info"><div class="sibling-label">12.</div><div class="sibling-title">3D Text</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">13.</div><h2 class="title">Go live</h2><p class="difficulty">Difficulty <span class="value">
+                                Easy
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/lights"><div class="sibling-info"><div class="sibling-label">14.</div><div class="sibling-title">Lights</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/38/13-go-live.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/38/13-go-live-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">At this point in your journey, you might want to share what you've built. A screenshot or a video is a good start, but your friends and family will enjoy an interactive version much more. It's time to make those WebGL experiences live.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Solutions
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="20">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:20</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="solutions">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#solutions"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="solutions"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Years ago, we didn't have that many solutions to make a website live. Today, it's a bit more complicated, but we also have access to many handy solutions.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Traditional build
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="25">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:25</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="traditional-build">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#traditional-build"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="traditional-build"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">In the next section, we are going to use a solution that doesn't require you to subscribe to a "traditional" hosting solution like OVH, 1and1 or Gandi where you have to upload files manually by using an FTP client. Some of you, however, might already have a host like one of these and you just want to get those files that you are supposed to upload.</p>                                                                                <p class="">You can't simply put the whole project with the <code spellcheck="false">node_modules/</code> folder and the Vite configuration on the host. First, you need to "build" your project within that webpack configuration in order to create HTML, CSS, JS and assets files that can be interpreted by browsers.</p>                                                                                <p class="">To build your project, run <code spellcheck="false">npm run build</code> in the terminal.</p>                                                                                <p class="">This command will run the script located in the <code spellcheck="false">/package.json</code> file in the <code spellcheck="false">scripts &gt; build</code> property.</p>                                                                                <p class="">Wait a few seconds and the files should be available in the <code spellcheck="false">/dist/</code> folder which will be created when <code spellcheck="false">build</code> is executed. You can then put those files online using your favorite FTP client.</p>                                                                                <p class="">Whenever you want to upload a new version, run <code spellcheck="false">npm run build</code> again even if the <code spellcheck="false">/dist/</code> folder already exists.</p>                                                                                <p class="">We are not going to cover the setup of one of those "traditional" hosting solutions because we are going to use a more appropriate solution in the next section.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Vercel
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="217">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">03:37</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="vercel">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#vercel"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="vercel"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class=""><a href="https://vercel.com/" target="_blank">Vercel</a> is one of those "modern" hosting solutions and features continuous integration (automatisation of testing, deployment and others development steps like this). It is very developer friendly and easy to setup.</p>                                                                                <p class="">You can use it for complex projects, but also for very simple "single page" websites like the ones we create within this course.</p>                                                                                <p class="">Before continuing, be aware that there is no partnership between me (Bruno Simon) and Vercel. I just like to use it for my small creative experiences.</p>                                                                                <p class="">Also, there are other good alternatives that we should mention like <a href="https://www.netlify.com/" target="_blank">Netlify</a> and <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.</p>                                                                                <p class="">Be aware also that you might see slight differences between the rest of this lesson and your own experience with Vercel. It's quite a new solution and the developers keep improving the service.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Create an account
+
+        
+                <span class="anchor js-anchor" data-slug="create-an-account">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#create-an-account"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="create-an-account"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">First, go to <a href="https://vercel.com/" target="_blank">vercel.com</a> and create an account.</p>                                                                                <p class="">You can choose between different login methods such as <strong>GitHub</strong> connect, <strong>GitLab</strong> connect, <strong>Bitbucket</strong> connect or classic <strong>Email</strong> access.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 724 555'%3E%3C/svg%3E" width="724" height="555"></span>
+</p>                                                                                <p class="">The "connect" choices might be good options because one of the great features of Vercel is that it allows continuous integration as a versioning solution. If you don't know what <a href="https://github.com/" target="_blank">GitHub</a>, <a href="https://about.gitlab.com/" target="_blank">GitLab</a> and <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> are, they are hosting solutions for your Git repositories. In other words, it's where most developers save their code.</p>                                                                                <p class="">If you are familiar with them, you can totally go for it. This will simplify the process and Vercel will automatically fetch your repository, help you setup the live version and automatically update it when you push new versions on the repository. You can even choose a specific branch.</p>                                                                                <p class="">For those of you who are not familiar with Git hosting solutions, don't worry, we are going to keep this lesson accessible to most students and choose the <strong>Email</strong> solution. Even if you are currently using Git, this solution will still work fine. Click the E<strong>mail</strong> link:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 466 97'%3E%3C/svg%3E" width="466" height="97"></span>
+</p>                                                                                <p class="">Then enter your email address and follow the steps to create your account:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 436 150'%3E%3C/svg%3E" width="436" height="150"></span>
+</p>                                                                                <p class="">Vercel will send you an email confirmation with a link so that you can log in. Once you've clicked on that link, you should be connected.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Add Vercel to your project
+
+        
+                <span class="anchor js-anchor" data-slug="add-vercel-to-your-project">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#add-vercel-to-your-project"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="add-vercel-to-your-project"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Vercel is available as an <a href="https://www.npmjs.com/package/vercel" target="_blank">NPM module</a> that you can install globally on your computer or as a dependency on your project. We are going to add it to the project so that, if we want to setup the project on another computer or we want to share it with another developer, we  don't have to install anything on that computer.</p>                                                                                <p class="">In the terminal of your project, run <code spellcheck="false">npm install vercel</code>.  After a short while, the installation will be complete, but you will probably notice that there are some vulnerabilities. The terminal will instruct you to run an audit to fix them. You can usually ignore these warnings since they are probably false positives.</p>                                                                                <p class="">Although we added Vercel as a project dependency, instead of globally, it's still not available in the terminal. Your NPM scripts will have access to it, but you will first need to make the following change.</p>                                                                                <p class="">In <code spellcheck="false">package.json</code>, in the <code spellcheck="false">"scripts"</code> property, add a new script named <code spellcheck="false">"deploy"</code> and write <code spellcheck="false">"vercel --prod"</code> as the value (don't forget the <code spellcheck="false">,</code> after the <code spellcheck="false">"dev"</code> script):</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{
+  "scripts": {
+    // ...
+    "deploy": "vercel --prod"
+  },
+}</code></pre>                                                                                <p class="">If you use the <code spellcheck="false">"vercel"</code> command without <code spellcheck="false">--prod</code>, the code will be published on a preview URL so that you can test it before going to production. Though it is an interesting feature, we don't need a preview version.</p>                                                                                <p class="">From now on, if you want to deploy your project online, you can simply run <code spellcheck="false">npm run deploy</code> in the terminal.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Deploy for the first time
+
+        
+                <span class="anchor js-anchor" data-slug="deploy-for-the-first-time">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#deploy-for-the-first-time"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="deploy-for-the-first-time"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">The first time you want to deploy your project, Vercel will ask you for some information in order to connect to your account and setup the project.</p>                                                                                <p class="">In the terminal, run <code spellcheck="false">npm run deploy</code></p>                                                                                <p class="">If earlier, you chose to connect with an email, use the <strong>up</strong> and <strong>down</strong> arrows to select <code spellcheck="false">Continue with Email</code> and press <code spellcheck="false">Enter</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 542 308'%3E%3C/svg%3E" width="542" height="308"></span>
+</p>                                                                                <p class="">Then write your email:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 118'%3E%3C/svg%3E" width="600" height="118"></span>
+</p>                                                                                <p class="">Vercel will send you an email like earlier. Click on the link available in that email and the terminal should automatically continue to the next step:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 951 64'%3E%3C/svg%3E" width="951" height="64"></span>
+</p>                                                                                <p class="">At this point, you should be prompt with a confirmation to setup and deploy the current folder. Choose <code spellcheck="false">Y</code> and press <code spellcheck="false">Enter</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 28'%3E%3C/svg%3E" width="700" height="28"></span>
+</p>                                                                                <p class="">You can have multiple scopes and teams associated with your account. If you've just created your account, there should be only one. Choose it by pressing <code spellcheck="false">Enter</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 409 45'%3E%3C/svg%3E" width="409" height="45"></span>
+</p>                                                                                <p class="">In our case, we are creating a new project and we don't want to associate our code with an existing project. Write <code spellcheck="false">n</code> and press <code spellcheck="false">Enter</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 390 23'%3E%3C/svg%3E" width="390" height="23"></span>
+</p>                                                                                <p class="">Vercel will try to guess the project name, but you can change it to anything you want. You can use lower case, numbers and dashes. Press <code spellcheck="false">Enter</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/009.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 578 21'%3E%3C/svg%3E" width="578" height="21"></span>
+</p>                                                                                <p class="">Vercel detects the settings automatically thanks to the <code spellcheck="false">vite.config.js</code> file and we don’t need to change anything. Write <code spellcheck="false">n</code> and press <code spellcheck="false">Enter</code>.</p>                                                                                <p class="">That's it, your website should start deploying on Vercel.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/010.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 937 84'%3E%3C/svg%3E" width="937" height="84"></span>
+</p>                                                                                <p class="">Wait a minute or two and Vercel should prompt you with the URL to the live version.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 878 19'%3E%3C/svg%3E" width="878" height="19"></span>
+</p>                                                                                <p class="">Vercel should automatically copy that URL to your clipboard. You can paste it into your favorite browser and test the live version.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Further settings
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1183">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">19:43</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="further-settings">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#further-settings"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="further-settings"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Go to <a href="https://vercel.com/" target="_blank">vercel.com</a> and make sure you are logged in.</p>                                                                                <p class="">You should have access to your <a href="https://vercel.com/dashboard" target="_blank">dashboard</a> and see your project:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 556 421'%3E%3C/svg%3E" width="556" height="421"></span>
+</p>                                                                                <p class="">Click on your project. This is the screen you should see next:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/38/013.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1053 834'%3E%3C/svg%3E" width="1053" height="834"></span>
+</p>                                                                                <p class="">Here, you can see a preview of your project, get information about the latest builds, change deployment preferences, see potential errors, etc.</p>                                                                                <p class="">You can even add a custom domain, but we won't cover that in this lesson.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Pricing
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1298">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">21:38</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="pricing">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#pricing"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="pricing"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">But wait, is everything free?</p>                                                                                <p class="">Yes and no. If you just want to share those cool WebGL experiences you're building with the world with no commercial intent, the free plan (named <strong>Hobby</strong>) should be more than enough. You can create as many projects as you want with all the features we just saw.</p>                                                                                <p class="">But if you have commercial intents, or want to use specific features like teams, password protections for the preview, firewalls, etc., you might need to use a paid plan.</p>                                                                                <p class="">Also, the <strong>Hobby</strong> plan has <strong>bandwidth</strong> and <strong>build time</strong> limitations. This means that if your website gets a lot of attention or you deploy too many times, you'll have to switch to a paid plan.</p>                                                                                <p class="">Plans and pricing can be find here: <a href="https://vercel.com/pricing" target="_blank">vercel.com/pricing</a></p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Share!
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1430">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">23:50</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="share">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#share"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="share"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">No excuse now. Share your work with the world and don't forget to use the <code spellcheck="false">#threejsJourney</code> hashtag on Twitter.</p>                                    
+                                                                                </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Lights</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/lights" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/38/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(54deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>18. galaxy generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/particles"><div class="sibling-info"><div class="sibling-label">17.</div><div class="sibling-title">Particles</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">18.</div><h2 class="title">Galaxy Generator</h2><p class="difficulty">Difficulty <span class="value">
+                                Hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/scroll-based-animation"><div class="sibling-info"><div class="sibling-label">19.</div><div class="sibling-title">Scroll based animation</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/18/18-galaxy-generator.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/18/18-galaxy-generator-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/18" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Now that we know how to use particles, we could create something cool like a Galaxy. But instead of producing just one galaxy, let's do a galaxy generator.</p>                                                                                <p class="">For that, we're going to use lil-gui to let the user tweak the parameters and generate a new galaxy on each change.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="23">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:23</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">The starter is only composed of a cube in the middle of the scene. It ensures that everything is working.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Base particles
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="51">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:51</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="base-particles">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#base-particles"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="base-particles"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">First, remove the cube and create a <code spellcheck="false">generateGalaxy</code> function. Each time we call that function, we will remove the previous galaxy (if there is one) and create a new one.</p>                                                                                <p class="">We can call that function immediately:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Galaxy
+ */
+const generateGalaxy = () =&gt;
+{
+    
+}
+
+generateGalaxy()</code></pre>                                                                                <p class="">We can create an object that will contain all the parameters of our galaxy. Create this object before the <code spellcheck="false">generateGalaxy</code> function. We will populate it progressively and also add each parameter to lil-gui:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const parameters = {}</code></pre>                                                                                <p class="">In our <code spellcheck="false">generateGalaxy</code> function, we're going to create some particles just to make sure that everything is working. We can start with the geometry and add the particles count to the parameters:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const parameters = {}
+parameters.count = 1000
+
+const generateGalaxy = () =&gt;
+{
+    /**
+     * Geometry
+     */
+    const geometry = new THREE.BufferGeometry()
+
+    const positions = new Float32Array(parameters.count * 3)
+
+    for(let i = 0; i &lt; parameters.count; i++)
+    {
+        const i3 = i * 3
+
+        positions[i3    ] = (Math.random() - 0.5) * 3
+        positions[i3 + 1] = (Math.random() - 0.5) * 3
+        positions[i3 + 2] = (Math.random() - 0.5) * 3
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+}
+generateGalaxy()</code></pre>                                                                                <p class="">That's the same code as before, but we handled the loop a little differently.</p>                                                                                <p class="">We can now create the material by using the <a href="https://threejs.org/docs/#api/en/materials/PointsMaterial" target="_blank">PointsMaterial</a> class. This time again, we can add tweaks to the <code spellcheck="false">parameters</code> object:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.size = 0.02
+
+const generateGalaxy = () =&gt;
+{
+    // ...
+
+    /**
+     * Material
+     */
+    const material = new THREE.PointsMaterial({
+        size: parameters.size,
+        sizeAttenuation: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    })
+}</code></pre>                                                                                <p class="">Finally, we can create the points by using the <a href="https://threejs.org/docs/#api/en/objects/Points" target="_blank">Points</a> class and add it to the scene:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const generateGalaxy = () =&gt;
+{
+    // ...
+
+    /**
+     * Points
+     */
+    const points = new THREE.Points(geometry, material)
+    scene.add(points)
+}</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">You should see few points floating around.</p>                                    
+                                                                                                        
+<h2 class="title has-anchor ">
+    
+    Tweaks
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="738">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">12:18</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="tweaks">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#tweaks"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="tweaks"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We have already two parameters, <code spellcheck="false">count</code> and <code spellcheck="false">size</code>. Let's add them to the lil-gui instance that we already created at the start of the code. As you can imagine, we must add those tweaks after creating the parameters:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.count = 1000
+parameters.size = 0.02
+
+gui.add(parameters, 'count').min(100).max(1000000).step(100)
+gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should have two new ranges in the tweaks but changing them doesn't generate a new galaxy. To generate a new galaxy, you must listen to the change event. More precisely to the <code spellcheck="false">finishChange</code> event to prevent generating galaxies while you are drag and dropping the range value:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui.add(parameters, 'count').min(100).max(1000000).step(100).onFinishChange(generateGalaxy)
+gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001).onFinishChange(generateGalaxy)</code></pre>                                                                                                <p class="">This code won't work because the <code spellcheck="false">generateGalaxy</code> doesn't exist yet. You must move those tweaks after the <code spellcheck="false">generateGalaxy</code> function.</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/18/003.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Be careful, we still have a problem, and if you play too much with the tweaks, your computer will start to heat. It's because we didn't destroy the previously created galaxy. We are creating galaxies one above the other.</p>                                                                                                <p class="">To make things right, we must first move the <code spellcheck="false">geometry</code>, <code spellcheck="false">material</code> and <code spellcheck="false">points</code> variables outside the <code spellcheck="false">generateGalaxy</code>.</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">let geometry = null
+let material = null
+let points = null
+
+const generateGalaxy = () =&gt;
+{
+    // ...
+
+    geometry = new THREE.BufferGeometry()
+    
+    // ...
+
+    material = new THREE.PointsMaterial({
+        size: parameters.size,
+        sizeAttenuation: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    })
+
+    // ...
+
+    points = new THREE.Points(geometry, material)
+    
+    // ...
+}</code></pre>                                                                                                <p class="">Then, before assigning those variables, we can test if they already exist. If so, we can call the <code spellcheck="false">dispose()</code> method on the geometry and the material. Then remove the points from the scene with the <code spellcheck="false">remove()</code> method:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const generateGalaxy = () =&gt;
+{
+    // Destroy old galaxy
+    if(points !== null)
+    {
+        geometry.dispose()
+        material.dispose()
+        scene.remove(points)
+    }
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/18/004.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Instead of using a texture that can create depth and alpha issues as we saw in the previous lesson, we will just let the default square shape. Don't worry; there will be so many small particles that we won't notice that they are squares.</p>                                                                                                <p class="">Now that we can estimate how much particles we can have and their size, let's update the parameters:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.count = 100000
+parameters.size = 0.01</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Shape
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1409">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">23:29</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="shape">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#shape"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="shape"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Galaxies can have several different shapes. We will focus on the spirals one. There are many ways to position the particles to create a galaxy. Feel free to try your way before testing the lesson way.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Radius
+
+        
+                <span class="anchor js-anchor" data-slug="radius">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#radius"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="radius"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">First, let's create a <code spellcheck="false">radius</code> parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.radius = 5
+
+// ...
+
+gui.add(parameters, 'radius').min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy)</code></pre>                                                                                                <p class="">Each star will be positioned accordingly to that radius. If the radius is <code spellcheck="false">5</code>, the stars will be positioned at a distance from <code spellcheck="false">0</code> to <code spellcheck="false">5</code>. For now, let's position all the particles on a straight line:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; parameters.count; i++)
+{
+    const i3 = i * 3
+
+    const radius = Math.random() * parameters.radius
+
+    positions[i3    ] = radius
+    positions[i3 + 1] = 0
+    positions[i3 + 2] = 0
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Branches
+
+        
+                <span class="anchor js-anchor" data-slug="branches">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#branches"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="branches"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Spin galaxies always seem to have at least two branches, but it can have much more.</p>                                                                                                <p class="">Create a <code spellcheck="false">branches</code> parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.branches = 3
+
+// ...
+
+gui.add(parameters, 'branches').min(2).max(20).step(1).onFinishChange(generateGalaxy)</code></pre>                                                                                                <p class="">We can use <code spellcheck="false">Math.cos(...)</code> and <code spellcheck="false">Math.sin(...)</code> to position the particles on those branches. We first calculate an angle with the modulo (<code spellcheck="false">%</code>), divide the result by the branches count parameter to get an angle between <code spellcheck="false">0</code> and <code spellcheck="false">1</code>, and multiply this value by <code spellcheck="false">Math.PI * 2</code> to get an angle between <code spellcheck="false">0</code> and a full circle. We then use that angle with <code spellcheck="false">Math.cos(...)</code> and <code spellcheck="false">Math.sin(...)</code> for the <code spellcheck="false">x</code> and the <code spellcheck="false">z</code> axis and we finally multiply by the radius:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; parameters.count; i++)
+{
+    const i3 = i * 3
+
+    const radius = Math.random() * parameters.radius
+    const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2
+
+    positions[i3    ] = Math.cos(branchAngle) * radius
+    positions[i3 + 1] = 0
+    positions[i3 + 2] = Math.sin(branchAngle) * radius
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Spin
+
+        
+                <span class="anchor js-anchor" data-slug="spin">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#spin"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="spin"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Let's add the spin effect.</p>                                                                                                <p class="">Create a <code spellcheck="false">spin</code> parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.spin = 1
+
+// ...
+
+gui.add(parameters, 'spin').min(- 5).max(5).step(0.001).onFinishChange(generateGalaxy)</code></pre>                                                                                                <p class="">Then we can multiply the <code spellcheck="false">spinAngle</code> by that <code spellcheck="false">spin</code> parameter. To put it differently, the further the particle is from the center, the more spin it'll endure:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; parameters.count; i++)
+{
+    const i3 = i * 3
+
+    const radius = Math.random() * parameters.radius
+    const spinAngle = radius * parameters.spin
+    const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2
+
+    positions[i3    ] = Math.cos(branchAngle + spinAngle) * radius
+    positions[i3 + 1] = 0
+    positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Randomness
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2677">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">44:37</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="randomness">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#randomness"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="randomness"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Those particles are perfectly aligned. We need randomness. But what we truly need is spread stars on the outside and more condensed star on the inside.</p>                                                                                                <p class="">Create a <code spellcheck="false">randomness</code> parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.randomness = 0.2
+
+// ...
+
+gui.add(parameters, 'randomness').min(0).max(2).step(0.001).onFinishChange(generateGalaxy)</code></pre>                                                                                                <p class="">Now create a random value for each axis with <code spellcheck="false">Math.random()</code>, multiply it by the <code spellcheck="false">radius</code> and then add those values to the <code spellcheck="false">positions</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; parameters.count; i++)
+{
+    const i3 = i * 3
+
+    const radius = Math.random() * parameters.radius
+
+    const spinAngle = radius * parameters.spin
+    const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2
+    
+    const randomX = (Math.random() - 0.5) * parameters.randomness * radius
+    const randomY = (Math.random() - 0.5) * parameters.randomness * radius
+    const randomZ = (Math.random() - 0.5) * parameters.randomness * radius
+
+    positions[i3    ] = Math.cos(branchAngle + spinAngle) * radius + randomX
+    positions[i3 + 1] = randomY
+    positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/009.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">It's working but it's not very convincing, right? And we can still see the pattern. To fix that, we can use <code spellcheck="false">Math.pow()</code> to crush the value. The more power you apply, the closest to <code spellcheck="false">0</code> it will get. The problem is that you can't use a negative value with <code spellcheck="false">Math.pow()</code>. What we will do is calculate the power then multiply it by <code spellcheck="false">-1</code> randomly.</p>                                                                                                <p class="">First create the power parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.randomnessPower = 3
+
+// ...
+
+gui.add(parameters, 'randomnessPower').min(1).max(10).step(0.001).onFinishChange(generateGalaxy)</code></pre>                                                                                                <p class="">Then apply the power with <code spellcheck="false">Math.pow()</code> and multiply it by <code spellcheck="false">-1</code> randomly:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const randomX = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() &lt; 0.5 ? 1 : - 1) * parameters.randomness * radius
+const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() &lt; 0.5 ? 1 : - 1) * parameters.randomness * radius
+const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() &lt; 0.5 ? 1 : - 1) * parameters.randomness * radius</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/010.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Colors
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3418">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">56:58</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="colors">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#colors"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="colors"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">For a better effect, we need to add some colors to our creation. A cool thing would be to have different colors inside the galaxy and on its edges.</p>                                                                                                <p class="">First, add the colors parameters:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">parameters.insideColor = '#ff6030'
+parameters.outsideColor = '#1b3984'
+
+// ...
+
+gui.addColor(parameters, 'insideColor').onFinishChange(generateGalaxy)
+gui.addColor(parameters, 'outsideColor').onFinishChange(generateGalaxy)</code></pre>                                                                                                <p class="">We're going to provide a color for each vertex. We must active the <code spellcheck="false">vertexColors</code> on the material:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">material = new THREE.PointsMaterial({
+    size: parameters.size,
+    sizeAttenuation: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    vertexColors: true
+})</code></pre>                                                                                                <p class="">Then add a <code spellcheck="false">color</code> attribute on our geometry just like we added the <code spellcheck="false">position</code> attribute. For now, we're not using the <code spellcheck="false">insideColor</code> and <code spellcheck="false">outsideColor</code> parameters:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">geometry = new THREE.BufferGeometry()
+
+const positions = new Float32Array(parameters.count * 3)
+const colors = new Float32Array(parameters.count * 3)
+
+for(let i = 0; i &lt; parameters.count; i++)
+{
+    // ...
+
+    colors[i3    ] = 1
+    colors[i3 + 1] = 0
+    colors[i3 + 2] = 0
+}
+
+geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should get a red galaxy.</p>                                                                                                <p class="">To use the colors from the parameters, we first need to create a <a href="https://threejs.org/docs/index.html#api/en/math/Color" target="_blank">Color</a> instance for each one. We have to do it inside the <code spellcheck="false">generateGalaxy</code> function for reasons you'll understand in a bit:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const generateGalaxy = () =&gt;
+{
+    // ...
+
+    const colorInside = new THREE.Color(parameters.insideColor)
+    const colorOutside = new THREE.Color(parameters.outsideColor)
+
+    // ...
+}</code></pre>                                                                                                <p class="">Inside the loop function, we want to mix these colors into a third color. That mix depends on the distance from the center of the galaxy. If the particle is at the center of the galaxy, it'll have the <code spellcheck="false">insideColor</code> and the further it gets from the center, the more it will get mixed with the <code spellcheck="false">outsideColor</code>.</p>                                                                                                <p class="">Instead of creating a third <a href="https://threejs.org/docs/index.html#api/en/math/Color" target="_blank">Color</a>, we are going to clone the <code spellcheck="false">colorInside</code> and then use the <code spellcheck="false">lerp(...)</code> method to interpolate the color from that base color to another one. The first parameter of <code spellcheck="false">lerp(...)</code> is the other color, and the second parameter is a value between <code spellcheck="false">0</code> and <code spellcheck="false">1</code>. If it's <code spellcheck="false">0</code>, the color will keep its base value, and if it's <code spellcheck="false">1</code> the result color will be the one provided. We can use the <code spellcheck="false">radius</code> divided by the radius parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const mixedColor = colorInside.clone()
+mixedColor.lerp(colorOutside, radius / parameters.radius)</code></pre>                                                                                                <p class="">We can then use the <code spellcheck="false">r</code>, <code spellcheck="false">g</code> and <code spellcheck="false">b</code> properties in our <code spellcheck="false">colors</code> array:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">colors[i3    ] = mixedColor.r
+colors[i3 + 1] = mixedColor.g
+colors[i3 + 2] = mixedColor.b</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/18/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">And here you have a beautiful galaxy generator. You can play with the tweaks and continue to add parameters and improve the style of your galaxies.</p>                                                                                                <p class="">Try not to burn your computer.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Go further
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4019">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:06:59</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="go-further">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#go-further"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="go-further"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">To go further, you can try to add more tweaks or test other galaxy shapes. We will learn how to animate all the particles in a cool spin animation in a future lesson.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Scroll based animation</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/scroll-based-animation" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/18/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(84deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

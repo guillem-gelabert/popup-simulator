@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>52. adding details to the scene</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/importing-and-optimizing-the-scene"><div class="sibling-info"><div class="sibling-label">51.</div><div class="sibling-title">Importing and optimizing the scene</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">52.</div><h2 class="title">Adding details to the scene</h2><p class="difficulty">Difficulty <span class="value">
+                                Hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/what-are-react-and-react-three-fiber"><div class="sibling-info"><div class="sibling-label">53.</div><div class="sibling-title">What are React and React Three Fiber</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/37/52-adding-details-to-the-scene.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/37/52-adding-details-to-the-scene-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a><a href="/assets/lessons/37/52-adding-details-to-the-scene-resources.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Resources</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/37" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Our scene is looking great with the baked texture, but we are not really using the full potential of WebGL. Let's add more details and give more life to the scene.</p>                                                                                <p class="">First, we are going to add fireflies floating around. Then, we are going to create a cool animation inside the portal. But first, we need to change that black background.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="45">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:45</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">The code is exactly the same as we left it in the previous lesson.</p>                                                                                <p class="">We have our scene already imported in Three.js, we can rotate around with the <code spellcheck="false">OrbitControls</code> and we have our lil-gui instance ready.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Background color
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="74">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:14</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="background-color">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#background-color"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="background-color"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">For the background, we are not going to make something too fancy. We will simply change the color to something that matches our scene a bit more. To find the perfect color, we are going to add a tweak to lil-gui.</p>                                                                                <p class="">Right before creating our lil-gui instance, add a <code spellcheck="false">debugObject</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Debug
+const debugObject = {}
+const gui = new GUI({
+    width: 400
+})</code></pre>                                                                                <p class="">Like we did in the previous lessons, this object's purpose is only to store the color as a property so that we can add it as a tweak to lil-gui.</p>                                                                                <p class="">After instancing the <code spellcheck="false">renderer</code>, add a <code spellcheck="false">clearColor</code> property to the <code spellcheck="false">debugObject</code> object:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Clear color
+debugObject.clearColor = '#ff0000'</code></pre>                                                                                <p class="">Then add it to the tweaks of lil-gui using <code spellcheck="false">gui.addColor(...)</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui.addColor(debugObject, 'clearColor')</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">You should see the color tweak but we are not using it yet.</p>                                                                                <p class="">Use the value to change the background color with <code spellcheck="false">renderer.setClearColor(...)</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">debugObject.clearColor = '#ff0000'
+renderer.setClearColor(debugObject.clearColor)
+gui.addColor(debugObject, 'clearColor')</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">Unfortunately, changing the tweak won't change the color of the background because we are only changing the <code spellcheck="false">clearColor</code> property.</p>                                                                                <p class="">We need to call the <code spellcheck="false">renderer.setClearColor(...)</code> again when the tweak changes:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui
+    .addColor(debugObject, 'clearColor')
+    .onChange(() =&gt;
+    {
+        renderer.setClearColor(debugObject.clearColor)
+    })</code></pre>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/003.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                <p class="">You can now find the color that matches your scene the best:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">debugObject.clearColor = '#201919'</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Fireflies
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="316">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">05:16</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="fireflies">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fireflies"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fireflies"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">To create the fireflies, we are going to use particles with a custom geometry.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Base
+
+        
+                <span class="anchor js-anchor" data-slug="base">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#base"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="base"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Start by creating an empty <a href="https://threejs.org/docs/#api/en/core/BufferGeometry" target="_blank">BufferGeometry</a>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Fireflies
+ */
+// Geometry
+const firefliesGeometry = new THREE.BufferGeometry()</code></pre>                                                                                <p class="">Create a <code spellcheck="false">BufferAttribute</code> named <code spellcheck="false">position</code> to set the position of each particle:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const firefliesGeometry = new THREE.BufferGeometry()
+const firefliesCount = 30
+const positionArray = new Float32Array(firefliesCount * 3)
+
+for(let i = 0; i &lt; firefliesCount; i++)
+{
+    positionArray[i * 3 + 0] = Math.random() * 4
+    positionArray[i * 3 + 1] = Math.random() * 4
+    positionArray[i * 3 + 2] = Math.random() * 4
+}
+
+firefliesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3))</code></pre>                                                                                <p class="">The positions of the fireflies are random, but we will improve their positions once we can see the fireflies.</p>                                                                                <p class="">We are going to use a <a href="https://threejs.org/docs/#api/en/materials/PointsMaterial" target="_blank">PointsMaterial</a> in order to see our fireflies, but we will change it to a custom <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> later:</p>                                                                                <p class="">Create a <a href="https://threejs.org/docs/#api/en/materials/PointsMaterial" target="_blank">PointsMaterial</a> with a <code spellcheck="false">size</code> of <code spellcheck="false">0.1</code> and set the <code spellcheck="false">sizeAttenuation</code> to <code spellcheck="false">true</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Material
+const firefliesMaterial = new THREE.PointsMaterial({ size: 0.1, sizeAttenuation: true })</code></pre>                                                                                <p class="">Finally, create the <a href="https://threejs.org/docs/#api/en/objects/Points" target="_blank">Points</a> instance using the <code spellcheck="false">firefliesGeometry</code> and the <code spellcheck="false">firefliesMaterial</code> and add it to the scene:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Points
+const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial)
+scene.add(fireflies)</code></pre>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/005.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                <p class="">You should see some big square particles.</p>                                    
+                                                                                                        <p class="">Let's change the positions so that it fits in the scene:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; firefliesCount; i++)
+{
+    positionArray[i * 3 + 0] = (Math.random() - 0.5) * 4
+    positionArray[i * 3 + 1] = Math.random() * 1.5
+    positionArray[i * 3 + 2] = (Math.random() - 0.5) * 4
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The particles shouldn't go too far on the <code spellcheck="false">x</code> and <code spellcheck="false">z</code> axes and stay above the floor on the <code spellcheck="false">y</code> axis.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Custom shader material
+
+        
+                <span class="anchor js-anchor" data-slug="custom-shader-material">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#custom-shader-material"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="custom-shader-material"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We can now change the material to a <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> in order to animate them but also draw something other than those ugly squares.</p>                                                                                                <ul class="">
+            <li>In the <code spellcheck="false">/src/</code> folder, create a <code spellcheck="false">shaders/</code> folder.</li>
+            <li>In that <code spellcheck="false">shaders/</code> folder, create a <code spellcheck="false">fireflies/</code> folder.</li>
+            <li>In that <code spellcheck="false">fireflies/</code> folder (hang on), create a <code spellcheck="false">vertex.glsl</code> and a <code spellcheck="false">fragment.glsl</code> file.</li>
+    </ul>                                                                                                <p class="">You can try to write those shaders on your own.</p>                                                                                                <p class="">Here's the code for <code spellcheck="false">/src/shaders/fireflies/vertex.glsl</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectionPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectionPosition;
+    gl_PointSize = 40.0;
+}</code></pre>                                                                                                <p class="">This code isn't doing anything special. The vertex get positioned where it should be by applying the various matrices. We also added the <code spellcheck="false">gl_PointSize</code> to control the size of the particles.</p>                                                                                                <p class="">Here's the code for <code spellcheck="false">/src/shaders/fireflies/fragment.glsl</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}</code></pre>                                                                                                <p class="">As with the vertex shader, this code isn't doing anything special and the particles should look red.</p>                                                                                                <p class="">We can now import those shaders into our script:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import firefliesVertexShader from './shaders/fireflies/vertex.glsl'
+import firefliesFragmentShader from './shaders/fireflies/fragment.glsl'</code></pre>                                                                                                <p class="">The rule to load <code spellcheck="false">.glsl</code> files has already been added to the Vite configuration. <code spellcheck="false">firefliesVertexShader</code> and <code spellcheck="false">firefliesFragmentShader</code> should contain the two shaders we wrote.</p>                                                                                                <p class="">Replace the <a href="https://threejs.org/docs/#api/en/materials/PointsMaterial" target="_blank">PointsMaterial</a> by a <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> with the <code spellcheck="false">vertexShader</code> and <code spellcheck="false">fragmentShader</code> properties:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const firefliesMaterial = new THREE.ShaderMaterial({
+    vertexShader: firefliesVertexShader,
+    fragmentShader: firefliesFragmentShader
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should get red squares as the fireflies.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Point size
+
+        
+                <span class="anchor js-anchor" data-slug="point-size">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#point-size"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="point-size"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Those squares might look bigger on your screen and this is due to the pixel ratio. In our vertex shader, we wrote <code spellcheck="false">gl_PointSize = 40.0;</code> which means that each particle will take 40 pixels of the render in width and height, but if you have a high pixel ratio screen, 40 pixels will look smaller because you have more pixels in the same space.</p>                                                                                                <p class="">To fix that, we can send the pixel ratio as a <code spellcheck="false">uniform</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Material
+const firefliesMaterial = new THREE.ShaderMaterial({
+    uniforms:
+    {
+        uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }
+    },
+    vertexShader: firefliesVertexShader,
+    fragmentShader: firefliesFragmentShader
+})</code></pre>                                                                                                <p class="">We are not using <code spellcheck="false">renderer.getPixelRatio()</code> because the renderer is being declared afterwards. Doing it this way would result in an error. But if you prefer, you can move the entire fireflies code to after the renderer.</p>                                                                                                <p class="">We can now retrieve the <code spellcheck="false">uPixelRatio</code> uniform in the vertex shader and multiply our <code spellcheck="false">gl_PointSize</code> by it:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uPixelRatio;
+
+void main()
+{
+    // ...
+
+    gl_PointSize = 40.0 * uPixelRatio;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should now see the same particle size regardless of the pixel ratio of the screen.</p>                                                                                                <p class="">We might have a problem if the user changes the window from one screen to another one with a different pixel ratio. Fortunately, most of the time, when a user does that, he is also resizing the window so that it fits better. This is why we can simply update the uniform in the resize callback function:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('resize', () =&gt;
+{
+    // ...
+
+    // Update fireflies
+    firefliesMaterial.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2)
+})</code></pre>                                                                                                <p class="">Another problem with our particles is that the size of the squares is the same regardless of the distance. We need to activate the size attenuation and we can do that with the following code:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // ...
+    
+    gl_PointSize = 40.0 * uPixelRatio;
+    gl_PointSize *= (1.0 / - viewPosition.z);
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/009.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The particles' size should now depend on the distance to the camera.</p>                                                                                                <p class="">Finally, we can create a <code spellcheck="false">uSize</code> uniform to control the size of the particles:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const firefliesMaterial = new THREE.ShaderMaterial({
+    uniforms:
+    {
+        uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+        uSize: { value: 100 }
+    },
+    // ...
+})</code></pre>                                                                                                <p class="">Use it in the shader:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+uniform float uSize;
+
+void main()
+{
+    // ...
+    
+    gl_PointSize = uSize * uPixelRatio;
+    // ...
+}</code></pre>                                                                                                <p class="">And add a tweak to control it:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui.add(firefliesMaterial.uniforms.uSize, 'value').min(0).max(500).step(1).name('firefliesSize')</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/010.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Firefly pattern
+
+        
+                <span class="anchor js-anchor" data-slug="firefly-pattern">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#firefly-pattern"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="firefly-pattern"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">It's time to change those red squares into better looking fireflies. We are going to create some shiny points to represent them.</p>                                                                                                <p class="">We could have used a texture and it's actually more performant to do that. But, for the sake of this lesson and to have more control over the pattern, we are going to draw it in the fragment shader.</p>                                                                                                <p class="">Increase the particle size to something like <code spellcheck="false">200</code>. Start by showing the UV coordinates of the point with <code spellcheck="false">gl_PointCoord</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    gl_FragColor = vec4(gl_PointCoord, 1.0, 1.0);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">We are going to use these coordinates to draw a shiny point at each center.</p>                                                                                                <p class="">First, we know that we need to play with the value which contains the distance to the center of the coordinates.</p>                                                                                                <p class="">Create a <code spellcheck="false">distanceToCenter</code> variable and calculate the distance between the center (<code spellcheck="false">vec2(0.5)</code>) and <code spellcheck="false">gl_PointCoord</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+    gl_FragColor = vec4(gl_PointCoord, 1.0, 1.0);
+}</code></pre>                                                                                                <p class="">Use this <code spellcheck="false">distanceToCenter</code> variable as the alpha of <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+
+    gl_FragColor = vec4(1.0, 1.0, 1.0, distanceToCenter);
+}</code></pre>                                                                                                <p class="">The particles are all white even though the alpha was supposed to change. This is because we forgot to set the <code spellcheck="false">transparent</code> property of the material to <code spellcheck="false">true</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const firefliesMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">We can now see our pattern through the alpha.</p>                                                                                                <p class="">Next, we will try to create a shiny pattern. To do that, we can start with a very small value and divide it by the <code spellcheck="false">distanceToCenter</code>.</p>                                                                                                <p class="">Create a <code spellcheck="false">strength</code> variable, divide <code spellcheck="false">0.05</code> by <code spellcheck="false">distanceToCenter</code> and send it to the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+    float strength = 0.05 / distanceToCenter;
+
+    gl_FragColor = vec4(1.0, 1.0, 1.0, strength);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/013.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">They look good, but unfortunately, we can see the edges. This is because this formula gets very low with distance but never reaches <code spellcheck="false">0</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/014.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 396 332.5'%3E%3C/svg%3E" width="396" height="332.5"></span>
+</p>                                                                                                <p class="">To fix that, we can subtract a small value but big enough to make sure that the result goes below <code spellcheck="false">0.0</code> before reaching the edges:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+    float strength = 0.05 / distanceToCenter - 0.1;
+
+    gl_FragColor = vec4(1.0, 1.0, 1.0, strength);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/015.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 225 171'%3E%3C/svg%3E" width="225" height="171"></span>
+</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/016.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The fireflies now look like little points of light.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Scale randomness
+
+        
+                <span class="anchor js-anchor" data-slug="scale-randomness">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#scale-randomness"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="scale-randomness"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">When creating something organic, it's always good to add randomness. So far, all the fireflies have the same size.</p>                                                                                                <p class="">We are going to send a different scale multiplier to each one.</p>                                                                                                <p class="">Create an <code spellcheck="false">aScale</code> attribute and fill it with random values using <code spellcheck="false">Math.random()</code>. We only need <code spellcheck="false">1</code> value per vertex, so make sure to get the <code spellcheck="false">Float32Array</code> length right and also set the second parameter of the <code spellcheck="false">BufferAttribute</code> to <code spellcheck="false">1</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const scaleArray = new Float32Array(firefliesCount)
+
+for(let i = 0; i &lt; firefliesCount; i++)
+{
+    // ...
+
+    scaleArray[i] = Math.random()
+}
+
+// ...
+firefliesGeometry.setAttribute('aScale', new THREE.BufferAttribute(scaleArray, 1))</code></pre>                                                                                                <p class="">We can retrieve the attribute in the vertex shader and use it in the <code spellcheck="false">gl_PointSize</code> formula:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+attribute float aScale;
+
+void main()
+{
+    // ...
+    
+    gl_PointSize = uSize * aScale * uPixelRatio;
+    gl_PointSize *= (1.0 / - viewPosition.z);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/017.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The fireflies now have different sizes.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Blending
+
+        
+                <span class="anchor js-anchor" data-slug="blending">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#blending"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="blending"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">To make them even more shiny and look like points made from light, set the <code spellcheck="false">blending</code> property of the material to <code spellcheck="false">THREE.AdditiveBlending</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const firefliesMaterial = new THREE.ShaderMaterial({
+    blending: THREE.AdditiveBlending,
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/018.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Depth write
+
+        
+                <span class="anchor js-anchor" data-slug="depth-write">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#depth-write"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="depth-write"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">At some specific angles, you will notice some clipping issues where one particle seems to hide the one behind. This is true even if the alpha is supposed to be set at a low value.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/019.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">To fix that, we can deactivate depth writing by setting the <code spellcheck="false">depthWrite</code> property to <code spellcheck="false">false</code> on the material:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const firefliesMaterial = new THREE.ShaderMaterial({
+    depthWrite: false,
+    // ...
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/020.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Floating animation
+
+        
+                <span class="anchor js-anchor" data-slug="floating-animation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#floating-animation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="floating-animation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Finally, we want the fireflies to float up and down to give them more life.</p>                                                                                                <p class="">Because we are going to do the animation in the vertex shader, we need to send it the time.</p>                                                                                                <p class="">Create a <code spellcheck="false">uTime</code> uniform and update it in the <code spellcheck="false">tick</code> function by using the <code spellcheck="false">elapsedTime</code> variable:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const firefliesMaterial = new THREE.ShaderMaterial({
+    // ...
+    uniforms:
+    {
+        uTime: { value: 0 },
+        // ...
+    },
+    // ...
+})
+
+// ...
+const clock = new THREE.Clock()
+
+const tick = () =&gt;
+{
+    const elapsedTime = clock.getElapsedTime()
+
+    // Update materials
+    firefliesMaterial.uniforms.uTime.value = elapsedTime
+
+    // ...
+}</code></pre>                                                                                                <p class="">Retrieve the <code spellcheck="false">uTime</code> uniform in the vertex shader and update the <code spellcheck="false">modelPosition.y</code> using <code spellcheck="false">sin()</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uTime;
+
+// ...
+
+void main()
+{
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    modelPosition.y += sin(uTime);
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/021.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">That's a good start but we need to add some randomness. First, let's de-synchronize them.</p>                                                                                                <p class="">We could have sent a new attribute, but instead (since they only move on the <code spellcheck="false">y</code> axis), we can use the <code spellcheck="false">x</code> axis to offset the value in <code spellcheck="false">sin()</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // ...
+    modelPosition.y += sin(uTime + modelPosition.x * 100.0);
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/022.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The animation looks more random, but we also need to randomize and reduce the amplitude.</p>                                                                                                <p class="">We can use the <code spellcheck="false">aScale</code> so that the smallest fireflies move less. We can also multiply by a small value to reduce the general amplitude:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // ...
+    modelPosition.y += sin(uTime + modelPosition.x * 100.0) * aScale * 0.2;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/023.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">That's it for the fireflies but you can go further by adding more tweaks to lil-gui, improving the pattern, or maybe sending a color using a uniform.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Portal
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3262">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">54:22</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="portal">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#portal"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="portal"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The final piece of our scene is the portal. We are going to draw something that looks better than this uniform color.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Custom shader material
+
+        
+                <span class="anchor js-anchor" data-slug="custom-shader-material-1">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#custom-shader-material-1"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="custom-shader-material-1"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We can start by changing the portal material to a <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a>.</p>                                                                                                <p class="">In the <code spellcheck="false">/src/shaders/</code> folder, create a <code spellcheck="false">portal/</code> folder.</p>                                                                                                <p class="">In that <code spellcheck="false">portal/</code> folder, create a <code spellcheck="false">vertex.glsl</code> file and a <code spellcheck="false">fragment.glsl</code> file.</p>                                                                                                <p class="">Again, you can try to write those basic vertex and fragment shaders on your own.</p>                                                                                                <p class="">Here's the code for <code spellcheck="false">/src/shaders/portal/vertex.glsl</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectionPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectionPosition;
+}</code></pre>                                                                                                <p class="">Here's the code for <code spellcheck="false">/src/shaders/portal/fragment.glsl</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}</code></pre>                                                                                                <p class="">We are placing the vertices where they are supposed to be and we are setting the color to a uniform red.</p>                                                                                                <p class="">We can now import those shaders into our script:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import portalVertexShader from './shaders/portal/vertex.glsl'
+import portalFragmentShader from './shaders/portal/fragment.glsl'</code></pre>                                                                                                <p class="">Replace the <a href="https://threejs.org/docs/#api/en/materials/MeshBasicMaterial" target="_blank">MeshBasicMaterial</a> by a <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> with the <code spellcheck="false">vertexShader</code> and <code spellcheck="false">fragmentShader</code> properties:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const portalLightMaterial = new THREE.ShaderMaterial({
+    vertexShader: portalVertexShader,
+    fragmentShader: portalFragmentShader
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/024.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should get a red portal which doesn't match the rest of the scene, but we are going to fix that.</p>                                                                                                <p class="">As in the <strong>Shader Patterns</strong> lesson, we are going to use the UV coordinates to draw on the portal.</p>                                                                                                <p class="">Send the UV coordinates from the vertex shader to the fragment shader using a <code spellcheck="false">vUv</code> varying.</p>                                                                                                <p class="">The vertex shader:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">varying vec2 vUv;
+
+void main()
+{
+    // ...
+
+    vUv = uv;
+}</code></pre>                                                                                                <p class="">The fragment shader:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">varying vec2 vUv;
+
+void main()
+{
+    gl_FragColor = vec4(vUv, 1.0, 1.0);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/025.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">If you are using your own model and you don't get this gradient, it might be because your portal hasn't been unwrapped properly.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Fix the UV coordinates
+
+        
+                <span class="anchor js-anchor" data-slug="fix-the-uv-coordinates">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fix-the-uv-coordinates"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fix-the-uv-coordinates"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">To fix that, open your <code spellcheck="false">.blend</code> file:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/026.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Select the portal only:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/027.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Go into <code spellcheck="false">Edit Mode</code>, select all the faces and check how the UV is being unwrapped in the <code spellcheck="false">UV Editor</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/028.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Here, the unwrap is good, but you may have a different result or maybe nothing at all.</p>                                                                                                <p class="">Don't worry about the baked texture in the background of the <code spellcheck="false">UV Editor</code>. We don't need to be concerned with it. All we want to do is to unwrap the disc-shaped portal so that it fills the whole map.</p>                                                                                                <p class="">To do that, while still in the <code spellcheck="false">UV Editor</code> with all the faces selected, press <code spellcheck="false">U</code> and choose <code spellcheck="false">Unwrap</code>.</p>                                                                                                <p class="">And that's all. We don't really care about the rotation of the UV because  the pattern we are going to draw will be circular.</p>                                                                                                <p class="">Leave the <code spellcheck="false">Edit Mode</code> and select the merged object and all the emissions. Then, export everything as <code spellcheck="false">portal.glb</code> into the <code spellcheck="false">/static/</code> folder:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/029.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Refresh your scene, and you should now have the same gradient:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/030.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">If the gradient isn't oriented the same, it's not a problem. Our pattern will be circular.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Perlin
+
+        
+                <span class="anchor js-anchor" data-slug="perlin">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#perlin"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="perlin"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Now comes the fun part. You can draw anything you want in the portal, as long as you find the right formula.</p>                                                                                                <p class="">The following steps lead straight to a pleasing result. But, obviously, it was a long process of trying many things until it ended up looking good. Do not be frustrated if it takes you hours when doing it on your own. It's all about time and practice.</p>                                                                                                <p class="">We are going to start with a classic Perlin noise. In this example, we are going to use a 3D one, so we can animate the third value with the time in order to create variations to the noise.</p>                                                                                                <p class="">Take the following function made by Stefan Gustavson, which is available in <a href="https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83" target="_blank">this gist</a>, and add it to your <code spellcheck="false">src/shaders/portal/fragment.glsl</code> file:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">//	Classic Perlin 3D Noise 
+//	by Stefan Gustavson
+//
+vec4 permute(vec4 x){ return mod(((x*34.0)+1.0)*x, 289.0); }
+vec4 taylorInvSqrt(vec4 r){ return 1.79284291400159 - 0.85373472095314 * r; }
+vec3 fade(vec3 t) { return t*t*t*(t*(t*6.0-15.0)+10.0); }
+
+float cnoise(vec3 P)
+{
+    vec3 Pi0 = floor(P); // Integer part for indexing
+    vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+    Pi0 = mod(Pi0, 289.0);
+    Pi1 = mod(Pi1, 289.0);
+    vec3 Pf0 = fract(P); // Fractional part for interpolation
+    vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+    vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+    vec4 iy = vec4(Pi0.yy, Pi1.yy);
+    vec4 iz0 = Pi0.zzzz;
+    vec4 iz1 = Pi1.zzzz;
+
+    vec4 ixy = permute(permute(ix) + iy);
+    vec4 ixy0 = permute(ixy + iz0);
+    vec4 ixy1 = permute(ixy + iz1);
+
+    vec4 gx0 = ixy0 / 7.0;
+    vec4 gy0 = fract(floor(gx0) / 7.0) - 0.5;
+    gx0 = fract(gx0);
+    vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+    vec4 sz0 = step(gz0, vec4(0.0));
+    gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+    gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+    vec4 gx1 = ixy1 / 7.0;
+    vec4 gy1 = fract(floor(gx1) / 7.0) - 0.5;
+    gx1 = fract(gx1);
+    vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+    vec4 sz1 = step(gz1, vec4(0.0));
+    gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+    gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+    vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+    vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+    vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+    vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+    vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+    vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+    vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+    vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+    vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+    g000 *= norm0.x;
+    g010 *= norm0.y;
+    g100 *= norm0.z;
+    g110 *= norm0.w;
+    vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+    g001 *= norm1.x;
+    g011 *= norm1.y;
+    g101 *= norm1.z;
+    g111 *= norm1.w;
+
+    float n000 = dot(g000, Pf0);
+    float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+    float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+    float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+    float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+    float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+    float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+    float n111 = dot(g111, Pf1);
+
+    vec3 fade_xyz = fade(Pf0);
+    vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+    vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+    float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
+    
+    return 2.2 * n_xyz;
+}</code></pre>                                                                                                <p class="">At the end of this process, we are going to display a mix between two colors, but for now, we are going to focus on just one variable.</p>                                                                                                <p class="">Create a <code spellcheck="false">strength</code> variable and use the <code spellcheck="false">cnoise</code> function we just added.</p>                                                                                                <p class="">This function needs a <code spellcheck="false">vec3</code> as parameter. For now, we will use the <code spellcheck="false">vUv</code> as the <code spellcheck="false">x</code> and <code spellcheck="false">y</code> and we will use the time variable later for the <code spellcheck="false">z</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    float strength = cnoise(vec3(vUv * 5.0, 0.0));
+
+    gl_FragColor = vec4(vUv, 1.0, 1.0);
+}</code></pre>                                                                                                <p class="">If there is no error, send the <code spellcheck="false">strength</code> to the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    float strength = cnoise(vec3(vUv * 5.0, 0.0));
+
+    gl_FragColor = vec4(strength, strength, strength, 1.0);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/031.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">That's a good start and we can see the Perlin noise.</p>                                                                                                <p class="">In your JavaScript file, create a <code spellcheck="false">uTime</code> uniform and update it in the <code spellcheck="false">tick</code> function like we did with the fireflies:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const portalLightMaterial = new THREE.ShaderMaterial({
+    uniforms:
+    {
+        uTime: { value: 0 }
+    },
+    // ...
+})
+
+// ...
+
+const tick = () =&gt;
+{
+    const elapsedTime = clock.getElapsedTime()
+
+    // Update materials
+    firefliesMaterial.uniforms.uTime.value = elapsedTime
+    portalLightMaterial.uniforms.uTime.value = elapsedTime
+
+    // ...
+}
+
+tick()</code></pre>                                                                                                <p class="">Retrieve it in the fragment shader and use it as the third value of the <code spellcheck="false">vec3</code> that we send to <code spellcheck="false">cnoise</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uTime;
+
+// ...
+
+void main()
+{
+    // Perlin noise
+    float strength = cnoise(vec3(vUv * 5.0, uTime));
+
+    gl_FragColor = vec4(strength, strength, strength, 1.0);
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/032.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We are already getting some Stargate vibes.</p>                                                                                                <p class="">This classic Perlin noise is good, but we can get something even better by displacing the UV coordinates. We are going to create new UV coordinates based on the initial ones, but we are going to offset the <code spellcheck="false">x</code> and the <code spellcheck="false">y</code> by using another Perlin noise:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // Displace the UV
+    vec2 displacedUv = vUv + cnoise(vec3(vUv * 5.0, uTime));
+
+    // Perlin noise
+    float strength = cnoise(vec3(displacedUv * 5.0, uTime));
+
+    gl_FragColor = vec4(strength, strength, strength, 1.0);
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/033.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The animation is great but a little too fast. In order to slow it down and get some organic randomness, multiply the <code spellcheck="false">uTime</code> by small values that are different for <code spellcheck="false">displacedUv</code> and for <code spellcheck="false">strength</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // Displace the UV
+    vec2 displacedUv = vUv + cnoise(vec3(vUv * 5.0, uTime * 0.1));
+
+    // Perlin noise
+    float strength = cnoise(vec3(displacedUv * 5.0, uTime * 0.2));
+
+    gl_FragColor = vec4(strength, strength, strength, 1.0);
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/034.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Outer glow
+
+        
+                <span class="anchor js-anchor" data-slug="outer-glow">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#outer-glow"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="outer-glow"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are on the right path, but the main concern now is the junction between the portal itself and the bricks around it. The junction between them should be totally white.</p>                                                                                                <p class="">We need to create an outer glow. To do that, we start by finding the distance to the center and displaying the result in the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // ...
+
+    // Outer glow
+    float outerGlow = distance(vUv, vec2(0.5));
+
+    gl_FragColor = vec4(outerGlow, outerGlow, outerGlow, 1.0);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/035.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The gradient is the one we want, but we need to push the value at the edges in order to make sure that the gradient is totally white when we reach those edges. To do that, multiply and offset the value until you are satisfied:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // ...
+
+    // Outer glow
+    float outerGlow = distance(vUv, vec2(0.5)) * 5.0 - 1.4;
+
+    gl_FragColor = vec4(outerGlow, outerGlow, outerGlow, 1.0);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/036.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">We can now add the <code spellcheck="false">outerGlow</code> to the <code spellcheck="false">strength</code> and send the <code spellcheck="false">strength</code> to the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // ...
+
+    // Outer glow
+    float outerGlow = distance(vUv, vec2(0.5)) * 5.0 - 1.4;
+    strength += outerGlow;
+
+    gl_FragColor = vec4(strength, strength, strength, 1.0);
+}</code></pre>                                                                                                <p class="">We kind of get the result we want, but unfortunately, the edges aren't perfectly white. This is because the Perlin noise isn't clamped between <code spellcheck="false">0.0</code> to <code spellcheck="false">1.0</code>. That means the value can actually go below <code spellcheck="false">-1.0</code> and above <code spellcheck="false">+1.0</code> . But, we aren't going to do anything about it because the next step will fix it.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/037.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Currently, we have a very smooth pattern, but it's actually too smooth. We want to add some sharpness to it.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Step
+
+        
+                <span class="anchor js-anchor" data-slug="step">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#step"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="step"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">To do that, we can apply a <code spellcheck="false">step()</code> function to the <code spellcheck="false">strength</code>.</p>                                                                                                <p class="">The first parameter of the <code spellcheck="false">step()</code> function is a limit (also called edge). When the value of the second parameter is above this limit, you'll get <code spellcheck="false">1.0</code> and if the value is below this limit, you'll get <code spellcheck="false">0.0</code>.</p>                                                                                                <p class="">You can try different values for this limit:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // ...
+
+    // Apply cool step
+    strength = step(- 0.2, strength);
+
+    gl_FragColor = vec4(strength, strength, strength, 1.0);
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/038.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We get a nice sharp result, but now it's too sharp.</p>                                                                                                <p class="">Instead of replacing the <code spellcheck="false">strength</code> with that <code spellcheck="false">step()</code> function, we are going to add it to the initial <code spellcheck="false">strength</code>. We can also multiply it by a lower value to dim the step effect a little:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+void main()
+{
+    // ...
+
+    // Apply cool step
+    strength += step(- 0.2, strength) * 0.8;
+
+    gl_FragColor = vec4(strength, strength, strength, 1.0);
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/039.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">And here is our final pattern. As you can see, the edges are perfectly white and we get a good mix between smooth and sharp.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Colors
+
+        
+                <span class="anchor js-anchor" data-slug="colors">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#colors"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="colors"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">In this example, we are fine with the black and white result because our portal light was initially white. But, let's add colors in case you went for a different portal color.</p>                                                                                                <p class="">In the JavaScript file, add a <code spellcheck="false">uColorStart</code> and a <code spellcheck="false">uColorEnd</code> uniform with red and blue colors . Use the <a href="https://threejs.org/docs/#api/en/math/Color" target="_blank">Color</a> class:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const portalLightMaterial = new THREE.ShaderMaterial({
+    uniforms:
+    {
+        uTime: { value: 0 },
+        uColorStart: { value: new THREE.Color(0xff0000) },
+        uColorEnd: { value: new THREE.Color(0x0000ff) }
+    },
+    // ...
+})</code></pre>                                                                                                <p class="">Retrieve those uniform in the fragment shader, <code spellcheck="false">mix()</code> them into a <code spellcheck="false">color</code> variable using the <code spellcheck="false">strength</code> and send it to the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uTime;
+uniform vec3 uColorStart;
+uniform vec3 uColorEnd;
+
+// ...
+
+void main()
+{
+    // ...
+
+    // Final color
+    vec3 color = mix(uColorStart, uColorEnd, strength);
+
+    gl_FragColor = vec4(color, 1.0);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/040.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should get a nice mix between the red and blue.</p>                                                                                                <p class="">Let's add those colors to our lil-gui. As always, we add them as properties of the <code spellcheck="false">debugObject</code> and listen to changes to update the uniforms accordingly:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">debugObject.portalColorStart = '#ff0000'
+debugObject.portalColorEnd = '#0000ff'
+
+gui
+    .addColor(debugObject, 'portalColorStart')
+    .onChange(() =&gt;
+    {
+        portalLightMaterial.uniforms.uColorStart.value.set(debugObject.portalColorStart)
+    })
+    
+gui
+    .addColor(debugObject, 'portalColorEnd')
+    .onChange(() =&gt;
+    {
+        portalLightMaterial.uniforms.uColorEnd.value.set(debugObject.portalColorEnd)
+    })</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/37/041.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You can now tweak the colors.</p>                                                                                                <p class="">But there is a catch. With some colors like deep blue to orange, you'll notice that you end up with yellow on the edges and we also lose the sharpness we had before:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/37/042.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">This is because the <code spellcheck="false">strength</code> is actually going below <code spellcheck="false">0.0</code> and above <code spellcheck="false">1.0</code> which results on the colors being extrapolated. It's not much of a problem with black and white, but it gets messy with some other colors.</p>                                                                                                <p class="">To fix that, we need to make sure that the value is clamped between <code spellcheck="false">0.0</code> and <code spellcheck="false">1.0</code> by using the <code spellcheck="false">clamp(...)</code> function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Clamp the value
+    strength = clamp(strength, 0.0, 1.0);
+
+    // ...
+}</code></pre>                                                                                                <p class="">Anyway, if you are using the model from the starter, you should probably stick with black and white.</p>                                                                                                <p class="">Don't forget to use the <code spellcheck="false">debugObject.portalColorStart</code> and <code spellcheck="false">debugObject.portalColorEnd</code> in the initial values of the uniforms:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">debugObject.portalColorStart = '#000000'
+debugObject.portalColorEnd = '#ffffff'
+
+// ...
+    
+const portalLightMaterial = new THREE.ShaderMaterial({
+    uniforms:
+    {
+        uColorStart: { value: new THREE.Color(debugObject.portalColorStart) },
+        uColorEnd: { value: new THREE.Color(debugObject.portalColorEnd) },
+        // ...
+    },
+    // ...
+})</code></pre>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Go further
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="5611">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:33:31</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="go-further">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#go-further"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="go-further"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">That's it for our portal scene. Now would be a good time to add more tweaks and maybe more details.</p>                                                                                                <p class="">You can obviously try to create your own scene from scratch using all the modeling and baking processes you have learnt. Take your time, make sure to have the proper geometries, and clean UV coordinates. Don't hesitate to share your result on Twitter or in the Discord server.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">What are React and React Three Fiber</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/what-are-react-and-react-three-fiber" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/37/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(136deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

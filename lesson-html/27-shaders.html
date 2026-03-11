@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>27. shaders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/code-structuring-for-bigger-projects"><div class="sibling-info"><div class="sibling-label">26.</div><div class="sibling-title">Code structuring for bigger projects</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">27.</div><h2 class="title">Shaders</h2><p class="difficulty">Difficulty <span class="value">
+                                Very hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/shader-patterns"><div class="sibling-info"><div class="sibling-label">28.</div><div class="sibling-title">Shader patterns</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/24/27-shaders.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/24/27-shaders-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/24" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">This lesson is probably the most anticipated one. We already talked about shaders, and that is the most demanding topic.</p>                                                                                <p class="">The funny thing is that we have been using them since the beginning. When we are creating Three.js built-in materials, those materials are composed of shaders. Everything showing up on the WebGL render is made possible because of shaders, but it's time to create them on our own.</p>                                                                                <p class="">We will start by explaining what shaders are and when to use them. Then we will create our own very simple shaders. We will, of course, cover the syntax of the shader language. And finally, we will do some exercises to practice classic situations.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    What is a shader
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="79">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:19</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="what-is-a-shader">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#what-is-a-shader"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="what-is-a-shader"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">A shader is, in fact, one of the main components of WebGL. If we had started WebGL without Three.js, it would have been one of the first things we would have to learn, and this is why native WebGL is so hard.</p>                                                                                <p class="">A shader is a program written in GLSL that is sent to the GPU. They are used to <strong>position each vertex of a geometry</strong> and to <strong>colorize each visible pixel of that geometry</strong>. The term "pixel" isn't accurate because each point in the render doesn't necessarily match each pixel of the screen and this is why we prefer to use the term "fragment" so don't be surprised if you see both terms.</p>                                                                                <p class="">Then we send a lot of data to the shader such as the vertices coordinates, the mesh transformation, information about the camera and its field of view, parameters like the color, the textures, the lights, the fog, etc. The GPU then processes all of this data following the shader instructions, and our geometry appears in the render.</p>                                                                                <p class="">There are two types of shaders, and we need both of them.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Vertex shader
+
+        
+                <span class="anchor js-anchor" data-slug="vertex-shader">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#vertex-shader"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="vertex-shader"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">The vertex shader's purpose is to position the vertices of the geometry. The idea is to send the vertices positions, the mesh transformations (like its position, rotation, and scale), the camera information (like its position, rotation, and field of view). Then, the GPU will follow the instructions in the vertex shader to process all of this information in order to project the vertices on a 2D space that will become our render —in other words, our canvas.</p>                                                                                <p class="">When using a vertex shader, its code will be applied on every vertex of the geometry. But some data like the vertex position will change between each vertex. This type of data —the one that changes between vertices— is called an <strong>attribute</strong>. But some data doesn't need to switch between each vertex like the position of the mesh. Yes, the location of the mesh will impact all the vertices, but in the same way. This type of data —the one that doesn't change between vertices— is called a <strong>uniform</strong>. We will get back to <strong>attributes</strong> and <strong>uniforms</strong> later.</p>                                                                                <p class="">The vertex shader happens first. Once the vertices are placed, the GPU knows what pixels of the geometry are visible and can proceed to the fragment shader.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Fragment shader
+
+        
+                <span class="anchor js-anchor" data-slug="fragment-shader">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fragment-shader"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fragment-shader"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">The fragment shader purpose is to color each visible fragment of the geometry.</p>                                                                                <p class="">The same fragment shader will be used for every visible fragment of the geometry. We can send data to it like a color by using <strong>uniforms</strong> —just like the vertex shader, or we can send data from the vertex shader to the fragment shader. We call this type of data —the one that comes from the vertex shader to the fragment shader— <strong>varying</strong>. We will get back to this later.</p>                                                                                <p class="">The most straightforward instruction in a fragment shader can be to color all the fragments with the same color. We get the equivalent of the <a href="https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial" target="_blank">MeshBasicMaterial</a> —if we had set only the <code spellcheck="false">color</code> property.</p>                                                                                <p class="">Or we can send more data to the shader, for instance, a light position. We can then color the fragments according to how much the face is in front of the light source. We would get the <a href="https://threejs.org/docs/index.html#api/en/materials/MeshPhongMaterial" target="_blank">MeshPhongMaterial</a> equivalent—if we had one light in the scene.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Summary
+
+        
+                <span class="anchor js-anchor" data-slug="summary">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#summary"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="summary"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">The <strong>vertex shader</strong> position the vertices on the render.</p>                                                                                <p class="">The <strong>fragment shader</strong> color each visible fragment (or pixel) of that geometry.</p>                                                                                <p class="">The <strong>fragment shader</strong> is executed after the <strong>vertex shader</strong>.</p>                                                                                <p class="">Data that changes between each vertices (like their position) is called <strong>attribute</strong> and can only be used in the <strong>vertex shader</strong>.</p>                                                                                <p class="">Data that doesn't change between vertices (like the mesh position or a color) is called <strong>uniform</strong> and can be use in both the <strong>vertex shader</strong> and the <strong>fragment shader</strong>.</p>                                                                                <p class="">We can send data from the <strong>vertex shader</strong> to the <strong>fragment shader</strong> using <strong>varying</strong>.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Why writing our own shaders
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1227">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">20:27</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="why-writing-our-own-shaders">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#why-writing-our-own-shaders"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="why-writing-our-own-shaders"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Three.js materials try to cover as many situations as possible, but they have limitations. If we want to break those limits, we have to write our own shaders.</p>                                                                                <p class="">It can also be for performance reasons. Materials like <a href="https://threejs.org/docs/index.html#api/en/materials/MeshStandardMaterial" target="_blank">MeshStandardMaterial</a> are very elaborate and involve a lot of code and calculations. If we write our own shader, we can keep the features and calculations to the minimum. We have more control over the performance.</p>                                                                                <p class="">Writing our own shader is also an excellent way to add post-process to our render, but we will see this in a dedicated lesson.</p>                                                                                <p class="">Once you master the shaders, they'll become a must in all your projects.</p>                                    
+                                                                                                        
+<h2 class="title has-anchor ">
+    
+    Create our first shaders with RawShaderMaterial
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1341">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">22:21</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="create-our-first-shaders-with-rawshadermaterial">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#create-our-first-shaders-with-rawshadermaterial"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="create-our-first-shaders-with-rawshadermaterial"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">To create our first shader, we need to create a particular material. This material can be a <a href="https://threejs.org/docs/index.html#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> or a <a href="https://threejs.org/docs/index.html#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a>. The difference between these two is that the <a href="https://threejs.org/docs/index.html#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> will have some code automatically added to the shader codes while the <a href="https://threejs.org/docs/index.html#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a>, as its name suggests, will have nothing.</p>                                                                                                <p class="">We will start with the <a href="https://threejs.org/docs/index.html#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a> to better understand what's happening.</p>                                                                                                <p class="">The starter contains a simple plane with a <a href="https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial" target="_blank">MeshBasicMaterial</a> on it.</p>                                                                                                <p class="">Replace that <a href="https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial" target="_blank">MeshBasicMaterial</a> with a <a href="https://threejs.org/docs/index.html#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial()</code></pre>                                                                                                <p class="">You should get an error.</p>                                                                                                <p class="">As we said earlier, we need to provide both the vertex and the fragment shader. You can do this with the <code spellcheck="false">vertexShader</code> and <code spellcheck="false">fragmentShader</code> properties:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: '',
+    fragmentShader: ''
+})</code></pre>                                                                                                <p class="">The problem with that technique is that simple quotes can contain only one line inside —double-quotes too. Our shaders —as simple as they are at the start, will be too long to be written on one line.</p>                                                                                                <p class="">A reliable solution is to use back quotes —also called backtick, acute or left quote. Most modern browsers support them. This technique is called <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Template_literals" target="_blank">template literals</a>, and we can use line breaks in it.</p>                                                                                                <p class="">The key or shortcut to write this character depends on your keyboard. Here's a thread on the subject to help you: <a href="https://superuser.com/questions/254076/how-do-i-type-the-tick-and-backtick-characters-on-windows/879277" target="_blank">https://superuser.com/questions/254076/how-do-i-type-the-tick-and-backtick-characters-on-windows/879277</a></p>                                                                                                <p class="">Once you've found the key, change your simple quotes with back quotes:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: ``,
+    fragmentShader: ``
+})</code></pre>                                                                                                <p class="">We can finally write our shaders. Just copy the code, we will explain everything later:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: `
+        uniform mat4 projectionMatrix;
+        uniform mat4 viewMatrix;
+        uniform mat4 modelMatrix;
+
+        attribute vec3 position;
+
+        void main()
+        {
+            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        precision mediump float;
+
+        void main()
+        {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    `
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should get a red plane. Congratulations, you might not yet understand what's written here, but it's your first shader and a good start for an incredible journey.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Separate the shaders in different files
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1773">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">29:33</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="separate-the-shaders-in-different-files">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#separate-the-shaders-in-different-files"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="separate-the-shaders-in-different-files"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Before we get into the code itself, let's try to improve the way we work. The back quotes are an excellent solution for small code, and we will use it in future lessons with shaders, but we are missing syntax coloration. Once we have multiple shaders with a lot of code in it, our script will become unbearable. Having a good and comfortable setup is essential.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Shader files
+
+        
+                <span class="anchor js-anchor" data-slug="shader-files">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#shader-files"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="shader-files"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are going to move the code into separate files. First, move the vertex shader code and the fragment shader codes respectively in <code spellcheck="false">/src/shaders/test/vertex.glsl</code> and <code spellcheck="false">/src/shaders/test/fragment.glsl</code>.</p>                                                                                                <p class="">Even if we will have only one shader in our project, it's a healthy habit to separate and organize our code as best as possible. Consequential projects can have dozens of custom shaders.</p>                                                                                                <p class="">Unless your code editor already supports glsl, the syntax coloration probably doesn't work for those two new files. To add the syntax coloration, if you are using VSCode, go to your plugins, search for <code spellcheck="false">shader</code>, and install the <code spellcheck="false">Shader languages support for VS Code</code> plugin. If you are using another code editor, look for compatible plugins and keep an eye on the popularity and the reviews.</p>                                                                                                <p class="">Once installed, you should have a nice syntax coloration on the <code spellcheck="false">.glsl</code> files. If not, try to restart your code editor.</p>                                                                                                <p class="">Syntax coloration is cool, but having a linter is even better. A linter will validate your code and find potential errors while you are writing it. It can be really useful to avoid basic mistakes without having to test the result on the browser.</p>                                                                                                <p class="">We won't use one in the following lessons because installing it can be hard but if you want to give it a try, I recommend using <a href="https://marketplace.visualstudio.com/items?itemName=dtoplak.vscode-glsllint" target="_blank">GLSL Lint</a> if you are using VSCode.</p>                                                                                                <ul class="">
+            <li>Install the <a href="https://marketplace.visualstudio.com/items?itemName=dtoplak.vscode-glsllint" target="_blank">GLSL Lint</a> extension on VSCode</li>
+            <li>Download and save the <a href="https://github.com/KhronosGroup/glslang/releases/tag/main-tot" target="_blank">GLSLang library</a> binary somewhere on your computer.</li>
+            <li>In the <a href="https://marketplace.visualstudio.com/items?itemName=dtoplak.vscode-glsllint" target="_blank">GLSL Lint</a> extension parameters, set the <code spellcheck="false">glslangValidatorPath</code> parameter to the path where you save the  <a href="https://github.com/KhronosGroup/glslang/releases/tag/main-tot" target="_blank">GLSLang library</a> <code spellcheck="false">glslangValidator</code> file.</li>
+            <li>Restart VSCode and fix potential security issues (especially on OSX)</li>
+    </ul>                                                                                                <p class="">A little bit too hard for this lesson, especially because the installation process depends on your OS and security settings, but also because the extension will trigger errors on incomplete shaders which is a problem because we are going to write partial shaders a little later in the lesson. It's up to you, but you can give it a try.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Import
+
+        
+                <span class="anchor js-anchor" data-slug="import">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#import"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="import"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Let's try to import the files into our script:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import testVertexShader from './shaders/test/vertex.glsl'
+import testFragmentShader from './shaders/test/fragment.glsl'</code></pre>                                                                                                <p class="">Unfortunately, we get an error because our project doesn’t know how to handle <code spellcheck="false">.glsl</code> files.</p>                                                                                                <p class="">The good news is that there are already solutions to add support to shaders in Vite:</p>                                                                                                <ul class="">
+            <li><a href="https://www.npmjs.com/package/vite-plugin-glsl" target="_blank">vite-plugin-glsl</a></li>
+            <li><a href="https://www.npmjs.com/package/vite-plugin-glslify" target="_blank">vite-plugin-glslify</a></li>
+    </ul>                                                                                                <p class="">But since we have the choice, which one should we go for?</p>                                                                                                <p class="">Right now, we just want to be able to import <code spellcheck="false">.glsl</code> files and both will do that perfectly. The difference is with more specific features and one of them being able to include shader files into other shader files.</p>                                                                                                <p class="">This gets handy in 3 situations:</p>                                                                                                <ul class="">
+            <li>When we have huge shaders and want to split it in smaller files</li>
+            <li>When we have the same chunk of code in multiple shaders and want to be able to change it from one file</li>
+            <li>When we want to use external shader chunks made by other developers</li>
+    </ul>                                                                                                <p class="">Both <a href="https://www.npmjs.com/package/vite-plugin-glsl" target="_blank">vite-plugin-glsl</a> and <a href="https://www.npmjs.com/package/vite-plugin-glslify" target="_blank">vite-plugin-glslify</a> can do that, but with a different syntax. GLSLIFY is kind of the standard way these days, but I found <a href="https://www.npmjs.com/package/vite-plugin-glsl" target="_blank">vite-plugin-glsl</a> easier to use, which is why we are going to go for it over <a href="https://www.npmjs.com/package/vite-plugin-glslify" target="_blank">vite-plugin-glslify</a>. Also note that the plugin is well maintained.</p>                                                                                                <p class="">Still, if at some points you need to implement <a href="https://www.npmjs.com/package/vite-plugin-glslify" target="_blank">vite-plugin-glslify</a>, the process is exactly the same and you should be able to do it on your own.</p>                                                                                                <p class="">To install <a href="https://www.npmjs.com/package/vite-plugin-glsl" target="_blank">vite-plugin-glsl</a>, in the terminal, close the server and run <code spellcheck="false">npm install vite-plugin-glsl</code>.</p>                                                                                                <p class="">Then go to the <code spellcheck="false">vite.config.js</code> file and, at the top, import <code spellcheck="false">glsl</code> from <code spellcheck="false">vite-plugin-glsl</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import glsl from 'vite-plugin-glsl'
+
+// ...</code></pre>                                                                                                <p class="">In the <code spellcheck="false">plugins</code> array, add a call to the <code spellcheck="false">glsl</code> function (don’t forget the <code spellcheck="false">;</code> after the <code spellcheck="false">restart(…)</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import glsl from 'vite-plugin-glsl'
+
+// ...
+
+export default {
+    // ...
+    plugins:
+    [
+        restart({ restart: [ '../static/**', ] }), // Restart server on static file change
+        glsl() // Handle shader files
+    ]
+}</code></pre>                                                                                                <p class="">And that’s all it takes to add plugins to Vite. Save the <code spellcheck="false">vite.config.js</code>, restart the server and the shaders should be imported properly.</p>                                                                                                <p class="">If you log <code spellcheck="false">testVertexShader</code> and <code spellcheck="false">testFragmentShader</code>, you'll get the shader codes as a plain string:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import testVertexShader from './shaders/test/vertex.glsl'
+import testFragmentShader from './shaders/test/fragment.glsl'
+
+console.log(testVertexShader)
+console.log(testFragmentShader)</code></pre>                                                                                                <p class="">Remove those logs and use both shaders in the <a href="https://threejs.org/docs/index.html#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: testVertexShader,
+    fragmentShader: testFragmentShader
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Properties
+
+        
+                <span class="anchor js-anchor" data-slug="properties">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#properties"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="properties"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Most of the common properties we've covered with other materials such as <code spellcheck="false">wireframe</code>, <code spellcheck="false">side</code>, <code spellcheck="false">transparent</code> or <code spellcheck="false">flatShading</code> are still available for the <a href="https://threejs.org/docs/index.html#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: testVertexShader,
+    fragmentShader: testFragmentShader,
+    wireframe: true
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">But properties like <code spellcheck="false">map</code>, <code spellcheck="false">alphaMap</code>, <code spellcheck="false">opacity</code>, <code spellcheck="false">color</code>, etc. won't work anymore because we need to write these features in the shaders ourselves.</p>                                                                                                <p class="">Comment or delete the wireframe line.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    GLSL
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2753">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">45:53</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="glsl">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#glsl"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="glsl"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The language used to code the shaders is called GLSL and stands for OpenGL Shading Language. It's close to C language. Let's learn the basics of its syntax.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Logging
+
+        
+                <span class="anchor js-anchor" data-slug="logging">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#logging"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="logging"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">There is no console and, thus, no way to log values. That is due to the code being executed for every vertex and every fragment. It would make no sense to log one value.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Indentation
+
+        
+                <span class="anchor js-anchor" data-slug="indentation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#indentation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="indentation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The indentation is not essential. You can indent as you like.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Semicolon
+
+        
+                <span class="anchor js-anchor" data-slug="semicolon">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#semicolon"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="semicolon"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The semicolon is required to end any instruction. Forgetting even one semicolon will probably result in a compilation error, and the whole material won't work.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Variables
+
+        
+                <span class="anchor js-anchor" data-slug="variables">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#variables"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="variables"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">It's a typed language, meaning that we must specify a variable's type, and we cannot assign any other type to that variable.</p>                                                                                                <p class="">To declare a variable, we must start by the type, followed by the name (usually in camelCase), then the <code spellcheck="false">=</code> sign, then the value, and end with a <code spellcheck="false">;</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float fooBar = 0.123;</code></pre>                                                                                                <p class="">There are multiple different types.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Float
+
+        
+                <span class="anchor js-anchor" data-slug="float">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#float"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="float"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Floats are decimals. They can be negative or positive. We must always provide the <code spellcheck="false">.</code> of the decimals even if the value is rounded:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float foo = - 0.123;
+float bar = 1.0;</code></pre>                                                                                                <p class="">We can do mathematic operations like <code spellcheck="false">+</code>, <code spellcheck="false">-</code>, <code spellcheck="false">*</code> and <code spellcheck="false">/</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float a = 1.0;
+float b = 2.0;
+float c = a / b;</code></pre>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Integer
+
+        
+                <span class="anchor js-anchor" data-slug="integer">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#integer"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="integer"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Integers work just like the floats, but without the decimals' <code spellcheck="false">.</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">int foo = 123;
+int bar = - 1;</code></pre>                                                                                                <p class="">We can also do mathematic operations:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">int a = 1;
+int b = 2;
+int c = a * b;</code></pre>                                                                                                <p class="">But we can't mix <code spellcheck="false">float</code> and <code spellcheck="false">int</code> in these operations:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float a = 1.0;
+int b = 2;
+float c = a * b;</code></pre>                                                                                                <p class="">But we can convert types on the fly:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float a = 1.0;
+int b = 2;
+float c = a * float(b);</code></pre>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Boolean
+
+        
+                <span class="anchor js-anchor" data-slug="boolean">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#boolean"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="boolean"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Booleans are just booleans:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">bool foo = true;
+bool bar = false;</code></pre>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Vector 2
+
+        
+                <span class="anchor js-anchor" data-slug="vector-2">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#vector-2"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="vector-2"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">This is where things get interesting. If we want to store values like 2 coordinates with <code spellcheck="false">x</code> and <code spellcheck="false">y</code> properties, we can use a <code spellcheck="false">vec2</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec2 foo = vec2(1.0, 2.0);</code></pre>                                                                                                <p class="">An empty <code spellcheck="false">vec2</code> will result in an error:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec2 foo = vec2();</code></pre>                                                                                                <p class="">We can change these properties after creating the <code spellcheck="false">vec2</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec2 foo = vec2(0.0);
+foo.x = 1.0;
+foo.y = 2.0;</code></pre>                                                                                                <p class="">Doing operations like multiplying a <code spellcheck="false">vec2</code> with a <code spellcheck="false">float</code> will operate both the <code spellcheck="false">x</code> and the <code spellcheck="false">y</code> properties:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec2 foo = vec2(1.0, 2.0);
+foo *= 2.0;</code></pre>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Vector 3
+
+        
+                <span class="anchor js-anchor" data-slug="vector-3">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#vector-3"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="vector-3"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class=""><code spellcheck="false">vec3</code> is just like <code spellcheck="false">vec2</code>, but with a third property named <code spellcheck="false">z</code>. It's very convenient when one needs 3D coordinates:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec3 foo = vec3(0.0);
+vec3 bar = vec3(1.0, 2.0, 3.0);
+bar.z = 4.0;</code></pre>                                                                                                <p class="">While we can use <code spellcheck="false">x</code>, <code spellcheck="false">y</code>, and <code spellcheck="false">z</code>, we can also work with <code spellcheck="false">r</code>, <code spellcheck="false">g</code>, and <code spellcheck="false">b</code>. This is just syntax sugar and the result is exactly the same. It's very effective when we use a <code spellcheck="false">vec3</code> to store colors:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec3 purpleColor = vec3(0.0);
+purpleColor.r = 0.5;
+purpleColor.b = 1.0;</code></pre>                                                                                                <p class="">A <code spellcheck="false">vec3</code> can also be partially created from a <code spellcheck="false">vec2</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec2 foo = vec2(1.0, 2.0);
+vec3 bar = vec3(foo, 3.0);</code></pre>                                                                                                <p class="">We can also take a part of the <code spellcheck="false">vec3</code> to generate a <code spellcheck="false">vec2</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec3 foo = vec3(1.0, 2.0, 3.0);
+vec2 bar = foo.xy;</code></pre>                                                                                                <p class="">Here, the <code spellcheck="false">bar</code> will be a <code spellcheck="false">vec2</code> with <code spellcheck="false">1.0</code>, and <code spellcheck="false">2.0</code> as values.</p>                                                                                                <p class="">This is called a <strong>swizzle</strong> and we can also use the properties in a different order:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec3 foo = vec3(1.0, 2.0, 3.0);
+vec2 bar = foo.yx;</code></pre>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Vector 4
+
+        
+                <span class="anchor js-anchor" data-slug="vector-4">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#vector-4"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="vector-4"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Finally, the <code spellcheck="false">vec4</code> works like it's two predecessors but with a fourth value named <code spellcheck="false">w</code> or <code spellcheck="false">a</code> —<code spellcheck="false">w</code> because there is no letter after <code spellcheck="false">z</code>  in the alphabet and <code spellcheck="false">a</code> for "alpha":</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">vec4 foo = vec4(1.0, 2.0, 3.0, 4.0);
+vec4 bar = vec4(foo.zw, vec2(5.0, 6.0));</code></pre>                                                                                                <p class="">There are other types of variables such as <code spellcheck="false">mat2</code>, <code spellcheck="false">mat3</code>, <code spellcheck="false">mat4</code>, or <code spellcheck="false">sampler2D</code>, but we will see those later.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Functions
+
+        
+                <span class="anchor js-anchor" data-slug="functions">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#functions"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="functions"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Just like in most programming languages, we can create and use functions.</p>                                                                                                <p class="">A function must start with the type of the value that will be returned:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float loremIpsum()
+{
+    float a = 1.0;
+    float b = 2.0;
+
+    return a + b;
+}</code></pre>                                                                                                <p class="">If the function isn't supposed to return anything, we set the type to <code spellcheck="false">void</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void justDoingStuff()
+{
+    float a = 1.0;
+    float b = 2.0;
+}</code></pre>                                                                                                <p class="">We can specify parameters, but we also have to provide their type:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float add(float a, float b)
+{
+    return a + b;
+}</code></pre>                                                                                                <p class="">This function is, as you can imagine, worthless.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Native function
+
+        
+                <span class="anchor js-anchor" data-slug="native-function">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#native-function"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="native-function"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">GLSL has many built-in classic functions such as <code spellcheck="false">sin</code>, <code spellcheck="false">cos</code>, <code spellcheck="false">max</code>, <code spellcheck="false">min</code>, <code spellcheck="false">pow</code>, <code spellcheck="false">exp</code>, <code spellcheck="false">mod</code>, <code spellcheck="false">clamp</code>, but also very practical functions like <code spellcheck="false">cross</code>, <code spellcheck="false">dot</code>, <code spellcheck="false">mix</code>, <code spellcheck="false">step</code>, <code spellcheck="false">smoothstep</code>, <code spellcheck="false">length</code>, <code spellcheck="false">distance</code>, <code spellcheck="false">reflect</code>, <code spellcheck="false">refract</code>, <code spellcheck="false">normalize</code>.</p>                                                                                                <p class="">Unluckily, there is no beginner-friendly documentation and, most of the time, we do naive searches on the web and usually end up on these three websites:</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Shaderific documentation
+
+        
+                <span class="anchor js-anchor" data-slug="shaderific-documentation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#shaderific-documentation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="shaderific-documentation"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class=""><a href="https://shaderific.com/glsl.html" target="_blank">https://shaderific.com/glsl.html</a></p>                                                                                                <p class="">Shaderific is an iOS application that lets you play with GLSL. The application is not something to care about, but the documentation isn't too bad.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Kronos Group OpenGL reference pages
+
+        
+                <span class="anchor js-anchor" data-slug="kronos-group-opengl-reference-pages">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#kronos-group-opengl-reference-pages"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="kronos-group-opengl-reference-pages"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class=""><a href="https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/indexflat.php" target="_blank">https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/indexflat.php</a></p>                                                                                                <p class="">This documentation deals with OpenGL, but most of the standard functions you'll see will be compatible with WebGL. Let's not forget that WebGL is just a JavaScript API to access OpenGL.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Book of shaders documentation
+
+        
+                <span class="anchor js-anchor" data-slug="book-of-shaders-documentation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#book-of-shaders-documentation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="book-of-shaders-documentation"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class=""><a href="https://thebookofshaders.com/" target="_blank">https://thebookofshaders.com/</a></p>                                                                                                <p class="">The book of shaders mainly focus on fragment shaders and has nothing to do with Three.js but it is a great resource to learn and it has its own <a href="https://thebookofshaders.com/glossary/" target="_blank">glossary</a>.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Understanding the vertex shader
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4035">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:07:15</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="understanding-the-vertex-shader">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#understanding-the-vertex-shader"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="understanding-the-vertex-shader"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Now that we know the GLSL syntax, let's try to understand what's in our shaders.</p>                                                                                                <p class="">Keep in mind that the vertex shader purpose is to position each vertex of the geometry on the render 2D space. In other words, the vertex shader will convert the 3D vertices coordinates to our 2D canvas coordinates.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Main function
+
+        
+                <span class="anchor js-anchor" data-slug="main-function">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#main-function"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="main-function"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+}</code></pre>                                                                                                <p class="">This <code spellcheck="false">main</code> function will be called automatically. As you can see, it doesn't return anything (<code spellcheck="false">void</code>).</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    gl_Position
+
+        
+                <span class="anchor js-anchor" data-slug="gl-position">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gl-position"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gl-position"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The <code spellcheck="false">gl_Position</code> variable already exists. We need to assign it. This variable will contain the position of the vertex on the screen. The goal of the instructions in the <code spellcheck="false">main</code> function is to set this variable properly.</p>                                                                                                <p class="">At the end of this instruction, we get a <code spellcheck="false">vec4</code>. This means that we can play with its <code spellcheck="false">x</code>, <code spellcheck="false">y</code>, <code spellcheck="false">z</code>, and <code spellcheck="false">w</code> properties directly on the <code spellcheck="false">gl_Position</code> variable:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+    gl_Position.x += 0.5;
+    gl_Position.y += 0.5;
+}</code></pre>                                                                                                <p class="">The plane should move on the top right corner. But be careful; we didn't truly move the plane in a 3D space as if we were playing with the <code spellcheck="false">position</code> in Three.js. We did move the projected plane on a 2D space.</p>                                                                                                <p class="">Think of it like a drawing you did on a paper. In this drawing, you have respected the perspective with vanishing points. Then, you move the whole picture to the top right corner of your desk. The perspective didn't change inside the drawing.</p>                                                                                                <p class="">You're probably wondering why we need 4 values for the <code spellcheck="false">gl_Position</code> if its final goal is to position vertices on a 2D space. It's actually because of the coordinates or not precisely in 2D space; they are in what we call <strong>clip space</strong> which needs 4 dimensions.</p>                                                                                                <p class="">A clip space is a space that goes in all 3 directions (<code spellcheck="false">x</code>, <code spellcheck="false">y</code> , and <code spellcheck="false">z</code>) in a range from <code spellcheck="false">-1</code> to <code spellcheck="false">+1</code>. It's like positioning everything in a 3D box. Anything out of this range will be "clipped" and disappear. The fourth value (<code spellcheck="false">w</code>) is responsible for the perspective.</p>                                                                                                <p class="">Fortunately, all of this is automatic, and, as a beginner, we don't need to master everything. It's just for the sake of knowing.</p>                                                                                                <p class="">But what are we exactly sending to this <code spellcheck="false">gl_Position</code>?</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Position attributes
+
+        
+                <span class="anchor js-anchor" data-slug="position-attributes">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#position-attributes"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="position-attributes"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">First, we retrieve the vertex <code spellcheck="false">position</code> with:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">attribute vec3 position;</code></pre>                                                                                                <p class="">Remember that the same code applies to every vertices of the geometry. <strong>Attributes</strong> are the only variable that will change between the vertices. The same vertex shader will be applied for each vertex and the <code spellcheck="false">position</code> attribute will contain the <code spellcheck="false">x</code>, <code spellcheck="false">y</code>, and <code spellcheck="false">z</code> coordinates of that specific vertex.</p>                                                                                                <p class="">Then, we convert this <code spellcheck="false">vec3</code> to a <code spellcheck="false">vec4</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gl_Position = /* ... */ vec4(position, 1.0);</code></pre>                                                                                                <p class="">This is because the following matrices and the <code spellcheck="false">gl_Position</code> need to use <code spellcheck="false">vec4</code> as we saw earlier.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Matrices uniforms
+
+        
+                <span class="anchor js-anchor" data-slug="matrices-uniforms">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#matrices-uniforms"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="matrices-uniforms"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Each matrix will transform the <code spellcheck="false">position</code> until we get the final clip space coordinates.</p>                                                                                                <p class="">There are 3 matrices in our code, and because their values are the same for all the vertices of the geometry, we retrieve them by using <strong>uniforms</strong>.</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;</code></pre>                                                                                                <p class="">Each matrix will do a part of the transformation:</p>                                                                                                <ul class="">
+            <li>The <code spellcheck="false">modelMatrix</code> will apply all transformations relative to the <a href="https://threejs.org/docs/#api/en/objects/Mesh" target="_blank">Mesh</a>. If we scale, rotate or move the <a href="https://threejs.org/docs/#api/en/objects/Mesh" target="_blank">Mesh</a>, these transformations will be contained in the <code spellcheck="false">modelMatrix</code> and applied to the <code spellcheck="false">position</code>.</li>
+            <li>The <code spellcheck="false">viewMatrix</code> will apply transformations relative to the camera. If we rotate the camera to the left, the vertices should be on the right. If we move the camera in direction of the <a href="https://threejs.org/docs/#api/en/objects/Mesh" target="_blank">Mesh</a>, the vertices should get bigger, etc.</li>
+            <li>The <code spellcheck="false">projectionMatrix</code> will finally transform our coordinates into the final clip space coordinates.</li>
+    </ul>                                                                                                <p class="">If you want to find out more about those matrices and coordinates, here's a good article: <a href="https://learnopengl.com/Getting-started/Coordinate-Systems" target="_blank">https://learnopengl.com/Getting-started/Coordinate-Systems</a>.</p>                                                                                                <p class="">To apply a matrix, we multiply it. If want to apply a <code spellcheck="false">mat4</code> to a variable, this variable has to be a <code spellcheck="false">vec4</code>. We can also multiply matrices with other matrices:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);</code></pre>                                                                                                <p class="">There is actually a shorter version where the <code spellcheck="false">viewMatrix</code> and the <code spellcheck="false">modelMatrix</code> are combined into a <code spellcheck="false">modelViewMatrix</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform mat4 projectionMatrix;
+uniform mat4 modelViewMatrix;
+
+attribute vec3 position;
+
+void main()
+{
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}</code></pre>                                                                                                <p class="">This is shorter, but we have less control over each step.</p>                                                                                                <p class="">We will actually make our code even longer to have a better understanding and more control on the position:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+
+attribute vec3 position;
+
+void main()
+{
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+    
+    gl_Position = projectedPosition;
+}</code></pre>                                                                                                <p class="">Those changes have the exact same result but we can now move the whole model just by tweaking the values of the <code spellcheck="false">modelPosition</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    modelPosition.y += 1.0;
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The whole plane should appear higher.</p>                                                                                                <p class="">Or we can do cooler things such as transforming our plane wave:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    modelPosition.z += sin(modelPosition.x * 10.0) * 0.1;
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">We changed the <code spellcheck="false">z</code> by using the <code spellcheck="false">x</code> coordinate through a <code spellcheck="false">sin(...)</code> function. Good luck getting this result with Three.js built-in materials.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Understanding the fragment shader
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4993">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:23:13</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="understanding-the-fragment-shader">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#understanding-the-fragment-shader"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="understanding-the-fragment-shader"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The fragment shader code will be applied to every visible fragment of the geometry. That is why the fragment shader comes after the vertex shader.</p>                                                                                                <p class="">The code is more manageable than the vertex shader.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Main function
+
+        
+                <span class="anchor js-anchor" data-slug="main-function-1">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#main-function-1"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="main-function-1"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Again, we face the <code spellcheck="false">main</code> function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+}</code></pre>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Precision
+
+        
+                <span class="anchor js-anchor" data-slug="precision">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#precision"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="precision"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We also have an instruction at the top of the code:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">precision mediump float;</code></pre>                                                                                                <p class="">This instruction lets us decide how precise can a <code spellcheck="false">float</code> be. There are different possible values:</p>                                                                                                <ul class="">
+            <li><code spellcheck="false">highp</code></li>
+            <li><code spellcheck="false">mediump</code></li>
+            <li><code spellcheck="false">lowp</code></li>
+    </ul>                                                                                                <p class=""><code spellcheck="false">highp</code> can have performance hit and might not even work on some devices. <code spellcheck="false">lowp</code> can create bugs by the lack of precision. We ordinarily use <code spellcheck="false">mediump</code>. We also could have set the precision for the vertex shader but it's not required.</p>                                                                                                <p class="">This part is automatically handled when we are using <a href="https://threejs.org/docs/index.html#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> instead of <a href="https://threejs.org/docs/index.html#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    gl_FragColor
+
+        
+                <span class="anchor js-anchor" data-slug="gl-fragcolor">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gl-fragcolor"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gl-fragcolor"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The <code spellcheck="false">gl_FragColor</code> is like the <code spellcheck="false">gl_Position</code> but for the color. It's already declared, and we need to assign it in the <code spellcheck="false">main</code> function.</p>                                                                                                <p class="">It's a <code spellcheck="false">vec4</code> with the first three values being the red, green, and blue channels (<code spellcheck="false">r</code>, <code spellcheck="false">g</code>, <code spellcheck="false">b</code>) and the fourth value being the alpha (<code spellcheck="false">a</code>):</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gl_FragColor = vec4(0.5, 0.0, 1.0, 1.0);</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">This code will result on a purple color for the whole geometry.</p>                                                                                                <p class="">Each property of <code spellcheck="false">gl_FragColor</code> goes from <code spellcheck="false">0.0</code> to <code spellcheck="false">1.0</code>. We can go beyond those values with no error, but it won't help us.</p>                                                                                                <p class="">If we want to set an alpha below <code spellcheck="false">1.0</code>, we also need to set the <code spellcheck="false">transparent</code> property to <code spellcheck="false">true</code> in the <a href="https://threejs.org/docs/index.html#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: testVertexShader,
+    fragmentShader: testFragmentShader,
+    transparent: true
+})</code></pre>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Attributes
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="5229">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:27:09</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="attributes">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#attributes"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="attributes"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Attributes are values that change between each vertex. We already have one attribute named <code spellcheck="false">position</code> that contains a <code spellcheck="false">vec3</code> of the coordinates of each vertex.</p>                                                                                                <p class="">We can add our own attributes directly to the <a href="https://threejs.org/docs/#api/en/core/BufferGeometry" target="_blank">BufferGeometry</a> as we did during the Geometries lesson.</p>                                                                                                <p class="">We will add a random value for each vertex and move that vertex on the <code spellcheck="false">z</code> axis according to that value for this lesson.</p>                                                                                                <p class="">Let's get back to the JavaScript and create a <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Float32Array" target="_blank">Float32Array</a> of the right size right after creating the <code spellcheck="false">geometry</code>. To know how much vertices we have in the geometry, we can use the already existing <code spellcheck="false">position</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const count = geometry.attributes.position.count
+const randoms = new Float32Array(count)</code></pre>                                                                                                <p class="">Then we fill this array with random values:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; count; i++)
+{
+    randoms[i] = Math.random()
+}</code></pre>                                                                                                <p class="">Finally, we use that array in a <a href="https://threejs.org/docs/#api/en/core/BufferAttribute" target="_blank">BufferAttribute</a> and add it to our geometry attributes:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">geometry.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1))</code></pre>                                                                                                <p class="">The first parameter of <code spellcheck="false">setAttribute(...)</code> is the name of the attribute. That is the name we will use in the shader. We can choose any name but it's good practice to prefix with <code spellcheck="false">a</code> for "attribute".</p>                                                                                                <p class="">The first parameter of <code spellcheck="false">BufferAttribute</code> is the data array and the second parameter is how many values compose one attribute. If we were to send a position, we would use <code spellcheck="false">3</code> because positions are composed of 3 values (<code spellcheck="false">x</code>, <code spellcheck="false">y</code> and <code spellcheck="false">z</code>). But here, it's just 1 random value per vertex so we use <code spellcheck="false">1</code>.</p>                                                                                                <p class="">We can now retrieve this attribute in the vertex shader and use it to move the vertices:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+attribute float aRandom;
+
+void main()
+{
+    // ...
+    modelPosition.z += aRandom * 0.1;
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Now you get a plane composed of random spikes.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Varyings
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="5577">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:32:57</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="varyings">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#varyings"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="varyings"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We now want to color the fragments also with the <code spellcheck="false">aRandom</code> attribute.</p>                                                                                                <p class="">Unfortunately, we cannot use attributes directly in the fragment shader.</p>                                                                                                <p class="">Fortunately, there is a way of sending data from the vertex shader to the fragment shader called <code spellcheck="false">varyings</code>.</p>                                                                                                <p class="">We have to do it on both the vertex and the fragment shader.</p>                                                                                                <p class="">In the vertex shader, we need to create the varying before the <code spellcheck="false">main</code> function. We will call our varying <code spellcheck="false">vRandom</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+varying float vRandom;
+
+void main()
+{
+    // ...</code></pre>                                                                                                <p class="">You can call your varying as you want but I recommend prefixing with a <code spellcheck="false">v</code> to distinguish them easily.</p>                                                                                                <p class="">Then, we update the varying value in the <code spellcheck="false">main</code> function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">varying float vRandom;
+
+void main()
+{
+    // ...
+
+    vRandom = aRandom;
+}</code></pre>                                                                                                <p class="">Finally, we get the varying value in the fragment shader with the same declaration, and we use it as we want in the <code spellcheck="false">main</code> function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">precision mediump float;
+
+varying float vRandom;
+
+void main()
+{
+    gl_FragColor = vec4(0.5, vRandom, 1.0, 1.0);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You now obtain a striking looking shape with colored spikes on it.</p>                                                                                                <p class="">One interesting thing with varyings is that the values between the vertices are <strong>interpolated</strong>. If the GPU is drawing a fragment right between two vertices —one having a varying of <code spellcheck="false">1.0</code> and the other having a varying of <code spellcheck="false">0.0</code>—the fragment value will be <code spellcheck="false">0.5</code>.</p>                                                                                                <p class="">Let's remove or comment the elevation part and the varying, so we get back to our purple plane.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">We will use attributes later on.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Uniforms
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="5860">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:37:40</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="uniforms">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#uniforms"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="uniforms"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Uniforms are a way to send data from the JavaScript to the shader.</p>                                                                                                <p class="">That can be valuable if we want to use the same shader but with different parameters, and it's also the occasion to have parameters that can change during the experience.</p>                                                                                                <p class="">We can use uniforms with both vertex and fragment shaders, and the data will be the same for every vertex and every fragment. We already have uniforms in our code with <code spellcheck="false">projectionMatrix</code>, <code spellcheck="false">viewMatrix</code>, and <code spellcheck="false">modelMatrix</code> but we didn't create these. Three.js did.</p>                                                                                                <p class="">Let's create our own uniforms.</p>                                                                                                <p class="">To add uniforms to our <code spellcheck="false">material</code>, use the <code spellcheck="false">uniforms</code> property. We are going to make our plane wave and we want to control the waves frequency:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: testVertexShader,
+    fragmentShader: testFragmentShader,
+    uniforms:
+    {
+        frequency: { value: 10 }
+    }
+})</code></pre>                                                                                                <p class="">Here, the name of the uniform we chose is <code spellcheck="false">frequency</code>. While it's not mandatory, it's considered a good practice to prefix with the letter <code spellcheck="false">u</code> to distinguish "uniforms" from other data.</p>                                                                                                <p class="">Change the name of the uniform to <code spellcheck="false">uFrequency</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: testVertexShader,
+    fragmentShader: testFragmentShader,
+    uniforms:
+    {
+        uFrequency: { value: 10 }
+    }
+})</code></pre>                                                                                                <p class="">If you're looking at other tutorials or examples, you might see uniforms being declared like this <code spellcheck="false">uFrequency: { value: 10, type: 'float' }</code>. There was a time when we had to specify the type but it's deprecated now.</p>                                                                                                <p class="">We can now retrieve the value in our shader code and use it in our <code spellcheck="false">main</code> function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+uniform float uFrequency;
+
+attribute vec3 position;
+
+void main()
+{
+    // ...
+    modelPosition.z += sin(modelPosition.x * uFrequency) * 0.1;
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/009.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The result is the same, but we can now control the frequency from the JavaScript.</p>                                                                                                <p class="">Let's change our frequency to a <code spellcheck="false">vec2</code> to control waves horizontally and vertically. We simply use a Three.js <a href="https://threejs.org/docs/#api/en/math/Vector2" target="_blank">Vector2</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: testVertexShader,
+    fragmentShader: testFragmentShader,
+    uniforms:
+    {
+        uFrequency: { value: new THREE.Vector2(10, 5) }
+    }
+})</code></pre>                                                                                                <p class="">In our shader, we change the <code spellcheck="false">float</code> to <code spellcheck="false">vec2</code>, and we apply the displacement on the <code spellcheck="false">z</code> axis by using the <code spellcheck="false">y</code> axis too:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+uniform vec2 uFrequency;
+
+// ...
+
+void main()
+{
+    // ...
+    modelPosition.z += sin(modelPosition.x * uFrequency.x) * 0.1;
+    modelPosition.z += sin(modelPosition.y * uFrequency.y) * 0.1;
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/010.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Take your time on this one. It's easy to make mistakes.</p>                                                                                                <p class="">Because those values are now controlled in the JavaScript, we can add them to our lil-gui:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui.add(material.uniforms.uFrequency.value, 'x').min(0).max(20).step(0.01).name('frequencyX')
+gui.add(material.uniforms.uFrequency.value, 'y').min(0).max(20).step(0.01).name('frequencyY')</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/24/011.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Let's add a new uniform to animate our plane like a flag in the wind. We send a time value to the shader by using a <strong>uniform</strong> and we use this value inside the <code spellcheck="false">sin(...)</code> function. First, update the material to add the <code spellcheck="false">uTime</code> uniform:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: testVertexShader,
+    fragmentShader: testFragmentShader,
+    uniforms:
+    {
+        uFrequency: { value: new THREE.Vector2(10, 5) },
+        uTime: { value: 0 }
+    }
+})</code></pre>                                                                                                <p class="">Then, update this <code spellcheck="false">uTime</code> uniform in the <code spellcheck="false">tick</code> function. To do so, use the <code spellcheck="false">getElapsedTime</code> function from the <a href="https://threejs.org/docs/#api/en/core/Clock" target="_blank">Clock</a> to know how much time passed:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    const elapsedTime = clock.getElapsedTime()
+
+    // Update material
+    material.uniforms.uTime.value = elapsedTime
+
+    // ...
+}</code></pre>                                                                                                <p class="">Finally, we get the uniform value in our vertex shader, and we use it in the two <code spellcheck="false">sin(...)</code> functions:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+uniform float uTime;
+
+// ...
+
+void main()
+{
+    // ...
+    modelPosition.z += sin(modelPosition.x * uFrequency.x + uTime) * 0.1;
+    modelPosition.z += sin(modelPosition.y * uFrequency.y + uTime) * 0.1;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/24/012.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You should see the flag wave as if it was flying the wind.</p>                                                                                                <p class="">Let's invert the direction by using a <code spellcheck="false">-</code> before the <code spellcheck="false">uTime</code> instead of a <code spellcheck="false">+</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">modelPosition.z += sin(modelPosition.x * uFrequency.x - uTime) * 0.1;
+    modelPosition.z += sin(modelPosition.y * uFrequency.y - uTime) * 0.1;</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/24/013.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Be careful with <code spellcheck="false">uTime</code>: if we were to use native JavaScript solution like <code spellcheck="false">Date.now()</code>, it wouldn't work. That is due to <code spellcheck="false">Date.now()</code> returning the number of milliseconds spent since January 1st, 1970 and this value is too big for a shader. To put it in a shell, remember that we cannot send uniform values too big or too small.</p>                                                                                                <p class="">Don't forget that this is still a plane and we can transform the <a href="https://threejs.org/docs/#api/en/objects/Mesh" target="_blank">Mesh</a> as we used to. Let's give our plane a flag shape.</p>                                                                                                <p class="">We could do it in the shader by multiplying the <code spellcheck="false">modelPosition.y</code> value but don't forget that you can still change the <code spellcheck="false">position</code>, <code spellcheck="false">scale</code> and <code spellcheck="false">rotation</code> directly on the <code spellcheck="false">mesh</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const mesh = new THREE.Mesh(geometry, material)
+mesh.scale.y = 2 / 3
+scene.add(mesh)</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/24/014.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Uniforms are also available in the fragment shader. Let's add a new uniform to control the color. For a color value, we can use a Three.js a <a href="https://threejs.org/docs/#api/en/math/Color" target="_blank">Color</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    vertexShader: testVertexShader,
+    fragmentShader: testFragmentShader,
+    uniforms:
+    {
+        uFrequency: { value: new THREE.Vector2(10, 5) },
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color('orange') }
+    }
+})</code></pre>                                                                                                <p class="">Then, in our fragment shader, we retrieve the value, and we use it inside our <code spellcheck="false">gl_FragColor</code> <code spellcheck="false">vec4</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">precision mediump float;
+
+uniform vec3 uColor;
+
+void main()
+{
+    gl_FragColor = vec4(uColor, 1.0);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/015.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The flag should now be orange.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Textures
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="6879">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:54:39</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="textures">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#textures"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="textures"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Textures are a little harder, but we almost have everything we need.</p>                                                                                                <p class="">First, we have to load a texture as we did in previous lessons. We already have a flag texture in the <code spellcheck="false">/static/textures/</code> folder and we can use the <code spellcheck="false">textureLoader</code> already available in the JavaScript starter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const flagTexture = textureLoader.load('/textures/flag-french.jpg')</code></pre>                                                                                                <p class="">Then we can send the texture as a uniform. We can call it <code spellcheck="false">uTexture</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.RawShaderMaterial({
+    // ...
+    uniforms:
+    {
+        // ...
+        uTexture: { value: flagTexture }
+    }
+})</code></pre>                                                                                                <p class="">While it's tempting to send it to the fragment shader immediately, we have a problem. To take fragment colors from a texture and apply them in the fragment shader, we must use the <code spellcheck="false">texture2D(...)</code> function. The first parameter of <code spellcheck="false">texture2D(...)</code> is the texture (easy, it's our <code spellcheck="false">uTexture</code>), but the second parameter consists of the coordinates of where to pick the color on that texture, and we don't have these coordinates yet.</p>                                                                                                <p class="">That information should sound familiar. We are looking for coordinates that should help us project a texture on a geometry. We are talking about UV coordinates.</p>                                                                                                <p class="">The <a href="https://threejs.org/docs/index.html#api/en/geometries/PlaneGeometry" target="_blank">PlaneGeometry</a> automatically generates these coordinates, and we can see that if we log <code spellcheck="false">geometry.attributes.uv</code>.</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">console.log(geometry.attributes.uv)</code></pre>                                                                                                <p class="">Because it's an attribute, we can retrieve it in the vertex shader:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">attribute vec2 uv;</code></pre>                                                                                                <p class="">Still, we need those coordinates in the fragment shader. To send data from the vertex shader to the fragment shader, we need to create a <code spellcheck="false">varying</code>. We are going to call that varying <code spellcheck="false">vUv</code> and update its value in the <code spellcheck="false">main</code> function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+attribute vec2 uv;
+
+varying vec2 vUv;
+
+void main()
+{
+    // ...
+
+    vUv = uv;
+}</code></pre>                                                                                                <p class="">We can now retrieve the varying <code spellcheck="false">vUv</code> in the fragment shader, retrieve the uniform <code spellcheck="false">uTexture</code> and eventually get the fragment color with <code spellcheck="false">texture2D(...)</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">precision mediump float;
+
+uniform vec3 uColor;
+uniform sampler2D uTexture;
+
+varying vec2 vUv;
+
+void main()
+{
+    vec4 textureColor = texture2D(uTexture, vUv);
+    gl_FragColor = textureColor;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/016.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The output of <code spellcheck="false">texture2D(...)</code> is a <code spellcheck="false">vec4</code> because it contains <code spellcheck="false">r</code>, <code spellcheck="false">g</code>, <code spellcheck="false">b</code>,and <code spellcheck="false">a</code> —even if our texture has no alpha variation.</p>                                                                                                <p class="">You should get a nice looking flag.</p>                                                                                                <p class="">Again, take your time. Doing mistakes here is easy.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Color variations
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="7400">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">02:03:20</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="color-variations">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#color-variations"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="color-variations"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Our flag color doesn't vary much. It would be great to have a brightness variation as if there are shadows.</p>                                                                                                <p class="">The technique we are going to use isn't physically accurate, but it should do the trick.</p>                                                                                                <p class="">First, in the vertex shader, we are going to store the wind elevation in a variable:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    float elevation = sin(modelPosition.x * uFrequency.x - uTime) * 0.1;
+    elevation += sin(modelPosition.y * uFrequency.y - uTime) * 0.1;
+    
+    modelPosition.z += elevation;
+
+    // ...
+}</code></pre>                                                                                                <p class="">Then, we send the elevation to the fragment by using a varying:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+varying float vElevation;
+
+void main()
+{
+    // ...
+
+    vElevation = elevation;
+}</code></pre>                                                                                                <p class="">Finally, we retrieve the <code spellcheck="false">vElevation</code> varying in our fragment shader, and use it to change the <code spellcheck="false">r</code>, <code spellcheck="false">g</code>, and <code spellcheck="false">b</code> properties of our <code spellcheck="false">textureColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+varying float vElevation;
+
+void main()
+{
+    vec4 textureColor = texture2D(uTexture, vUv);
+    textureColor.rgb *= vElevation * 2.0 + 0.5;
+    gl_FragColor = textureColor;
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/24/017.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You should see brightness variations on the flag as if we had light and shadows. It's a cheap technique, but it works.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    ShaderMaterial
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="7710">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">02:08:30</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="shadermaterial">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#shadermaterial"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="shadermaterial"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Until now, we have used <a href="https://threejs.org/docs/#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a>. The <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> works just the same, but with pre-built uniforms and attributes prepended in the shader codes. The precision will also be automatically set.</p>                                                                                                <p class="">To use it, simply replace your <a href="https://threejs.org/docs/#api/en/materials/RawShaderMaterial" target="_blank">RawShaderMaterial</a> by <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    // ...</code></pre>                                                                                                <p class="">Then remove the following <code spellcheck="false">uniform</code> and <code spellcheck="false">attribute</code> and <code spellcheck="false">precision</code> in both shaders:</p>                                                                                                <ul class="">
+            <li><code spellcheck="false">uniform mat4 projectionMatrix;</code></li>
+            <li><code spellcheck="false">uniform mat4 viewMatrix;</code></li>
+            <li><code spellcheck="false">uniform mat4 modelMatrix;</code></li>
+            <li><code spellcheck="false">attribute vec3 position;</code></li>
+            <li><code spellcheck="false">attribute vec2 uv;</code></li>
+            <li><code spellcheck="false">precision mediump float;</code></li>
+    </ul>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">uniform vec2 uFrequency;
+uniform float uTime;
+
+attribute float aRandom;
+
+varying float vElevation;
+varying vec2 vUv;
+
+void main()
+{
+    // ...
+}</code></pre>                                                                                                <p class="">The shader should work just like before because the <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> will add these automatically.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Debugging
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="7828">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">02:10:28</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="debugging">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#debugging"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="debugging"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Debugging a shader is hard. We cannot log data as in JavaScript because it's the GPU that execute the shader code and it does it for every vertices and every fragment.</p>                                                                                                <p class="">Favorably for us, Three.js is doing a great job passing on the errors at compilation.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Finding the error
+
+        
+                <span class="anchor js-anchor" data-slug="finding-the-error">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#finding-the-error"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="finding-the-error"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">If we forget a semicolon, Three.js will log the full shader and tell us the line where the error occurred with a short description like <code spellcheck="false">ERROR: 0:71: 'vec4' : syntax error</code>.</p>                                                                                                <p class="">This message means that the error occurred at line <code spellcheck="false">71</code>, but the problem might come from the line right before. Take your time, read the error, and you'll find what is wrong.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Read the shader
+
+        
+                <span class="anchor js-anchor" data-slug="read-the-shader">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#read-the-shader"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="read-the-shader"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Having the whole shader code logged is also an excellent way to see what Three.js prepends to our shaders when using a <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Test values
+
+        
+                <span class="anchor js-anchor" data-slug="test-values">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#test-values"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="test-values"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Another solution to debug values is to use them in the <code spellcheck="false">gl_FragColor</code>. That isn't precise because all we can see are color variations, but sometimes it's enough.</p>                                                                                                <p class="">If the values are in the vertex shader, we can use a varying to pass it on to the fragment shader.</p>                                                                                                <p class="">Let's say we want to see what the <code spellcheck="false">uv</code> looks like. We can send it to the fragment with a varying —already done with <code spellcheck="false">vUv</code>— and use it in the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gl_FragColor = vec4(vUv, 1.0, 1.0);</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/24/018.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Go further
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="8087">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">02:14:47</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="go-further">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#go-further"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="go-further"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Once we understand the basics of the shaders, it's all about practice. Your first shaders will take countless hours, but you'll learn techniques that you'll frequently use.</p>                                                                                                <p class="">In the next lessons, we will practice those techniques and even learn how to draw shapes in shaders, but if you want to go further, here are some links:</p>                                                                                                <ul class="">
+            <li>The Book of Shaders: <a href="https://thebookofshaders.com/" target="_blank">https://thebookofshaders.com/</a></li>
+            <li>ShaderToy: <a href="https://www.shadertoy.com/" target="_blank">https://www.shadertoy.com/</a></li>
+            <li>The Art of Code Youtube Channel: <a href="https://www.youtube.com/channel/UCcAlTqd9zID6aNX3TzwxJXg" target="_blank">https://www.youtube.com/channel/UCcAlTqd9zID6aNX3TzwxJXg</a></li>
+    </ul>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Shader patterns</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/shader-patterns" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/24/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(211deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>01. introduction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"></div><div class="current-lesson"><div class="label">01.</div><h2 class="title">Introduction</h2><p class="difficulty">Difficulty <span class="value">
+                                Easy
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/what-is-webgl-and-why-use-three-js"><div class="sibling-info"><div class="sibling-label">02.</div><div class="sibling-title">What is WebGL and why use Three.js</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Hello, and welcome. This lesson isn't truly a lesson. It's more of a presentation to introduce myself and present what's coming on your journey.</p>                                                                                <p class="">The main reason for this lengthy introduction, is the fact that this course is quite comprehensive and that you need to be well-prepared.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Not yet a student?
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="18">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:18</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="not-yet-a-student">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#not-yet-a-student"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="not-yet-a-student"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Some of the lessons (like this one) are free and the beginning of most lessons is also available for free. I did this so that you can catch a glimpse of the course and what’s in it.</p>                                                                                <p class="">If you’ve already registered to Three.js Journey, ignore this message, because you have access to every lesson. But if you aren’t a Three.js Journey student yet, please have a look. See for yourself and, if you like the content, join us.</p>                                                                                <p class="">Now let me introduce myself.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Who am I?
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="41">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:41</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="who-am-i">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#who-am-i"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="who-am-i"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">My name is Bruno Simon. I'm a French creative developer, as you can probably hear in the video.</p>                                                                                <p class="">Right now, I'm a freelance developer and work with clients from around the world. I used to be the lead developer for Immersive Garden, a French creative studio. And for many years, I've been a professor for multiple French post-grad and Master's degrees. I teach web development to beginners as well as WebGL with Three.js to more advanced students.</p>                                                                                <p class="">My favorite activity is, as you can guess, WebGL and particularly with Three.js. I've been using it for many years on various projects, and, in 2019, I launched my portfolio (<a href="https://bruno-simon.com/" target="_blank">https://bruno-simon.com</a>). I initially meant it to showcase some techniques for my students, but I enjoyed doing it, so I kept improving it, and people seemed to appreciate it.</p>                                                                                <p class="">Here is a selection of client projects I worked on:</p>                                                                                <ul class="">
+            <li><a href="https://bruno-simon.com/" target="_blank">https://bruno-simon.com</a></li>
+            <li><a href="https://threejs-journey.com/" target="_blank">https://threejs-journey.com</a></li>
+            <li><a href="https://www.fromscout.com/" target="_blank">https://www.fromscout.com</a></li>
+            <li><a href="https://orano.imm-g-prod.com/experience/innovation/en" target="_blank">https://orano.imm-g-prod.com/experience/innovation/en</a> (original website isn’t live anymore)</li>
+            <li><a href="https://prior.co.jp/discover/en" target="_blank">https://prior.co.jp/discover/en</a></li>
+            <li><a href="https://madbox.io/" target="_blank">https://madbox.io</a></li>
+            <li><a href="https://chartogne-taillet.com/en" target="_blank">https://chartogne-taillet.com/en</a></li>
+    </ul>                                                                                <p class="">And some experiments I did just for fun:</p>                                                                                <ul class="">
+            <li><a href="https://my-room-in-3d.vercel.app/" target="_blank">https://my-room-in-3d.vercel.app</a></li>
+            <li><a href="https://organic-sphere.vercel.app/" target="_blank">https://organic-sphere.vercel.app</a></li>
+            <li><a href="https://experiment-holographic-terrain.vercel.app/" target="_blank">https://experiment-holographic-terrain.vercel.app</a></li>
+            <li><a href="https://experiment-woodkid-volcano-robot.vercel.app/" target="_blank">https://experiment-woodkid-volcano-robot.vercel.app</a></li>
+            <li><a href="https://infinite-world.vercel.app/" target="_blank">https://infinite-world.vercel.app/</a></li>
+            <li><a href="https://awwwards-2022-workshop.vercel.app/" target="_blank">https://awwwards-2022-workshop.vercel.app</a></li>
+    </ul>                                                                                
+<h2 class="title has-anchor ">
+    
+    Why this course?
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="555">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">09:15</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="why-this-course">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#why-this-course"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="why-this-course"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">When I started learning Three.js, I didn't have many resources. The library was flourishing, but it was without a doubt new, and there appeared to be considerable gaps in the documentation. At that time, we had to push through and dig into the code and examples, find threads about frequent problems, and keep trying until it worked.</p>                                                                                <p class="">Nowadays, the documentation is excellent. We have pretty decent tutorials and the library is stable, even though it's still evolving thanks to the community. Yet, an ultimate course that takes you by the hand was still missing. It would help if you had guidance to fully understand this subject and get enough experience to do your projects without struggling or getting lost.</p>                                                                                <p class="">After I launched my portfolio, many people asked me if I could tutor them or where to learn the techniques I use. I had in-depth knowledge of Three.js and I knew how to teach. When I got all those requests, I figured it was time to build that online course for everyone to explore.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    What will you learn?
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="654">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">10:54</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="what-will-you-learn">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#what-will-you-learn"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="what-will-you-learn"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Three.js is vast, and you can do an infinite number of things with it. That explains why the course is so long.</p>                                                                                <p class="">The content is separated into chapters and is intended for absolute beginners. If you know nothing about WebGL and Three.js but want to create cool 3D websites, you’ve come to the right place.</p>                                                                                <p class="">Some of you might be tempted to jump straight to specific chapters. Yes, I’m talking to you, you React developer! If you are in a hurry or just eager to learn advanced topics, be my guest and try. Still, my recommendation is to learn the lessons one by one in order. Anyway, if it’s too hard, you can still go back to a previous chapter.</p>                                                                                <p class="">As I’ve mentioned earlier, the course is separated into chapters. Let’s talk a little about each one in order to help you apprehend what’s coming.</p>                                                                                <p class="">In the first chapter, we will learn all the <strong>basics</strong>, such as creating a first scene, rendering it, adding objects, choosing the right materials, adding textures, animating everything and even put it online. Some might find this part a bit boring since we enumerate a lot of elements. Don’t worry, the fun and creative parts are coming.</p>                                                                                <p class="">In the next chapter, we will go through many <strong>classic techniques</strong>: for instance, creating our own geometries, adding lights and shadows, interacting with 3D objects, and adding particles. That’s where things get a little more exciting.</p>                                                                                <p class="">In the third chapter, we will learn more <strong>advanced techniques</strong> and even stray away from WebGL and Three.js, by learning how to create our own 3D models using Blender. That's right! You'll also learn how to use Blender during this course. You’ll also learn how to add physics using the library I used for my portfolio. And I’ll even teach you how I personally organise my code for big projects.</p>                                                                                <p class="">In the fourth chapter, we are going to talk about <strong>shaders</strong>. If you’ve already heard about shaders, you probably know this is where people start to struggle, and for good reason. Shaders are hard, but shaders will unlock the true power of WebGL. You’ll be able to create things that would seem impossible at first. If you don’t understand what I’m talking about, don’t worry, everything will make sense once you finish this chapter.</p>                                                                                <p class="">In the fifth chapter, we will go the <strong>extra</strong> mile with even more advanced techniques, such as post-processing, performance optimisation, and how to mix WebGL with HTML.</p>                                                                                <p class="">In the sixth chapter, we will learn how to create a scene like the one you see on the homepage of Three.js Journey. It’s not going to be the same scene because the chapter would have been way longer and boring, but the techniques are exactly the same and you’ll be able to create any kind of scene after that.</p>                                                                                <p class="">And finally, in the seventh chapter, we will learn how to use Three.js in a React application with React Three Fiber. I know many of you are excited about this and I’m sure you’ll love this part. The number of techniques you’ll learn and practice is huge. You’ll even create a game with physics, real game mechanics, UI, and cool effects. Oh and, if you don’t know React, don’t worry, I’ve got you covered. There is a 4-hour long lesson dedicated to learning React basics. That’s a bonus. You came to learn Three.js and you’ll learn a bunch of other things along the way.</p>                                                                                <p class="">Because I'm a creative developer, I'll also do my best to help you create elegant experiences. I'll give you many tips and tricks to find the perfect tweaks for your WebGL creations.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Updates
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1037">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">17:17</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="updates">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#updates"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="updates"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">As a web developer, you probably already know how fast things are moving these days. Libraries come and go, updates are happening every day and it’s hard to keep up.</p>                                                                                <p class="">Don’t worry, I’m keeping Three.js Journey up to date. I’ve actually been doing that for a while. As I’m writing this lesson, Three.js Journey has been out for 2 years and during those 2 years, I kept updating the dependencies and the lessons. I’ve added 37 hours of video. Yes, that’s more than half of the current duration of the course. And I’ll keep adding content that students of Three.js Journey, will get access to without paying any extra.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    How to study this course?
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1090">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">18:10</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="how-to-study-this-course">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#how-to-study-this-course"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="how-to-study-this-course"></span>
+        </span>
+        
+</h2>
+
+                                                                                
+<h3 class="title has-anchor ">
+    
+    Difficulty
+
+        
+                <span class="anchor js-anchor" data-slug="difficulty">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#difficulty"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="difficulty"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">As you go through the lessons, you’ll see that things get harder. You will struggle, but don't worry, it's perfectly normal. No one can understand everything on the first try.</p>                                                                                <p class="">The first thing to understand is that, if it’s hard to learn, it’s valuable knowledge (or a bad teacher), so keep up.</p>                                                                                <p class="">Secondly, yes we approach challenging topics, but then we practice. After tackling challenging topics multiple times, it’ll start to make sense.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Find out how you can learn the best
+
+        
+                <span class="anchor js-anchor" data-slug="find-out-how-you-can-learn-the-best">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#find-out-how-you-can-learn-the-best"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="find-out-how-you-can-learn-the-best"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Each individual has a unique way to learn. It's a valuable lesson for you to find out how you can get the most out of this course.</p>                                                                                <p class="">Find the moment of the day where you learn best. For me, it’s in the morning. Do not try to rush things and complete the whole course in only one week. The brain needs time to process items, and it does it best at night. Maybe try one or two (three tops) lessons a day. Eat well, sleep enough, drink, and stay healthy. And don't forget to shut down any distractions.</p>                                                                                <p class="">Some people like to first focus on the lesson without doing anything else and then try to do the exercise themselves while going back to the lesson with which they struggle.</p>                                                                                <p class="">Some people just like to follow along and wait for the end of the lesson to then venture on their own by going the extra mile on the topic.</p>                                                                                <p class="">Of course, you don't need to finish the whole course to start working on projects, whether personal or professional. If you feel like dropping out and want to start creating on your own, go ahead! The course will be there waiting for you if you need it.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    The videos
+
+        
+                <span class="anchor js-anchor" data-slug="the-videos">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#the-videos"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="the-videos"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">If you are watching the video right now, you’ll notice that the player has some handy features.</p>                                                                                <p class="">As an example, you can change the speed of the video if you feel like it’s going too fast or too slow.</p>                                                                                <p class="">You also have access to a bunch of shortcuts. You can see the various sections. You can go fullscreen. The video stays visible when you scroll down. Etc.</p>                                                                                <p class="">Use those features as you please.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Lessons
+
+        
+                <span class="anchor js-anchor" data-slug="lessons">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#lessons"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="lessons"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">You might have noticed that lessons are available both as video and text. Text versions are almost the same and you get access to screenshots, video previews, code with syntax highlights, etc. Use the version you prefer.</p>                                                                                <p class="">During each lesson, we will go through various documentation pages, online tools, and examples. All the links will be available under the "🔗 Lesson's links" button at the bottom-right of each page. Go ahead and click on those when you want to dive deeper into any of the topics we cover.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Exercises
+
+        
+                <span class="anchor js-anchor" data-slug="exercises">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#exercises"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="exercises"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Learning is a matter of practicing which is why a <strong>starter</strong> file is provided with almost every lessons.</p>                                                                                <p class="">The <strong>final</strong> version of the exercise is also provided in case you want to check the result directly.</p>                                                                                <p class="">More about what’s in those zip files and how to use them soon.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Code
+
+        
+                <span class="anchor js-anchor" data-slug="code">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#code"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="code"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Each developer has a personal way of coding and I have mine. During the lesson, the code will follow my personal preferences. Do as you wish. If you want to refactor all the code, go ahead. You can even use a code beautifier that will automatically reformat your code.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Prerequisite
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1418">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">23:38</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="prerequisite">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#prerequisite"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="prerequisite"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">You need a computer on which you can install software and code. Some course portions might vary depending on the OS, like the Terminal commands or some Blender shortcuts. I'll always provide the MacOS and Windows versions.</p>                                                                                <p class="">This course is beginner-friendly, yet you do need to know JavaScript basics like variables, array, objects, loops, functions, and events.</p>                                                                                <p class="">You will also need a code editor. I recommend <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> because it's a well-oiled editor with a broad community and extended updates coming every month. However, you can use the editor that suits you. There will be a few instances when we install plugins, but again, it won't be a big deal, and you'll probably find corresponding plugins for your code editor.</p>                                                                                <p class="">Another requirement is a modern browser with useful developer tools. I'll be using Chrome, but you can also use Firefox. Please don’t use Safari or Edge. They do the trick when it comes to navigating, but not when it comes to debugging. At some point, we will install Chrome extensions, but those extensions are optional. Also, be careful with browsers that implement special security and privacy features like Brave. They might interfere with your code.</p>                                                                                <p class="">We will also learn how to use <a href="https://www.blender.org/" target="_blank">Blender</a>. It's a piece of free 3D software that works on every primary OS, and it's just great. If you are curious, give it a try already.</p>                                                                                <p class="">You don't need to be good at maths. I'm terrible at it, and still, I manage to create cool WebGL experiences. Yes, being good at it would be a plus, but you can do without it, and I'll explain the formulas.</p>                                                                                <p class="">Finally, if you know nothing about Three.js, you're in the right place.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    What to do if I'm stuck?
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1615">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">26:55</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="what-to-do-if-i-m-stuck">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#what-to-do-if-i-m-stuck"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="what-to-do-if-i-m-stuck"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">If you get stuck for whatever reason, don't worry, you're not alone.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Join the Discord
+
+        
+                <span class="anchor js-anchor" data-slug="join-the-discord">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#join-the-discord"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="join-the-discord"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">As a Three.js Journey student, you get access to a members-only Discord Server. Simply click on the <strong>Discord</strong> button at the top right corner of this page and join the <strong>Private server</strong>.</p>                                                                                <p class="">There are currently thousands of members there including myself, and we will do our best to help you. In return, if you feel like helping others, that would be awesome and I would appreciate it a lot.</p>                                                                                <p class="">By the way, the link to join the Private Discord will work only once, so make sure you join with the right account (I know some of you have a bunch of Discord accounts for some reason).</p>                                                                                <p class="">If you need to join the server later, you don’t need to go through the Three.js Journey website again. The link won’t work. Just open your Discord application and the Three.js Journey Discord server will be there on the left:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/1/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 112'%3E%3C/svg%3E" width="130" height="112"></span>
+</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Post your issue
+
+        
+                <span class="anchor js-anchor" data-slug="post-your-issue">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#post-your-issue"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="post-your-issue"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">As for posting your issue, there is one channel per lesson. Please use the appropriate one, and if your question is not related to a lesson (like if it’s for a personal project), use the <strong>#general-questions</strong> channel.</p>                                                                                <p class="">Be brief and concise.</p>                                                                                <p class="">If you have screenshots or videos, that’s even better, but most of the time, you’ll need to share some code. In Discord, you can use triple-back quotes (it’s like a quote but a tilted back) to send the code.</p>                                                                                <p class="">Here’s an example:</p>                                                                                <pre contenteditable="" class="language-plain text "><code spellcheck="false">```js
+const hello = 'there'
+```</code></pre>                                                                                <p class="">Adding the language (<code spellcheck="false">js</code> in this case) will add syntax highlight. This will greatly help us on helping you out.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Post your work
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1872">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">31:12</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="post-your-work">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#post-your-work"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="post-your-work"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">You are here to learn how to create 3D websites, right?</p>                                                                                <p class="">You don’t have to finish the whole course to create nice projects. After a few lessons, you’ll see that you’ll have sufficient knowledge to venture out on your own and have some fun.</p>                                                                                <p class="">But what is it worth if you can’t share it with the world? Well, good news, in the <strong>Go Live</strong> lesson, you’ll learn how to put your projects online for free.</p>                                                                                <p class="">As for getting some attention, personally, I like using Twitter. That’s why I’ve created a <a href="https://twitter.com/hashtag/threejsJourney" target="_blank">#threejsJourney</a> hashtag. Use it or tag me (<a href="https://twitter.com/bruno_simon" target="_blank">@bruno_simon</a>) so that I can see what you do. If I like it, I’ll retweet it and give you some extra visibility.</p>                                                                                <p class="">You can also post on the Discord server which is ideal if you want some feedback. Go on the Three.js Journey Discord server and post on the <strong>#students-work</strong> channel.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Certificate
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2004">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">33:24</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="certificate">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#certificate"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="certificate"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Finally, there is a certificate of completion for this course.</p>                                                                                <p class="">But don’t think I’ll just offer it to you just for watching all the videos. You’ll have to answer a quiz for each lesson. You can access the quiz from the lesson page (button right below the player) or from the pop-in that opens at the end of the lesson.</p>                                                                                <p class="">All quizzes are also accessible from your <a href="https://threejs-journey.com/account/certificate" target="_blank">account page</a>.</p>                                                                                <p class="">You need to have registered to Three.js Journey in order to see the quizzes.</p>                                                                                <p class="">If you answer incorrectly, you’ll have to wait a few minutes before trying again. Enough time for you to go gather the information in order to answer successfully.</p>                                                                                <p class="">The final certificate looks something like this <a href="https://threejs-journey.com/certificate/view/17" target="_blank">https://threejs-journey.com/certificate/view/17</a></p>                                                                                <p class="">You can share it and even print it.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Conclusion
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2115">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">35:15</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="conclusion">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#conclusion"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="conclusion"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">It was quite a long introduction, but I wanted to make sure you start on a good foot.</p>                                                                                <p class="">Now is the time to learn Three.js.</p>                                    
+                                                                                </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">What is WebGL and why use Three.js</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/what-is-webgl-and-why-use-three-js" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/1/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(260deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

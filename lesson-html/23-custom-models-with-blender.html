@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>23. custom models with blender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/raycaster-and-mouse-events"><div class="sibling-info"><div class="sibling-label">22.</div><div class="sibling-title">Raycaster and Mouse Events</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">23.</div><h2 class="title">Custom models with Blender</h2><p class="difficulty">Difficulty <span class="value">
+                                Hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/environment-map"><div class="sibling-info"><div class="sibling-label">24.</div><div class="sibling-title">Environment map</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/22/23-custom-models-with-blender.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/22/23-custom-models-with-blender-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Now that we know how to import a model into our scene, let's learn how to create our own model using a 3D software.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Choosing a software
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="10">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:10</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="choosing-a-software">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#choosing-a-software"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="choosing-a-software"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">There are many software like Cinema 4D, Maya, 3DS Max, Blender, ZBrush, Marmoset Toolbag, Substance Painter, etc. These are great, and they differ on divers criteria like the UX, the performance, the features, the compatibility, the price, etc.</p>                                                                                <p class="">In this lesson we are going to use Blender because it's free, the performances are remarkable, it works with all primary OS, it has many features, it has a vast community, and it became a lot easier since the 2.8 version.</p>                                                                                <p class="">Be aware that you won't be a Blender expert at the end of the lesson. It would take a full course to learn all its aspects, and there are already many great resources to learn. The idea is to understand the basics and de-mystify the software to have sufficient baggage to create simple models.</p>                                                                                <p class="">At the start we will discover all the basics. That will be a lot to take in but don't worry; we will repeat most of the shortcuts, the mechanics, and the features multiple times.</p>                                                                                <p class="">If you pressed a wrong shortcut at some point, you lost your scene, or the interface is completely messed up, just close and re-open Blender.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Downloading Blender
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="136">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">02:16</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="downloading-blender">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#downloading-blender"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="downloading-blender"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Go to the blender website download page and download the latest version: <a href="https://www.blender.org/download/" target="_blank">https://www.blender.org/download/</a></p>                                                                                <p class="">The software is pretty light, and it shouldn't take more than a few minutes.</p>                                                                                <p class="">Once downloaded, simply install it.</p>                                                                                <p class="">The lesson has been written and recorded with Blender <code spellcheck="false">2.83.5</code>. While there shouldn't be major differences, keep an eye on potential changes.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Interface
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="227">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">03:47</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="interface">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#interface"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="interface"></span>
+        </span>
+        
+</h2>
+
+                                                                                
+<h3 class="title has-anchor ">
+    
+    Splash screen
+
+        
+                <span class="anchor js-anchor" data-slug="splash-screen">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#splash-screen"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="splash-screen"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">The splash screen gives you access to some useful links, templates, and recently opened files.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                <p class="">The image changes with the Blender version, so don't be surprised if you have a different one.</p>                                                                                <p class="">You can also see the exact version on the top right of it.</p>                                                                                <p class="">Click anywhere out of the splash screen to close it.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Areas
+
+        
+                <span class="anchor js-anchor" data-slug="areas">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#areas"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="areas"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">The different parts of the interface are called areas. Areas are very flexible, and you can create the layout that you want.</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Default areas
+
+        
+                <span class="anchor js-anchor" data-slug="default-areas">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#default-areas"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="default-areas"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">By default, you have the main area called the <code spellcheck="false">3D Viewport</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1269 700'%3E%3C/svg%3E" width="1269" height="700"></span>
+</p>                                                                                <p class="">The <code spellcheck="false">Timeline</code> to create animations:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1270 190'%3E%3C/svg%3E" width="1270" height="190"></span>
+</p>                                                                                <p class="">The <code spellcheck="false">Outliner</code> to see and manage the scene graph (or scene tree):</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 267 282'%3E%3C/svg%3E" width="267" height="282"></span>
+</p>                                                                                <p class="">The <code spellcheck="false">Properties</code> to manage the properties of the active object (selection) and the environment:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 267 591'%3E%3C/svg%3E" width="267" height="591"></span>
+</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Change an area
+
+        
+                <span class="anchor js-anchor" data-slug="change-an-area">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#change-an-area"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="change-an-area"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">To change what an area is displaying, click on the top-left button of that area. Here, we are going to change the <strong>Timeline</strong> area.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 61 39'%3E%3C/svg%3E" width="61" height="39"></span>
+</p>                                                                                <p class="">We are going to change the <code spellcheck="false">Timeline</code> area for another <code spellcheck="false">3D Viewport</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 212 284'%3E%3C/svg%3E" width="212" height="284"></span>
+</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Resize an area
+
+        
+                <span class="anchor js-anchor" data-slug="resize-an-area">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#resize-an-area"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="resize-an-area"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">To resize an area, position your cursor between two areas and drag &amp; drop:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 422 123'%3E%3C/svg%3E" width="422" height="123"></span>
+</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Create new areas
+
+        
+                <span class="anchor js-anchor" data-slug="create-new-areas">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#create-new-areas"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="create-new-areas"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">To create a new area, first, we must decide what area we want to split. Then, we must position our cursor in one of the four corners of our area (a few pixels inside the area):</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 69 108'%3E%3C/svg%3E" width="69" height="108"></span>
+</p>                                                                                <p class="">Finally, we drag and drop in the area we want to split:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/009.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1290 318'%3E%3C/svg%3E" width="1290" height="318"></span>
+</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Remove an area
+
+        
+                <span class="anchor js-anchor" data-slug="remove-an-area">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#remove-an-area"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="remove-an-area"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">Removing an area is a little tricky, and you might end up with dozens of unwanted areas. Don't worry, once you get the idea, it will be fine.</p>                                                                                <p class="">In a way, we don't remove an area; we un-split two areas. First, you must decide which one of the two areas is going to take over the other. If you want to remove the right area, start from the left area. Then place your cursor in one of the two corners adjacent to the area we want to remove (few pixels inside the area that is supposed to take over the other):</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/010.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 102 206'%3E%3C/svg%3E" width="102" height="206"></span>
+</p>                                                                                <p class="">And then drag &amp; drop (just like we did to create an area) but this time in the opposite direction (toward the area we want to remove):</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 756 317'%3E%3C/svg%3E" width="756" height="317"></span>
+</p>                                                                                <p class="">It can take a few tries but you'll get it.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Shortcuts
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="757">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">12:37</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="shortcuts">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#shortcuts"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="shortcuts"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">One of the strengths of Blender is its shortcuts. There are tons of them, and once you master the basics, you can be very efficient. Don't worry; you can use all the shortcut actions through the interface or with the search panel that we will see later. Throughout this lesson, we will discover some of the more critical shortcuts.</p>                                                                                <p class="">Here's a non-exhaustive list of shortcuts: <a href="https://docs.google.com/document/d/1wZzJrEgNye2ZQqwe8oBh54AXwF5cYIe56EGFe2bb0QU/edit?usp=sharing" target="_blank">https://docs.google.com/document/d/1wZzJrEgNye2ZQqwe8oBh54AXwF5cYIe56EGFe2bb0QU/edit?usp=sharing</a></p>                                                                                <p class="">One important thing to understand is that shortcuts are hovered area sensitive. That means that the same shortcut can have different actions depending on what's behind our cursor. Most of the shortcuts we will see in this lesson concern the <code spellcheck="false">3D Viewport</code>. You should always make sure to keep your cursor above one of these areas when pressing the shortcut keys.</p>                                                                                <p class="">The shortcuts are also mode sensitive, but we will talk about modes later.</p>                                                                                <p class="">Only one or two shortcuts that we will see are different between Mac and Windows. If there is a difference, both versions will be cited. If the shortcut includes the <code spellcheck="false">CTRL</code> key and you are using a Mac, do not assume it's <code spellcheck="false">CMD</code>. Use the <code spellcheck="false">CTRL</code> key instead.</p>                                    
+                                                                                                        
+<h2 class="title has-anchor ">
+    
+    View
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="987">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">16:27</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="view">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#view"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="view"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">As you can see, you can move the view in every possible direction. While you can use a trackpad, I recommend using a mouse with a wheel that you can press (or a third button) for productive reasons. From now, we will refer to the wheel button (the one that we can press) as <code spellcheck="false">MIDDLE MOUSE</code>.</p>                                                                                                <p class="">If you are using a trackpad, you can use two fingers.</p>                                                                                                <p class="">If you are using a Magic Mouse, you can replicate the <code spellcheck="false">MIDDLE MOUSE</code>. Go to the preferences through <code spellcheck="false">Edit &gt; Preferences</code>. Using the navigation menu on left, choose the <code spellcheck="false">Input</code> section. Check the <code spellcheck="false">Emulate 3 Button Mouse</code> checkbox.</p>                                                                                                <p class="">It's also better to have a numeric pad.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Orbit rotate
+
+        
+                <span class="anchor js-anchor" data-slug="orbit-rotate">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#orbit-rotate"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="orbit-rotate"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="">We can rotate the view by pressing the <code spellcheck="false">MIDDLE MOUSE</code> and drag &amp; drop in the <code spellcheck="false">3D Viewport</code>.</p>                                                                                                <p class="">Or we can use the gizmo on the top-right part of each <code spellcheck="false">3D Viewport</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/013.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 105 90'%3E%3C/svg%3E" width="105" height="90"></span>
+</p>                                                                                                <p class="">We call this rotation orbit (like the Three.js <a href="https://threejs.org/docs/#examples/en/controls/OrbitControls" target="_blank">OrbitControl</a>) because the view rotates around an invisible center called view-point. We will talk about that point later.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Truck and pedestal
+
+        
+                <span class="anchor js-anchor" data-slug="truck-and-pedestal">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#truck-and-pedestal"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="truck-and-pedestal"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/014.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/015.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="">Truck is when the view moves on the left and right, while pedestal is when the view moves up and down. We can do both simultaneously by pressing the <code spellcheck="false">MIDDLE MOUSE</code> again, but this time with the <code spellcheck="false">SHIFT</code> key pressed.</p>                                                                                                <p class="">Or we can use the hand icon on the top right:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/016.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 35'%3E%3C/svg%3E" width="46" height="35"></span>
+</p>                                                                                                <p class="">Truck is also called track.</p>                                                                                                <p class="">Some might also wrongly call those movements "pan".</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Dolly
+
+        
+                <span class="anchor js-anchor" data-slug="dolly">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#dolly"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="dolly"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/017.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="">Dolly is when the view moves forward and backward. We can use the <code spellcheck="false">WHEEL</code> to achieve that.</p>                                                                                                <p class="">Or we can use the magnifier icon on the top right:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/018.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 47 31'%3E%3C/svg%3E" width="47" height="31"></span>
+</p>                                                                                                <p class="">Be careful though; zooming isn't exactly like going forward and backward. We are getting closer or further from the view-point we talked about in the <strong>Orbit</strong> section, but we cannot zoom beyond that point, and zooming too much will result in a stuck view.</p>                                                                                                <p class="">To resolve this zoom limit issue, we can move forward and backward by pressing <code spellcheck="false">SHIFT + CTRL + MIDDLE MOUSE</code> and drag &amp; drop in the <code spellcheck="false">3D Viewport</code> (won't work with the two fingers technique with a trackpad). This way, we won't get stuck at the view-point.</p>                                                                                                <p class="">There is no icon in the interface to do that.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Tilt and pan
+
+        
+                <span class="anchor js-anchor" data-slug="tilt-and-pan">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#tilt-and-pan"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="tilt-and-pan"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/019.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/020.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="">Tilt and pan are simple rotation on the camera point.</p>                                                                                                <p class="">We have to go to the <strong>Walk mode</strong> —also called Fly mode— to use those moves.</p>                                                                                                <p class="">To do that, if you are using a <strong>QWERTY</strong> keyboard, press <code spellcheck="false">SHIFT + BACK QUOTE</code>. The back quote —also called backtick, acute or left quote— is an inclined simple quote that can be used to add a grave accent.</p>                                                                                                <p class="">Finding that character might be a little hard because its position changes a lot depending on your keyboard. You can find it on the top right corner, on the bottom left corner or very close to the <code spellcheck="false">ENTER</code> key.</p>                                                                                                <p class="">If you are using an <strong>AZERTY</strong> keyboard, the shortcut won't work. We need to change the keymap. Go to the preferences through <code spellcheck="false">Edit &gt; Preferences</code>. Using the navigation menu on left, choose the <code spellcheck="false">Keymap</code> section. In the search input, write <code spellcheck="false">view navigation</code> and change the shortcut for <code spellcheck="false">View Navigation (Walk/Fly)</code> to <code spellcheck="false">SHIFT + F</code>.</p>                                                                                                <p class="">That's it, you can use the walk mode with <code spellcheck="false">SHIFT + F</code>.</p>                                                                                                <p class="">You can also go forward, backward, and on the sides, in the walk mode with the <code spellcheck="false">ARROWS</code> or <code spellcheck="false">WASD</code> if using a <code spellcheck="false">QWERTY</code>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Perspective / Orthographic
+
+        
+                <span class="anchor js-anchor" data-slug="perspective-orthographic">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#perspective-orthographic"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="perspective-orthographic"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The default view uses perspective. We can toggle with the orthographic version with <code spellcheck="false">NUMPAD 5</code> or the grid icon on the top right:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/021.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 43 32'%3E%3C/svg%3E" width="43" height="32"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Axes
+
+        
+                <span class="anchor js-anchor" data-slug="axes">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#axes"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="axes"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We can align the camera on the <code spellcheck="false">X</code>, <code spellcheck="false">Y</code> and <code spellcheck="false">Z</code> axes by pressing the <code spellcheck="false">NUMPAD 1</code>, <code spellcheck="false">NUMPAD 3</code>, and <code spellcheck="false">NUMPAD 7</code>. We are talking about the numeric pad numbers, not the numbers at the top of the keyboard.</p>                                                                                                <p class="">To position the camera at the opposite, press the same keys but with <code spellcheck="false">CTRL</code>.</p>                                                                                                <p class="">Or we can use the gizmo and click on the axes:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/022.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 105 90'%3E%3C/svg%3E" width="105" height="90"></span>
+</p>                                                                                                <p class="">In Blender, we consider the top axes as the <code spellcheck="false">Z</code>, unlike in Three.js, where it's <code spellcheck="false">Y</code>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Camera
+
+        
+                <span class="anchor js-anchor" data-slug="camera">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#camera"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="camera"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">You might have seen the camera in the <code spellcheck="false">3D Viewport</code>. To get the camera viewpoint, press <code spellcheck="false">NUMPAD 0</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/023.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 33'%3E%3C/svg%3E" width="50" height="33"></span>
+</p>                                                                                                <p class="">The camera will be used when doing renders. You can't render the scene without a camera.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Reset
+
+        
+                <span class="anchor js-anchor" data-slug="reset">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#reset"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="reset"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Sometimes, we get lost and we don't even know where our scene is. We can focus back on our scene by pressing <code spellcheck="false">SHIFT + C</code>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Focus
+
+        
+                <span class="anchor js-anchor" data-slug="focus">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#focus"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="focus"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">To focus the camera on an object, select the object with <code spellcheck="false">LEFT MOUSE</code>, then press <code spellcheck="false">NUMPAD ,</code> (we are talking about the comma on the numeric pad and it might be a dot depending on the keyboard you are using).</p>                                                                                                <p class="">We can also focus on an object and hide everything else with <code spellcheck="false">NUMPAD /</code>. Use the same shortcut to leave the focus mode.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Selecting
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2018">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">33:38</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="selecting">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#selecting"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="selecting"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">As we just saw, we can select objects with the <code spellcheck="false">LEFT MOUSE</code>. We can also select multiple objects with <code spellcheck="false">SHIFT + LEFT MOUSE</code>.</p>                                                                                                <p class="">You might have noticed that one of the objects always has a brighter outline. This object isn't just selected; it's also the <strong>active</strong> one. We will see more about that later.</p>                                                                                                <p class="">To undo a selection, press <code spellcheck="false">CMD + Z</code> (<code spellcheck="false">CTRL + Z</code> on Windows). Yes, selecting objects is considered as an action we can undo. While this might seem strange, it's really helpful when you miss-click.</p>                                                                                                <p class="">To unselect an object, use <code spellcheck="false">SHIFT + LEFT MOUSE</code> again. If it's not the active one, it'll become active, and if it's active, it'll be unselected.</p>                                                                                                <p class="">To select everything, press <code spellcheck="false">A</code>.</p>                                                                                                <p class="">To unselect everything, double press <code spellcheck="false">A</code>.</p>                                                                                                <p class="">To select a rectangle area, press <code spellcheck="false">B</code>.</p>                                                                                                <p class="">To select like if you were painting, press <code spellcheck="false">C</code>. While in this mode, use <code spellcheck="false">WHEEL</code> to change the radius.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Creating objects
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2370">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">39:30</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="creating-objects">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#creating-objects"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="creating-objects"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">To create objects, with the cursor above a <code spellcheck="false">3D Viewport</code>, press <code spellcheck="false">SHIFT + A</code>. A menu should open behind your cursor. Navigate through this menu to create various objects. Most of what we will see in the lessons are in the <code spellcheck="false">Mesh</code> sub-menu:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/024.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 432 485'%3E%3C/svg%3E" width="432" height="485"></span>
+</p>                                                                                                <p class="">When you create an object, a small button should appear in the bottom left corner:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/025.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 195 62'%3E%3C/svg%3E" width="195" height="62"></span>
+</p>                                                                                                <p class="">Click on it to change various properties like the size, the subdivision, and many other properties related to the object you're trying to make:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/026.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 303 334'%3E%3C/svg%3E" width="303" height="334"></span>
+</p>                                                                                                <p class="">If you click anywhere else, you'll lose that menu. You can re-open it with <code spellcheck="false">F9</code> but if you start doing modifications on the geometry, you won't be able to re-open this menu.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Deleting objects
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2549">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">42:29</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="deleting-objects">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#deleting-objects"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="deleting-objects"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">To delete an object, select it and, with the cursor above a <code spellcheck="false">3D Viewport</code>, press <code spellcheck="false">X</code>. A confirmation menu should open behind the cursor. Click on it to delete the object:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/027.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 249 118'%3E%3C/svg%3E" width="249" height="118"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Hiding objects
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2593">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">43:13</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="hiding-objects">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#hiding-objects"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="hiding-objects"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">To hide selected objects, press <code spellcheck="false">H</code>.</p>                                                                                                <p class="">To show hidden objects, press <code spellcheck="false">ALT + H</code>.</p>                                                                                                <p class="">To hide non-selected objects, press <code spellcheck="false">SHIFT + H</code>.</p>                                                                                                <p class="">You can also manage this in the <code spellcheck="false">Outliner</code> with the eye icon.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/028.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 140'%3E%3C/svg%3E" width="46" height="140"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Transforming objects
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2689">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">44:49</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="transforming-objects">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#transforming-objects"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="transforming-objects"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">There are 3 types of transformations —as in Three.js. We can change the position, the rotation, and the scale.</p>                                                                                                <p class="">We can use the menu on the left to activate each separately or activate them even all together with the fourth button:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/029.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 54 154'%3E%3C/svg%3E" width="54" height="154"></span>
+</p>                                                                                                <p class="">Or we can use shortcuts:</p>                                                                                                <ul class="">
+            <li><code spellcheck="false">G</code> for the position</li>
+            <li><code spellcheck="false">R</code> for the rotation</li>
+            <li><code spellcheck="false">S</code> for the scale</li>
+    </ul>                                                                                                <p class="">After activating one of these shortcuts, you can force the transformation to operate in a specific axis by pressing the corresponding key (<code spellcheck="false">X</code>, <code spellcheck="false">Y</code>, and <code spellcheck="false">Z</code>).</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Modes
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2968">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">49:28</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="modes">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#modes"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="modes"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We are currently in <code spellcheck="false">Object Mode</code>, where we can create, delete, and transform objects. There are many other modes.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Change mode
+
+        
+                <span class="anchor js-anchor" data-slug="change-mode">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#change-mode"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="change-mode"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We can change the mode with the menu on the top-left select button of any <code spellcheck="false">3D Viewport</code> area:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/030.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 141 54'%3E%3C/svg%3E" width="141" height="54"></span>
+</p>                                                                                                <p class="">Or we can press <code spellcheck="false">CTRL + TAB</code> to open a wheel menu (aka, the coolest kind of menu):</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/031.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 552 352'%3E%3C/svg%3E" width="552" height="352"></span>
+</p>                                                                                                <p class="">We won't cover all the modes, but we are going to use the <code spellcheck="false">Edit Mode</code>. Select a mesh (or create one) and switch to the <code spellcheck="false">Edit Mode</code>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Edit Mode
+
+        
+                <span class="anchor js-anchor" data-slug="edit-mode">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#edit-mode"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="edit-mode"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">There is actually a shortcut to toggle the <code spellcheck="false">Edit Mode</code>. Simply press <code spellcheck="false">TAB</code>.</p>                                                                                                <p class="">The <code spellcheck="false">Edit Mode</code> is very similar to the <code spellcheck="false">Object Mode</code> but we can edit the vertices, the edges and the faces. By default, we can change the vertex. Try to select vertices, transform them with the usual shortcuts —<code spellcheck="false">G</code> for position, <code spellcheck="false">R</code> for rotation, <code spellcheck="false">S</code> for scale.</p>                                                                                                <p class="">To switch to edges and faces, we can use the buttons on the top-right part of the <code spellcheck="false">3D Viewport</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/032.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 111 48'%3E%3C/svg%3E" width="111" height="48"></span>
+</p>                                                                                                <p class="">Or we can press the first three numbers on top of the keyboard <code spellcheck="false">1</code>, <code spellcheck="false">2</code>, and <code spellcheck="false">3</code>.</p>                                                                                                <p class="">Once you finish editing the object, leave the <code spellcheck="false">Edit Mode</code> with <code spellcheck="false">TAB</code>.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Shading
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3230">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">53:50</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="shading">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#shading"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="shading"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Shading is how you see objects in the <code spellcheck="false">3D Viewport</code>.</p>                                                                                                <p class="">We are currently in <code spellcheck="false">Solid</code> shading. This shading lets you see the objects with a default material and no light support. It's performant and convenient.</p>                                                                                                <p class="">We can change the shading with the buttons on the top-right corner of the <code spellcheck="false">3D Viewport</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/033.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 157 59'%3E%3C/svg%3E" width="157" height="59"></span>
+</p>                                                                                                <p class="">Or we can press <code spellcheck="false">Z</code> to open a wheel menu:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/034.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 527 343'%3E%3C/svg%3E" width="527" height="343"></span>
+</p>                                                                                                <ul class="">
+            <li><code spellcheck="false">Solid</code>: The default with the same material for every objects.</li>
+            <li><code spellcheck="false">Material</code>: Like the <code spellcheck="false">Solid</code> shading, but with a preview of the materials and their textures.</li>
+            <li><code spellcheck="false">Wireframe</code>: All the geometries are in wireframe.</li>
+            <li><code spellcheck="false">Renderer</code>: Low quality render —it's the most realistic but the least performant.</li>
+    </ul>                                                                                                <p class="">If you can't see much in the <code spellcheck="false">Render</code>, it might be because you don't have enough lights in your scene. Just add one or two by pressing <code spellcheck="false">SHIFT + A</code> to open the <code spellcheck="false">Add</code> menu.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Properties
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3472">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">57:52</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="properties">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#properties"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="properties"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Unless you changed the layout, the bottom right area, named <code spellcheck="false">Properties</code>, lets you play with render properties, environment properties and the active object's properties. Remember that the active object is the one with the brightest outline.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/035.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 313 592'%3E%3C/svg%3E" width="313" height="592"></span>
+</p>                                                                                                <p class="">We won't cover all these tabs but the top ones deal with the renders and the environment:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/036.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 49 187'%3E%3C/svg%3E" width="49" height="187"></span>
+</p>                                                                                                <p class="">The ones below relate to the active object, and they can differ depending on the type of active object because we don't have the same properties for a cube as for a light:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/037.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 249'%3E%3C/svg%3E" width="56" height="249"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Object Properties
+
+        
+                <span class="anchor js-anchor" data-slug="object-properties">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#object-properties"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="object-properties"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The <code spellcheck="false">Object Properties</code> let you change with accuracy properties such as transformations:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/038.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 54 36'%3E%3C/svg%3E" width="54" height="36"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Modifier Properties
+
+        
+                <span class="anchor js-anchor" data-slug="modifier-properties">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#modifier-properties"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="modifier-properties"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The <code spellcheck="false">Modifiers Properties</code> let you add what we call modifiers. These are non-destructive modifications. You can subdivide, bend, grow, shrink, etc. and turn them off as you please:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/039.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 49 32'%3E%3C/svg%3E" width="49" height="32"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Material Properties
+
+        
+                <span class="anchor js-anchor" data-slug="material-properties">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#material-properties"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="material-properties"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The <code spellcheck="false">Material Properties</code> let you play with materials:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/040.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 36'%3E%3C/svg%3E" width="48" height="36"></span>
+</p>                                                                                                <p class="">By default, you have access to one material named <code spellcheck="false">Material</code>, and it should be applied to the default cube if you didn't delete it:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/041.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 247 153'%3E%3C/svg%3E" width="247" height="153"></span>
+</p>                                                                                                <p class="">You can remove the material with the <code spellcheck="false">-</code> button and combine them with the <code spellcheck="false">+</code> button, but we usually use only one material per mesh:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/042.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 70'%3E%3C/svg%3E" width="50" height="70"></span>
+</p>                                                                                                <p class="">If there is no material on the mesh, we can choose an existing one, or we can create a new one with the <code spellcheck="false">New</code> button:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/043.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 485 113'%3E%3C/svg%3E" width="485" height="113"></span>
+</p>                                                                                                <p class="">We can have different types of surfaces for one material. The default one is called <code spellcheck="false">Principled BSDF</code> and this type of surface uses the PBR principles as the <a href="https://threejs.org/docs/index.html#api/en/materials/MeshStandardMaterial" target="_blank">MeshStandardMaterial</a> does in Three.js. This means that we should get a very similar result if we export this kind of material to a Three.js scene.</p>                                                                                                <p class="">We won't see other types of materials in this lesson.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Render engines
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3859">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:04:19</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="render-engines">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#render-engines"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="render-engines"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Go to the <code spellcheck="false">Render Properties</code> tab:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/044.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 33'%3E%3C/svg%3E" width="52" height="33"></span>
+</p>                                                                                                <p class="">In this panel, we can change the <code spellcheck="false">Render Engine</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/045.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 248 59'%3E%3C/svg%3E" width="248" height="59"></span>
+</p>                                                                                                <p class="">There are 3 types of render engine:</p>                                                                                                <ul class="">
+            <li><code spellcheck="false">Eevee</code>: A real-time render engine. It uses the GPU just like Three.js, it's very performant, but it has limitations like realism, light bounce, reflection, and refraction.</li>
+            <li><code spellcheck="false">Workbench</code>: A legacy render engine that we don't use a lot anymore. Its performance is pretty good, but the result isn't very realistic.</li>
+            <li><code spellcheck="false">Cycles</code>: A raytracing engine. It's very realistic. It handles light bounce, deep reflection, deep refraction, and many other features, but it's very sluggish, and you might end up waiting hours or even days to render your scene.</li>
+    </ul>                                                                                                <p class="">You can change this property and see if anything changes in the scene. Make sure to use the <code spellcheck="false">Renderer</code> shading —press <code spellcheck="false">Z</code> to change the shading. Blender developers did an excellent job of keeping a very similar result between render engines.</p>                                                                                                <p class="">The default one is <code spellcheck="false">Eevee</code> and it's perfect in our case because it's real-time rendering, and Three.js is also real-time rendering.</p>                                                                                                <p class="">If you want to render the scene, press <code spellcheck="false">F12</code>. The render will be seen from the camera —make sure to have a camera well oriented in your scene.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/046.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1059 688'%3E%3C/svg%3E" width="1059" height="688"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Search
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4234">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:10:34</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="search">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#search"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="search"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">There are so many possible actions that we cannot remember how to trigger them all. The right solution when we can't figure out where the button is, or the shortcut is to use the <code spellcheck="false">Search</code> panel.</p>                                                                                                <p class="">To open the <code spellcheck="false">Search</code> panel, press <code spellcheck="false">F3</code> (you might need to add the <code spellcheck="false">fn</code> key depending on your keyboard and OS) and write the action name:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/047.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 569 302'%3E%3C/svg%3E" width="569" height="302"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Save our setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4359">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:12:39</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="save-our-setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#save-our-setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="save-our-setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Create a solid setup. It's up to you, but because we are using Blender to export for Three.js, we don't need a camera. We can also create two side views below the main <code spellcheck="false">3D Viewport</code> on the <code spellcheck="false">Z</code> and <code spellcheck="false">Y</code> axis with <code spellcheck="false">Wireframe</code> shading:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/048.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                                <p class="">Once you're happy with your setup, go to <code spellcheck="false">File &gt; Defaults &gt; Save Startup File</code>. That will set your current setup as the default one when opening Blender:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/049.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 398 447'%3E%3C/svg%3E" width="398" height="447"></span>
+</p>                                                                                                <p class="">Be careful when clicking on <code spellcheck="false">Save Startup File</code>; a confirmation menu should open and if you move the mouse out of it, you'll lose it. Click again to confirm:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/050.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 214 92'%3E%3C/svg%3E" width="214" height="92"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Hamburger time
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4602">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:16:42</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="hamburger-time">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#hamburger-time"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="hamburger-time"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">It's time to create our own model. In this lesson, we are going to make a hamburger and import it into Three.js.</p>                                                                                                <p class="">Like in Three.js, a good practice is to decide on a unit scale. If you look at the grid, one square truly represents one unit, and by default, Blender considers that one unit means one meter:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/051.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 187 86'%3E%3C/svg%3E" width="187" height="86"></span>
+</p>                                                                                                <p class="">We could create a giant hamburger, but sorry, we better start with a regular-sized sandwich. We could just think of <code spellcheck="false">1m</code> as <code spellcheck="false">1cm</code> but if you don't like seeing this <code spellcheck="false">m</code> you can remove it in the <code spellcheck="false">Scene Properties</code> tab of the <code spellcheck="false">Properties</code> area by choosing <code spellcheck="false">None</code> as our <code spellcheck="false">Unit System</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/052.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 265 136'%3E%3C/svg%3E" width="265" height="136"></span>
+</p>                                                                                                <p class="">We can now consider <code spellcheck="false">1</code> as <code spellcheck="false">1cm</code>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Bottom bun
+
+        
+                <span class="anchor js-anchor" data-slug="bottom-bun">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#bottom-bun"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="bottom-bun"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">For our bottom bun, as strange as it may sound, we will start with a 10cm cube:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/053.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 317 134'%3E%3C/svg%3E" width="317" height="134"></span>
+</p>                                                                                                <p class="">Then, after making sure that our cube is active, go to the <code spellcheck="false">Modifier Properties</code> tab and add the <code spellcheck="false">Subdivision Surface</code> modifier:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/054.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 315 108'%3E%3C/svg%3E" width="315" height="108"></span>
+</p>                                                                                                <p class="">The cube now somewhat resembles a sphere.</p>                                                                                                <p class="">The <code spellcheck="false">Subdivision Surface</code> is one of the most famous modifiers. It subdivides the geometry but smoothes the angles at the same time.</p>                                                                                                <p class="">Add more subdivision in the <code spellcheck="false">Subdivisions &gt; viewport</code> field:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/055.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 146 98'%3E%3C/svg%3E" width="146" height="98"></span>
+</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/056.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 629 528'%3E%3C/svg%3E" width="629" height="528"></span>
+</p>                                                                                                <p class="">The faces are flat but we want a smooth surface. To achieve this, right-click on the sphere and choose <code spellcheck="false">Shade Smooth</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/057.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 315 132'%3E%3C/svg%3E" width="315" height="132"></span>
+</p>                                                                                                <p class="">The good thing with modifiers is that you preserve the original geometry. Go to the <code spellcheck="false">Edit Mode</code> by pressing <code spellcheck="false">TAB</code> and move the vertices until you get a pebble right above the ground:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/058.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 751 449'%3E%3C/svg%3E" width="751" height="449"></span>
+</p>                                                                                                <p class="">So it's still not a bun. To get the right shape, we must add more vertices at the edge of the bun. What we need is a loop cut. Press <code spellcheck="false">CTRL + R</code> while in <code spellcheck="false">Edit Mode</code> and move the mouse on one of the four vertical edges:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/059.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 743 361'%3E%3C/svg%3E" width="743" height="361"></span>
+</p>                                                                                                <p class="">Click once to create the cut but do not click again. At this point, you can move the loop cut up and down. Put the loop cut closer to the top edge:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/060.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 674 328'%3E%3C/svg%3E" width="674" height="328"></span>
+</p>                                                                                                <p class="">Repeat the process for the down part of the bun. We want our bun to be flat at the bottom, but not too flat:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/061.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 826 353'%3E%3C/svg%3E" width="826" height="353"></span>
+</p>                                                                                                <p class="">Improve your bun until you are satisfied but don't spend too much time on it. Don't worry, we'll come back to it once we have the whole scene.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Save
+
+        
+                <span class="anchor js-anchor" data-slug="save">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#save"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="save"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">It's time to save. Press <code spellcheck="false">CMD + S</code> (<code spellcheck="false">CTRL + S</code> on Windows) or go to <code spellcheck="false">Files &gt; Save</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/062.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 217 184'%3E%3C/svg%3E" width="217" height="184"></span>
+</p>                                                                                                <p class="">Save anywhere you want.</p>                                                                                                <p class="">If you make some changes and you save again, you'll see a <code spellcheck="false">.blend1</code> file in the same folder as your original <code spellcheck="false">.blend</code> file. That is a backup of the latest save automatically generated by Blender. There was a time where Blender wasn't as stable as it is today. Saving your file could result in corrupting it. That is why they created those automatic backups. Today, Blender is very stable, but they keep the backup just in case or because the user can make a mistake like deleting an object, saving, and closing Blender. Fortunately, you only need to rename the <code spellcheck="false">.blend1</code> file <code spellcheck="false">.blend</code> to access your previous save.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Meat
+
+        
+                <span class="anchor js-anchor" data-slug="meat">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#meat"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="meat"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Repeat the same process for the meat. You can also duplicate the bottom bun with <code spellcheck="false">SHIFT + D</code> in <code spellcheck="false">Object Mode</code> (the default one)</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/063.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 717 338'%3E%3C/svg%3E" width="717" height="338"></span>
+</p>                                                                                                <p class="">Don't forget to save.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Cheese
+
+        
+                <span class="anchor js-anchor" data-slug="cheese">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#cheese"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="cheese"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">For the cheese, start with a plane right above the meat:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/064.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 515 326'%3E%3C/svg%3E" width="515" height="326"></span>
+</p>                                                                                                <p class="">Go to <code spellcheck="false">Edit Mode</code> (where you can edit the vertices, edges and faces) and subdivide the geometry. Select the only face, right click on it and select <code spellcheck="false">Subdivide</code>. Set the <code spellcheck="false">Number of Cuts</code> to <code spellcheck="false">10</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/065.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 696 392'%3E%3C/svg%3E" width="696" height="392"></span>
+</p>                                                                                                <p class="">We are going to melt the cheese corners.</p>                                                                                                <p class="">While we're still in <code spellcheck="false">Edit Mode</code>, select one of the cheese corners. If we were to move one vertex at a time, it would take too long, and the result would probably look disappointing. What we can do is use the <code spellcheck="false">Proportional Editing</code>. Press <code spellcheck="false">O</code> —the letter— or click on the icon at the <code spellcheck="false">3D Viewport</code> top center:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/066.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 337 157'%3E%3C/svg%3E" width="337" height="157"></span>
+</p>                                                                                                <p class="">Now that the <code spellcheck="false">Proportional Editing</code> is active, transforming one vertex will also transform the neighbor vertices. Increase the area of effect by using the <code spellcheck="false">WHEEL</code> after pressing a transformation key —like <code spellcheck="false">G</code> to move:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/067.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 561 377'%3E%3C/svg%3E" width="561" height="377"></span>
+</p>                                                                                                <p class="">The way the neighbor vertices move isn't correct. To change that click on the <code spellcheck="false">Proportional Editing Falloff</code> icon and choose <code spellcheck="false">Sharp</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/068.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 275 237'%3E%3C/svg%3E" width="275" height="237"></span>
+</p>                                                                                                <p class="">Now play with the vertices and the <code spellcheck="false">Proportional Editing</code> size until you get a nice cheesy shape:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/069.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 614 348'%3E%3C/svg%3E" width="614" height="348"></span>
+</p>                                                                                                <p class="">In <code spellcheck="false">Object Mode</code>, right click and choose <code spellcheck="false">Shade Smooth</code> for a smooth surface:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/070.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 646 354'%3E%3C/svg%3E" width="646" height="354"></span>
+</p>                                                                                                <p class="">Our cheese doesn't look thick enough. To solve this, go to the <code spellcheck="false">Modifier Properties</code> and add the <code spellcheck="false">Solidify</code> modifier:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/071.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 318 120'%3E%3C/svg%3E" width="318" height="120"></span>
+</p>                                                                                                <p class="">Then increase the thickness to <code spellcheck="false">0.08</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/072.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 147 95'%3E%3C/svg%3E" width="147" height="95"></span>
+</p>                                                                                                <p class="">Change the shading to wireframe if you want to appreciate the result even more —press <code spellcheck="false">Z</code> to open the shading wheel menu:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/073.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 849 465'%3E%3C/svg%3E" width="849" height="465"></span>
+</p>                                                                                                <p class="">Not to sound too picky but the <code spellcheck="false">Shade Smooth</code> on the edges looks kind of strange:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/074.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 624 290'%3E%3C/svg%3E" width="624" height="290"></span>
+</p>                                                                                                <p class="">The way to fix this issue vary according to the Blender version we are using. There are multiple ways to find the version number.</p>                                                                                                <p class="">When you start Blender, you’ll see the number on the top right corner of the splash screen:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/075.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 456 193'%3E%3C/svg%3E" width="456" height="193"></span>
+</p>                                                                                                <p class="">And if Blender is already open, you can click on the Blender icon at the very top left corner and choose <code spellcheck="false">Splash Screen</code> to show the splash screen or <code spellcheck="false">About Blender</code> for even more details:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/076.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 251 76'%3E%3C/svg%3E" width="251" height="76"></span>
+</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/077.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 363 233'%3E%3C/svg%3E" width="363" height="233"></span>
+</p>                                                                                                <p class="">If your version is <code spellcheck="false">4.0.0</code> or more, in <code spellcheck="false">Object Mode</code>, select the cheese, right click on it and choose <code spellcheck="false">Shade Auto Smooth</code> or <code spellcheck="false">Shade Auto Smooth</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/078.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 285 104'%3E%3C/svg%3E" width="285" height="104"></span>
+</p>                                                                                                <p class="">If your version is below <code spellcheck="false">4.0.0</code>, select the cheese, go to the <code spellcheck="false">Object Data Properties</code> panel, then the <code spellcheck="false">Normals</code> section, and check <code spellcheck="false">Auto Smooth</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/079.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 282 110'%3E%3C/svg%3E" width="282" height="110"></span>
+</p>                                                                                                <p class="">In both cases, the surface will be smooth, but not on sharp angles. At that point, you should get a realistic and appetizing melted cheese:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/080.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 579 325'%3E%3C/svg%3E" width="579" height="325"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Top bun
+
+        
+                <span class="anchor js-anchor" data-slug="top-bun">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#top-bun"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="top-bun"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Add the top bun just like we did for the bottom one but make it rounder:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/081.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 716 392'%3E%3C/svg%3E" width="716" height="392"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Final tweaks
+
+        
+                <span class="anchor js-anchor" data-slug="final-tweaks">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#final-tweaks"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="final-tweaks"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Now that we have all the ingredients, we can fix the proportions, go back to the previous ingredients, and improve the general shape.</p>                                                                                                <p class="">Don't forget to save.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Materials
+
+        
+                <span class="anchor js-anchor" data-slug="materials">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#materials"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="materials"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">It's time to add some colors and surface properties to our hamburger. For simplicity reasons, we won't apply textures or use painting.</p>                                                                                                <p class="">We need 3 materials —one for the buns, one for the meat and one for the cheese.</p>                                                                                                <p class="">Select the bottom bun and go to the <code spellcheck="false">Material Properties</code> panel:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/082.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 73 33'%3E%3C/svg%3E" width="73" height="33"></span>
+</p>                                                                                                <p class="">You should have no material associated with the bun. If you have one, click on it and press the <code spellcheck="false">-</code> button.</p>                                                                                                <p class="">To create a new material, click on the <code spellcheck="false">New</code> button:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/083.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 268 159'%3E%3C/svg%3E" width="268" height="159"></span>
+</p>                                                                                                <p class="">It's good practice to rename materials. Double click on its name and call it <code spellcheck="false">BunMaterial</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/084.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 181 45'%3E%3C/svg%3E" width="181" height="45"></span>
+</p>                                                                                                <p class="">Now, tweak the properties to get a tasty color. We only need to change the <code spellcheck="false">Base Color</code> and the <code spellcheck="false">Roughness</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/085.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 255 558'%3E%3C/svg%3E" width="255" height="558"></span>
+</p>                                                                                                <p class="">If you can't see the color on the <code spellcheck="false">3D Viewport</code>, it might be because you are not using proper shading. To change the shading, press <code spellcheck="false">Z</code> and choose <code spellcheck="false">Renderer</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/086.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 753 381'%3E%3C/svg%3E" width="753" height="381"></span>
+</p>                                                                                                <p class="">If the hamburger looks really dark, it's probably because of the light. Select the light, position it a little further away from the hamburger, go to the <code spellcheck="false">Object Data Properties</code> panel, and increase its power to <code spellcheck="false">5000</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/087.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 267 186'%3E%3C/svg%3E" width="267" height="186"></span>
+</p>                                                                                                <p class="">Repeat the material process for the meat and the cheese:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/088.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 618 347'%3E%3C/svg%3E" width="618" height="347"></span>
+</p>                                                                                                <p class="">For the top bun, you only need to select the <code spellcheck="false">BunMaterial</code> you already worked on:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/089.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 642 373'%3E%3C/svg%3E" width="642" height="373"></span>
+</p>                                                                                                <p class="">Take your time, delete and try again, until you get a delicious looking hamburger.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/090.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 308 96'%3E%3C/svg%3E" width="308" height="96"></span>
+</p>                                                                                                <p class="">You can even add other ingredients like salad, tomatoes, maybe a pickle slice if you're one of those people— but does anybody even likes pickles?</p>                                                                                                <p class="">Don't forget to save.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Export
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="6664">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:51:04</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="export">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#export"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="export"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">It's finally time to export our hamburger. Download and run the starter. The Three.js scene is ready, and the only thing left is to provide the model.</p>                                                                                                <p class="">Select all the ingredients of the hamburger. If you select other elements like lights or cameras, you might export them as well. That can be useful but not in our case.</p>                                                                                                <p class="">Go to <code spellcheck="false">File &gt; Export &gt; glTF 2.0 (.glb/.gltf)</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/091.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 534 519'%3E%3C/svg%3E" width="534" height="519"></span>
+</p>                                                                                                <p class="">A panel should open in the middle of the screen. Use it to navigate to the <code spellcheck="false">/static/models/</code> folder of the project (ignore the <code spellcheck="false">.gitkeep</code> file if you see it).</p>                                                                                                <p class="">In the bottom part of the panel, choose a name for your file. We will go for <code spellcheck="false">hamburger</code>. Do not add the extension:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/092.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 171 63'%3E%3C/svg%3E" width="171" height="63"></span>
+</p>                                                                                                <p class="">In the right section, we can choose the <code spellcheck="false">Format</code>. The choices correspond to the GLTF formats we talked about in the previous lesson. We will go for <code spellcheck="false">glTF Binary</code> because we don't have any texture, and we want the smallest possible file:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/093.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 334 210'%3E%3C/svg%3E" width="334" height="210"></span>
+</p>                                                                                                <p class="">For the rest of the properties, here are the settings:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/094.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 236 647'%3E%3C/svg%3E" width="236" height="647"></span>
+</p>                                                                                                <p class="">Most of those are obvious but here's the list</p>                                                                                                <ul class="">
+            <li><code spellcheck="false">Remember Export Settings</code>: To keep these settings the next time we export.</li>
+            <li><strong>Include:</strong>
+<code spellcheck="false">Selected Objects</code>: Only the selected objects.
+<code spellcheck="false">Custom Properties</code>: A text information that we can add to any object in Blender, but we didn't add any.
+<code spellcheck="false">Cameras</code>: The cameras.
+<code spellcheck="false">Punctual Lights</code>: The lights.</li>
+            <li><strong>Transform:</strong>
+<code spellcheck="false">+Y Up</code>: Convert the axes so that positive Y is the upper one —the default property for Three.js.</li>
+            <li><strong>Geometry:</strong>
+<code spellcheck="false">Apply Modifiers</code>: Applies the modifiers like the <code spellcheck="false">Subdivision Surface</code>. If you don't check this one, you'll end up with the original cubes instead of your round buns.
+<code spellcheck="false">UVs</code>: Adds the UV coordinates. These are the coordinates that Three.js —and other environments— use to apply textures on a geometry. Because we don't have textures, we don't need those coordinates.
+<code spellcheck="false">Normals</code>: The outside direction of each face. We do need this one if we want the light to work properly.
+<code spellcheck="false">Tangents</code>: Works in tandem with the normals, but they are perpendicular to them.
+<code spellcheck="false">Vertex Colors</code>: The color associated with each vertex. Useful if we painted the vertices, but we didn't.
+<code spellcheck="false">Materials</code>: The different materials we used.
+<code spellcheck="false">Compression</code>: The legendary Draco compression.</li>
+            <li><strong>Animation:</strong>
+Everything related to the animations, but we don't need any of those because we don't have animations.</li>
+    </ul>                                                                                                <p class="">Click <code spellcheck="false">Export glTF 2.0</code> and check the file. The file size should be pretty light. Try to export the same hamburger without the <code spellcheck="false">compression</code>, and it should be much bigger. In a real project, this would be when you have to decide between using the compressed version and win a few <code spellcheck="false">kB</code> load the whole Draco decoder or go for the uncompressed version.</p>                                                                                                <p class="">It doesn't matter as long as we have our file.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Test in Three.js
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="7068">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:57:48</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="test-in-three-js">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#test-in-three-js"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="test-in-three-js"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Run the project and change the hamburger path if needed:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/hamburger.glb',
+
+// ...</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/22/095.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should see your burger in your Three.js scene.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Go further
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="7108">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:58:28</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="go-further">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#go-further"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="go-further"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">There are tons of great online tutorials, and most of them are free. Here's a non-exhaustive list of ressources you can use:</p>                                                                                                <ul class="">
+            <li>Blender Youtube Channel: <a href="https://www.youtube.com/user/BlenderFoundation" target="_blank">https://www.youtube.com/user/BlenderFoundation</a></li>
+            <li>Blender Guru Youtube Channel: <a href="https://www.youtube.com/channel/UCOKHwx1VCdgnxwbjyb9Iu1g" target="_blank">https://www.youtube.com/channel/UCOKHwx1VCdgnxwbjyb9Iu1g</a></li>
+            <li>Grant Abbitt Youtube Channel: <a href="https://www.youtube.com/channel/UCZFUrFoqvqlN8seaAeEwjlw" target="_blank">https://www.youtube.com/channel/UCZFUrFoqvqlN8seaAeEwjlw</a></li>
+            <li>CGFastTrack: <a href="https://www.youtube.com/c/CGFastTrack/videos" target="_blank">https://www.youtube.com/c/CGFastTrack/videos</a></li>
+            <li>CGCookie: <a href="https://cgcookie.com/" target="_blank">https://cgcookie.com/</a></li>
+    </ul>                                                                                                <p class="">Make sure always to follow tutorials using at least version 2.8 of Blender.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Environment map</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/environment-map" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/22/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(289deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

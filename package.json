@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"*.{json,js,md}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"*.{json,js,md}\"",
+    "load-model": "node src/helpers/BlenderLoader.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -19,7 +20,9 @@
     "@vitejs/plugin-react": "^5.1.4",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
+    "playwright": "^1.58.2",
     "prettier": "^3.8.1",
+    "turndown": "^7.2.2",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1"

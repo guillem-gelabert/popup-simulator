@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>47. intro and loading progress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/performance-tips"><div class="sibling-info"><div class="sibling-label">46.</div><div class="sibling-title">Performance tips</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">47.</div><h2 class="title">Intro and loading progress</h2><p class="difficulty">Difficulty <span class="value">
+                                Medium
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/mixing-html-and-webgl"><div class="sibling-info"><div class="sibling-label">48.</div><div class="sibling-title">Mixing HTML and WebGL</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/31/47-intro-and-loading-progress.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/31/47-intro-and-loading-progress-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/31" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Until now, all we had was a WebGL canvas on our page with things showing up once they are ready.</p>                                                                                <p class="">In this lesson, we will learn how to add a very simple loader composed of a bar that fills while the assets are loading. The whole scene will be black and only show once everything is loaded with a nice fade.</p>                                                                                <p class="">For the loader, we will use HTML and CSS. That is an excellent opportunity to see how to combine HTML with WebGL.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="61">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:01</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Our starter contains what we did in the Realistic Render lesson with the Flight Helmet.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Overlay
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="82">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:22</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="overlay">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#overlay"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="overlay"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">First, we need a way to fade the scene. There are many ways of doing so. We could animate the <code spellcheck="false">&lt;canvas&gt;</code>'s CSS <code spellcheck="false">opacity</code>. We could also put a black  <code spellcheck="false">&lt;div&gt;</code> above the <code spellcheck="false">&lt;canvas&gt;</code> and animate its CSS <code spellcheck="false">opacity</code>. But instead, we are going to keep things inside the WebGL and draw a black rectangle that covers the whole render and fade it out when we need it.</p>                                                                                <p class="">The problem is: how do we draw a rectangle in front of the camera. With the knowledge we have now, we could create a plane and put it right inside of the <code spellcheck="false">camera</code> instead of the <code spellcheck="false">scene</code>, it should work fine because <code spellcheck="false">camera</code> inherit from <code spellcheck="false">Object3D</code>, but it looks a bit patched up.</p>                                                                                <p class="">Instead, we will draw a plane that doesn't follow the rules of position, perspective, and projection so that it just get drawn in front of the view. Don't worry; it's easier than what you might think.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Base plane
+
+        
+                <span class="anchor js-anchor" data-slug="base-plane">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#base-plane"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="base-plane"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">First, we are going to start from a classic plane.</p>                                                                                <p class="">Create a <a href="https://threejs.org/docs/index.html#api/en/geometries/PlaneGeometry" target="_blank">PlaneGeometry</a>, a <a href="https://threejs.org/docs/#api/en/materials/MeshBasicMaterial" target="_blank">MeshBasicMaterial</a> and a <a href="https://threejs.org/docs/#api/en/objects/Mesh" target="_blank">Mesh</a>. Then add it all to the scene:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Overlay
+ */
+const overlayGeometry = new THREE.PlaneGeometry(1, 1, 1, 1)
+const overlayMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
+scene.add(overlay)</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">The plane should be visible from the other side of the helmet.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Fill the render
+
+        
+                <span class="anchor js-anchor" data-slug="fill-the-render">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fill-the-render"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fill-the-render"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">We now want this plane to be always in front of the camera. We want it to fill the render regardless of the camera position. To do that, we are going to use a <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a>.</p>                                                                                <p class="">Replace the <a href="https://threejs.org/docs/#api/en/materials/MeshBasicMaterial" target="_blank">MeshBasicMaterial</a> by a <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> and write the default shaders that we have learned previously with the <code spellcheck="false">vertexShader</code> property and the <code spellcheck="false">fragmentShader</code> property. You can try to do this from memory but don't be frustrated if you can't. It takes time:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    vertexShader: `
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        void main()
+        {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    `
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">You should get the same result, but this time, we have control over the shaders.</p>                                                                                <p class="">To make the plane fill the render, we need to <strong>not</strong> apply the matrices:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    vertexShader: `
+        void main()
+        {
+            gl_Position = vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        void main()
+        {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    `
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">Now you get a big rectangle in the middle. Neither its position, the camera position, the field of view or anything else transform it because none of the matrices are used.</p>                                                                                <p class="">The coordinates of the plane's vertices go from <code spellcheck="false">-0.5</code> to <code spellcheck="false">+0.5</code> because our plane has a size of <code spellcheck="false">1</code>.</p>                                                                                <p class="">The vertex shader, stripped like that, draws the triangles on the screen in the specified coordinates without considering anything else. We can see these triangles by setting the <code spellcheck="false">wireframe</code> property to <code spellcheck="false">true</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    wireframe: true,
+    // ...
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">Comment or remove the <code spellcheck="false">wireframe</code>.</p>                                                                                <p class="">To get a bigger rectangle, we need the coordinates to go from <code spellcheck="false">-1</code> to <code spellcheck="false">+1</code>. To do that, double the size of the <a href="https://threejs.org/docs/index.html#api/en/geometries/PlaneGeometry" target="_blank">PlaneGeometry</a>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1)</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">The rectangle is now filling the whole render.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Color and alpha
+
+        
+                <span class="anchor js-anchor" data-slug="color-and-alpha">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#color-and-alpha"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="color-and-alpha"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Let's say instead of this red color, we want black.</p>                                                                                <p class="">Change the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    // ...
+    fragmentShader: `
+        void main()
+        {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+    `
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">Everything appears to be black.</p>                                                                                <p class="">Now, we want to be able to control the alpha. As you know, the fourth value of the <code spellcheck="false">gl_FragColor</code>.</p>                                                                                <p class="">Set this fourth parameter to <code spellcheck="false">0.5</code> to see if it's working:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    // ...
+    fragmentShader: `
+        void main()
+        {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.5);
+        }
+    `
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">Unfortunately, everything is still fully black, and it's because we forgot an easy to forget a thing. We need to set the <code spellcheck="false">transparent</code> property to <code spellcheck="false">true</code> on our <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    // ...
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">The whole scene should look darker.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Uniform
+
+        
+                <span class="anchor js-anchor" data-slug="uniform">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#uniform"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="uniform"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Now that we have our overlay set, we need a way to control the alpha value. We are going to use a uniform.</p>                                                                                <p class="">Add a <code spellcheck="false">uAlpha</code> uniform as we did before:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    // ...
+    uniforms:
+    {
+        uAlpha: { value: 0.5 }
+    },
+    // ...
+})</code></pre>                                                                                <p class="">Then use it in the <code spellcheck="false">fragmentShader</code> instead of the raw <code spellcheck="false">0.5</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    // ...
+    fragmentShader: `
+        uniform float uAlpha;
+
+        void main()
+        {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
+        }
+    `
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/009.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">You should get the same result, but we can control the alpha directly from the JavaScript with the <code spellcheck="false">uAlpha</code> uniform this time.</p>                                                                                <p class="">Let's change the value of that uniform to <code spellcheck="false">1</code> to start with an entirely black screen.</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const overlayMaterial = new THREE.ShaderMaterial({
+    // ...
+    uniforms:
+    {
+        uAlpha: { value: 1 }
+    },
+    // ...
+})</code></pre>                                                                                
+<h3 class="title has-anchor ">
+    
+    Loading
+
+        
+                <span class="anchor js-anchor" data-slug="loading">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#loading"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="loading"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Now that we have our overlay ready to be animated, we want to know when everything is loaded.</p>                                                                                <p class="">While there is only one model in the scene, we are genuinely loading many assets. We are loading the 6 images that compose the environment map, the model's geometries, and all the textures used in the model.</p>                                                                                <p class="">To load these assets, we used a <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> and a <a href="https://threejs.org/docs/#api/en/loaders/CubeTextureLoader" target="_blank">CubeTextureLoader</a>. Both can receive a <a href="https://threejs.org/docs/#api/en/loaders/managers/LoadingManager" target="_blank">LoadingManager</a> as parameter. That <a href="https://threejs.org/docs/#api/en/loaders/managers/LoadingManager" target="_blank">LoadingManager</a> —as we saw at the beginning of the course— can be used to stay informed of the global loading progress.</p>                                                                                <p class="">Instantiate a <a href="https://threejs.org/docs/#api/en/loaders/managers/LoadingManager" target="_blank">LoadingManager</a> and use it in the <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> and <a href="https://threejs.org/docs/#api/en/loaders/CubeTextureLoader" target="_blank">CubeTextureLoader</a>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Loaders
+ */
+const loadingManager = new THREE.LoadingManager()
+const gltfLoader = new GLTFLoader(loadingManager)
+const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager)</code></pre>                                                                                <p class="">Nothing should have changed, but we can now send two functions to the <a href="https://threejs.org/docs/#api/en/loaders/managers/LoadingManager" target="_blank">LoadingManager</a>.</p>                                                                                <p class="">The first one will be triggered when everything is loaded, and the second one will be trigger when the loading progress.</p>                                                                                <p class="">Add these two functions with the following parameters:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // Loaded
+    () =&gt;
+    {
+        console.log('loaded')
+    },
+
+    // Progress
+    () =&gt;
+    {
+        console.log('progress')
+    }
+)</code></pre>                                                                                <p class="">You should get multiple <code spellcheck="false">"progress"</code> in the logs and one <code spellcheck="false">"loaded"</code> at the end.</p>                                                                                <p class="">The progress function will be helpful later. For now, all we need is the loaded function.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Animate
+
+        
+                <span class="anchor js-anchor" data-slug="animate">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#animate"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="animate"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">To fade out the overlay, we need a way to animate the <code spellcheck="false">uAlpha</code> uniform value. While this is a little far-fetched, just for that, we will use the GSAP library as we did at the beginning of the course.</p>                                                                                <p class="">First, in the terminal, install the <code spellcheck="false">gsap</code> library with <code spellcheck="false">npm install --save gsap@3.12</code> —relaunch the server if you stopped it.</p>                                                                                <p class="">Now that we have <code spellcheck="false">gsap</code> in the dependencies, we can import it:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { gsap } from 'gsap'</code></pre>                                                                                <p class="">Finally, we can use it to animate the <code spellcheck="false">uAlpha</code> uniform value in the loaded function:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // Loaded
+    () =&gt;
+    {
+        gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 })
+    },
+
+    // ...
+)</code></pre>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/31/010.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                <p class="">The overlay should fade out nicely once everything is loaded.</p>                                    
+                                                                                                        
+<h2 class="title has-anchor ">
+    
+    Loading bar
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1200">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">20:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="loading-bar">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#loading-bar"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="loading-bar"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The assets are quite heavy, and the whole project weighs around 50MB. The model could use some optimizations, but this is not the subject of the lesson. It's the perfect opportunity to see the assets loading with a nice loading bar.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Simulating a normal bandwidth
+
+        
+                <span class="anchor js-anchor" data-slug="simulating-a-normal-bandwidth">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#simulating-a-normal-bandwidth"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="simulating-a-normal-bandwidth"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The problem is that we are testing in local, and everything loads remarkably fast. If you are using Chrome, you can simulate a slower bandwidth.</p>                                                                                                <p class="">The following instructions concern Chrome, but all those features are available in Firefox too.</p>                                                                                                <p class="">In the <strong>Developer Tools</strong> panel, go to the <strong>Network</strong> tab.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 145 86'%3E%3C/svg%3E" width="145" height="86"></span>
+</p>                                                                                                <p class="">First, check the <strong>Disable cache</strong>.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 54'%3E%3C/svg%3E" width="180" height="54"></span>
+</p>                                                                                                <p class="">This will force the assets to load without cache like if it was the first time you visite the website.</p>                                                                                                <p class="">Then, we need a way to throttle the bandwidth. To do that, click on the dropdown menu with the <strong>Online</strong> value.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/013.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 289 88'%3E%3C/svg%3E" width="289" height="88"></span>
+</p>                                                                                                <p class="">Here, we can choose various throttle values. Unfortunately, the available options don't fit the project.</p>                                                                                                <p class="">To add a custom value, click on <strong>Add</strong>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/014.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 227 104'%3E%3C/svg%3E" width="227" height="104"></span>
+</p>                                                                                                <p class="">In the panel that should open, click on <strong>Add custom profile...</strong>, choose a name like "Pretty fast" and set the <strong>Download</strong> value to <code spellcheck="false">100000</code>.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/015.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 655 278'%3E%3C/svg%3E" width="655" height="278"></span>
+</p>                                                                                                <p class="">The meaning of this value isn't that important as long as we have time to see the assets loading. For a typical project, you should create a lower value that simulates an ADSL connexion.</p>                                                                                                <p class="">Save it, close the panel, and choose this value in the dropdown menu.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/016.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 211 235'%3E%3C/svg%3E" width="211" height="235"></span>
+</p>                                                                                                <p class="">The network now simulates a pretty fast bandwidth.</p>                                                                                                <p class="">If you reload, you'll see that you now have to wait for something like 3 seconds before the overlay fade out.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Create the HTML loading bar
+
+        
+                <span class="anchor js-anchor" data-slug="create-the-html-loading-bar">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#create-the-html-loading-bar"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="create-the-html-loading-bar"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Now that we can test the loading progress, it's time to add the loading bar. This time, for the sake of the lesson, we will add this bar in HTML but we could have create a new plane with a shader animating it like we did for the overlay.</p>                                                                                                <p class="">Open the <code spellcheck="false">/src/index.html</code> file and add a <code spellcheck="false">&lt;div&gt;</code> with a <code spellcheck="false">loading-bar</code> class right after the <code spellcheck="false">&lt;canvas&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-html "><code spellcheck="false">&lt;!-- ... --&gt;
+&lt;body&gt;
+    &lt;canvas class="webgl"&gt;&lt;/canvas&gt;
+    &lt;div class="loading-bar"&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>                                                                                                <p class="">Then, in the <code spellcheck="false">/src/style.css</code> file, position the bar, so it fits the whole width in the middle of the screen:</p>                                                                                                <pre contenteditable="" class="language-css "><code spellcheck="false">.loading-bar
+{
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    background: #ffffff;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/017.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">That is classic CSS and we won't explain it.</p>                                                                                                <p class="">We want the bar to fill from the left. To do that, we are going to scale it using the <code spellcheck="false">transform</code> CSS property.</p>                                                                                                <p class="">Set a <code spellcheck="false">transform</code> property with a <code spellcheck="false">scaleX</code>, and a value of <code spellcheck="false">0.3</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">.loading-bar
+{
+    /* ... */
+    transform: scaleX(0.3);
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/018.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The scale worked; sadly, the bar seems to scale in its middle. To change that, use the <code spellcheck="false">transform-origin</code> property:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">.loading-bar
+{
+    /* ... */
+    transform: scaleX(0.3);
+    transform-origin: top left;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/31/019.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The bar should stay on the left.</p>                                                                                                <p class="">Finally, set the <code spellcheck="false">scaleX</code> value to <code spellcheck="false">0</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">.loading-bar
+{
+    /* ... */
+    transform: scaleX(0);
+    transform-origin: top left;
+}</code></pre>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Update the bar
+
+        
+                <span class="anchor js-anchor" data-slug="update-the-bar">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#update-the-bar"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="update-the-bar"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Now that we have the bar let's get back to the <code spellcheck="false">/src/script.js</code> and animate it when the loading progress.</p>                                                                                                <p class="">To know when the loading progress, we can use the second function we sent to the <a href="https://threejs.org/docs/#api/en/loaders/managers/LoadingManager" target="_blank">LoadingManager</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // ...
+
+    // Progress
+    () =&gt;
+    {
+        console.log('progress')
+    }
+)</code></pre>                                                                                                <p class="">This function will be triggered each time an asset has been loaded and can have 3 arguments:</p>                                                                                                <ul class="">
+            <li>The URL of the assets</li>
+            <li>How much assets were loaded</li>
+            <li>The total number of assets to load</li>
+    </ul>                                                                                                <p class="">You can test these values:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // ...
+
+    // Progress
+    (itemUrl, itemsLoaded, itemsTotal) =&gt;
+    {
+        console.log(itemUrl, itemsLoaded, itemsTotal)
+    }
+)</code></pre>                                                                                                <p class="">You should see each asset load in the logs.</p>                                                                                                <p class="">Now, we need to update the <code spellcheck="false">scaleX</code> value. To do that, we just need to update the <code spellcheck="false">loading-bar</code> element style.</p>                                                                                                <p class="">First, let's retrieve that element. To do so, we will use <code spellcheck="false">document.querySelector</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingBarElement = document.querySelector('.loading-bar')</code></pre>                                                                                                <p class="">That is classic JavaScript technique to get an element with a selector—like in CSS.</p>                                                                                                <p class="">In the progress function, we first need to calculate the progress ratio. This value should go from <code spellcheck="false">0</code> when no asset is loaded to <code spellcheck="false">1</code> when all assets are loaded.</p>                                                                                                <p class="">To calculate this ratio, we can simply divide  <code spellcheck="false">itemsLoaded</code> by <code spellcheck="false">itemsTotal</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // ...
+
+    // Progress
+    (itemUrl, itemsLoaded, itemsTotal) =&gt;
+    {
+        const progressRatio = itemsLoaded / itemsTotal
+        console.log(progressRatio)
+    }
+)</code></pre>                                                                                                <p class="">You should see the <code spellcheck="false">progressRatio</code> going from <code spellcheck="false">0</code> to <code spellcheck="false">1</code> in the logs.</p>                                                                                                <p class="">We can now update the <code spellcheck="false">transform</code> of the <code spellcheck="false">loadingBarElement</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // ...
+
+    // Progress
+    (itemUrl, itemsLoaded, itemsTotal) =&gt;
+    {
+        const progressRatio = itemsLoaded / itemsTotal
+        loadingBarElement.style.transform = `scaleX(${progressRatio})`
+    }
+)</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/31/020.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The bar should fill according to the loading progress.</p>                                                                                                <p class="">Don't forget to keep the <strong>Developer tools</strong> open with the <strong>Disable cache</strong> checked and the throttling set to the <strong>Pretty fast</strong>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Smooth the animation
+
+        
+                <span class="anchor js-anchor" data-slug="smooth-the-animation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#smooth-the-animation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="smooth-the-animation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Let's make the animation a little more flowing by smoothing the transition. There are many ways of doing so, but the most simplistic solution is to add a <code spellcheck="false">transition</code> to the CSS.</p>                                                                                                <p class="">In the <code spellcheck="false">/src/style.css</code> file, add a <code spellcheck="false">0.5s</code> transition on the <code spellcheck="false">transform</code> property:</p>                                                                                                <pre contenteditable="" class="language-css "><code spellcheck="false">.loading-bar
+{
+    /* ... */
+    transition: transform 0.5s;
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/31/021.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You should have the same result but with a smoother animation on the bar.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Hide the bar
+
+        
+                <span class="anchor js-anchor" data-slug="hide-the-bar">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#hide-the-bar"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="hide-the-bar"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">There are many ways to hide the bar once everything is loaded, but to make it cool and keep the flow, we will make the bar disappear on the right.</p>                                                                                                <p class="">First, in the <code spellcheck="false">/src/style.css</code> file, add a new selector with the following properties:</p>                                                                                                <pre contenteditable="" class="language-css "><code spellcheck="false">.loading-bar.ended
+{
+    transform: scaleX(0);
+    transform-origin: 100% 0;
+    transition: transform 1.5s ease-in-out;
+}</code></pre>                                                                                                <p class="">Be sure not to add a space between <code spellcheck="false">.loading-bar</code> and <code spellcheck="false">.ended</code> so that the properties only apply when both classes are present on the element.</p>                                                                                                <p class="">The properties simply scale the bar to <code spellcheck="false">0</code> with a transformation aligned to the right and a more extended transition using an <code spellcheck="false">ease-in-out</code> timing function.</p>                                                                                                <p class="">All we need to do now is add the <code spellcheck="false">ended</code> class to the element when everything is loaded.</p>                                                                                                <p class="">We can do that in the loaded function with the <code spellcheck="false">classList.add(...)</code> method:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // Loaded
+    () =&gt;
+    {
+        gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay: 1 })
+
+        loadingBarElement.classList.add('ended')
+    },
+
+    // ...
+)</code></pre>                                                                                                <p class="">Unfortunately, this won't work because there is still a <code spellcheck="false">scaleX</code> applied to the element from the progress function.</p>                                                                                                <p class="">We simply need to set the transform to an empty string to solve that:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // Loaded
+    () =&gt;
+    {
+        gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay: 1 })
+
+        loadingBarElement.classList.add('ended')
+        loadingBarElement.style.transform = ''
+    },
+
+    // ...
+)</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/31/022.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The bar should disappear on the right as planned. The animation looks a little jumpy, which isn't ideal.</p>                                                                                                <p class="">There are two reasons for that. First, it takes time to render the elements on the scene for the first time, and the computer freeze for a moment. Secondly, we added a <code spellcheck="false">0.5s</code> transition to the bar. That means that when the loaded function is triggered, the bar didn't finish its transition to the end.</p>                                                                                                <p class="">To solve these problems, we can ask the JavaScript to wait for <code spellcheck="false">0.5s</code> before starting the intro animation with a <code spellcheck="false">setTimeout(...)</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const loadingManager = new THREE.LoadingManager(
+    // Loaded
+    () =&gt;
+    {
+        window.setTimeout(() =&gt;
+        {
+            gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay: 1 })
+
+            loadingBarElement.classList.add('ended')
+            loadingBarElement.style.transform = ''
+        }, 500)
+    },
+
+    // ...
+)</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/31/023.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The bar now disappears more smoothly.</p>                                                                                                <p class="">And that's it. You now have a less brutal intro with an HTML loading bar.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Mixing HTML and WebGL</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/mixing-html-and-webgl" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/31/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(160deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

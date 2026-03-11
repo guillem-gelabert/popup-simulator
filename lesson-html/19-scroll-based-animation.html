@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>19. scroll based animation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/galaxy-generator"><div class="sibling-info"><div class="sibling-label">18.</div><div class="sibling-title">Galaxy Generator</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">19.</div><h2 class="title">Scroll based animation</h2><p class="difficulty">Difficulty <span class="value">
+                                Medium
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/physics"><div class="sibling-info"><div class="sibling-label">20.</div><div class="sibling-title">Physics</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/39/19-scroll-based-animation.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/39/19-scroll-based-animation-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/39" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Having an experience composed of only WebGL is great, but sometimes, you'll want the experience to be part of a classic website.</p>                                                                                <p class="">The experience can be in the background to add some beauty to the page, but then, you'll want that experience to integrate properly with the HTML content.</p>                                                                                <p class="">In this lesson, we will learn how to use Three.js as a background of a classic HTML page. We will make the camera translate to follow the scroll. We will discover some tricks to make this scroll more immersive. We will add a cool parallax animation based on the cursor position. And finally, we will trigger some animations when arriving at the corresponding sections.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">This lesson is a good opportunity to practice many of the techniques we've already learned. Instead of having the environment already set up, we will do most of the work ourselves.</p>                                                                                <p class="">The <code spellcheck="false">OrbitControls</code> has been removed because we want the camera to move according to the scroll and to not let the user rotate about as in prior lessons.</p>                                                                                <p class="">lil-gui is already available and one color as been created to be used later:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Debug
+ */
+const gui = new GUI()
+
+const parameters = {
+    materialColor: '#ffeded'
+}
+
+gui.addColor(parameters, 'materialColor')</code></pre>                                                                                <p class="">Some very simple HTML content has been setup already. Currently, you can only see one title but there are two sections right below. We can't see them because the scroll is blocked.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    HTML Scroll
+
+                
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="html-scroll">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#html-scroll"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="html-scroll"></span>
+        </span>
+        
+</h2>
+
+                                                                                
+<h3 class="title has-anchor ">
+    
+    Activate the scroll
+
+        
+                <span class="anchor js-anchor" data-slug="activate-the-scroll">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#activate-the-scroll"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="activate-the-scroll"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Earlier in the course, we deactivated the scroll using this CSS:</p>                                                                                <pre contenteditable="" class="language-css "><code spellcheck="false">html,
+body
+{
+    overflow: hidden;
+}</code></pre>                                                                                <p class="">To reactivate it, remove the <code spellcheck="false">overflow</code> line in <code spellcheck="false">/src/style.css</code>.</p>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/001.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                <p class="">You should be able to scroll and see the two other sections below.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Fix the elastic scroll
+
+        
+                <span class="anchor js-anchor" data-slug="fix-the-elastic-scroll">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fix-the-elastic-scroll"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fix-the-elastic-scroll"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">In some environments, you might notice that, if you scroll too far, you get a kind of elastic animation when the page goes beyond the limit.</p>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/002.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                <p class="">While this is a cool feature, by default, the back of the page is white and doesn't match our experience.</p>                                                                                <p class="">To fix that, we could have set the <code spellcheck="false">background-color</code> of the page to the same color as the <code spellcheck="false">clearColor</code> of the <code spellcheck="false">renderer</code> . Instead, we are going to make the <code spellcheck="false">clearColor</code> transparent and only set the <code spellcheck="false">background-color</code> on the page.</p>                                                                                <p class="">To do that, in <code spellcheck="false">/src/script.js</code>, you need to set the <code spellcheck="false">alpha</code> property to <code spellcheck="false">true</code> on the <code spellcheck="false">WebGLRenderer</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    alpha: true
+})</code></pre>                                                                                <p class="">By default, the clear alpha value is <code spellcheck="false">0</code> which is why we didn't have to set it ourselves. Telling the renderer to handle alpha is enough. But if you want to change that value, you can do it with <code spellcheck="false">setClearAlpha</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">renderer.setClearAlpha(0)</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">We can now see the back of the page which is white.</p>                                                                                <p class="">In <code spellcheck="false">/src/style.css</code>, add a <code spellcheck="false">background-color</code> to the <code spellcheck="false">html</code> in CSS:</p>                                                                                <pre contenteditable="" class="language-css "><code spellcheck="false">html
+{
+    background: #1e1a20;
+}</code></pre>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/004.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                <p class="">We get a nice uniform background color and the elastic scroll isn't an issue anymore.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Objects
+
+                
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="objects">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#objects"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="objects"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">We are going to create an object for each section to illustrate each of them.</p>                                                                                <p class="">To keep things simple, we will use Three.js primitives, but you can create whatever you want. And later in the course, you'll learn how to import custom models into the scene.</p>                                                                                <p class="">In <code spellcheck="false">/src/script.js</code>, remove the code for the cube. In its place, create three <a href="https://threejs.org/docs/index.html?q=mesh#api/en/objects/Mesh" target="_blank">Meshes</a> using a <a href="https://threejs.org/docs/index.html?q=torus#api/en/geometries/TorusGeometry" target="_blank">TorusGeometry</a>, a <a href="https://threejs.org/docs/index.html?q=ConeGeometry#api/en/geometries/ConeGeometry" target="_blank">ConeGeometry</a> and a <a href="https://threejs.org/docs/index.html?q=torusk#api/en/geometries/TorusKnotGeometry" target="_blank">TorusKnotGeometry</a>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Objects
+ */
+// Meshes
+const mesh1 = new THREE.Mesh(
+    new THREE.TorusGeometry(1, 0.4, 16, 60),
+    new THREE.MeshBasicMaterial({ color: '#ff0000' })
+)
+const mesh2 = new THREE.Mesh(
+    new THREE.ConeGeometry(1, 2, 32),
+    new THREE.MeshBasicMaterial({ color: '#ff0000' })
+)
+const mesh3 = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
+    new THREE.MeshBasicMaterial({ color: '#ff0000' })
+)
+
+scene.add(mesh1, mesh2, mesh3)</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">All the objects are, of course, on top of each other. We will fix that later.</p>                                                                                <p class="">Again, in order to keep things simple, our code will be a bit redundant. But don't hesitate to use arrays or other code structuring solutions if you have more sections.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Material
+
+        
+                <span class="anchor js-anchor" data-slug="material">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#material"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="material"></span>
+        </span>
+        
+</h3>
+
+                                                                                
+<h4 class="title has-anchor ">
+    
+    Base material
+
+        
+                <span class="anchor js-anchor" data-slug="base-material">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#base-material"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="base-material"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">We are going to use the <a href="https://threejs.org/docs/index.html?q=toon#api/en/materials/MeshToonMaterial" target="_blank">MeshToonMaterial</a> on all three <a href="https://threejs.org/docs/index.html?q=mesh#api/en/objects/Mesh" target="_blank">Meshes</a>.</p>                                                                                <p class="">As in the <strong>Materials</strong> lesson, we are going to create one instance of the material and use it for all three <a href="https://threejs.org/docs/index.html?q=mesh#api/en/objects/Mesh" target="_blank">Meshes</a>.</p>                                                                                <p class="">When creating the <a href="https://threejs.org/docs/index.html?q=toon#api/en/materials/MeshToonMaterial" target="_blank">MeshToonMaterial</a>, use the <code spellcheck="false">parameters.materialColor</code> for the <code spellcheck="false">color</code> property and apply it to all 3 <a href="https://threejs.org/docs/index.html?q=mesh#api/en/objects/Mesh" target="_blank">Meshes</a>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Material
+const material = new THREE.MeshToonMaterial({ color: parameters.materialColor })
+
+// Meshes
+const mesh1 = new THREE.Mesh(
+    new THREE.TorusGeometry(1, 0.4, 16, 60),
+    material
+)
+const mesh2 = new THREE.Mesh(
+    new THREE.ConeGeometry(1, 2, 32),
+    material
+)
+const mesh3 = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
+    material
+)
+
+scene.add(mesh1, mesh2, mesh3)</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">Unfortunately, it seems that the objects are now black.</p>                                                                                <p class="">The reason is that the <a href="https://threejs.org/docs/index.html?q=toon#api/en/materials/MeshToonMaterial" target="_blank">MeshToonMaterial</a> is one of the Three.js materials that appears only when there is light.</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Light
+
+        
+                <span class="anchor js-anchor" data-slug="light">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#light"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="light"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">Add one <a href="https://threejs.org/docs/index.html?q=Direc#api/en/lights/DirectionalLight" target="_blank">DirectionalLight</a> to the scene:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Lights
+ */
+const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
+directionalLight.position.set(1, 1, 0)
+scene.add(directionalLight)</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">You should now see your objects.</p>                                                                                <p class="">We are using the color stored in the <code spellcheck="false">parameters</code> object, but changing this value with the Tweaker doesn't change the material itself.</p>                                                                                <p class="">To fix that, we can listen to the change event on the already existing tweak and update the material accordingly:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui
+    .addColor(parameters, 'materialColor')
+    .onChange(() =&gt;
+    {
+        material.color.set(parameters.materialColor)
+    })</code></pre>                                                                                
+<h4 class="title has-anchor ">
+    
+    Gradient texture
+
+        
+                <span class="anchor js-anchor" data-slug="gradient-texture">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gradient-texture"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gradient-texture"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">As we saw in the <strong>Materials</strong> lesson, by default, the <a href="https://threejs.org/docs/index.html?q=toon#api/en/materials/MeshToonMaterial" target="_blank">MeshToonMaterial</a> will have one color for the part in the light and one darker color for the part in the shade.</p>                                                                                <p class="">We can improve that by providing a gradient texture.</p>                                                                                <p class="">Two gradient images are provided in the <code spellcheck="false">/static/textures/gradients/</code> folder.</p>                                                                                <p class="">Instantiate the <a href="https://threejs.org/docs/#api/en/loaders/TextureLoader" target="_blank">TextureLoader</a> before instantiating the <code spellcheck="false">material</code>. Then load the <code spellcheck="false">textures/gradients/3.jpg</code> texture:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Texture
+const textureLoader = new THREE.TextureLoader()
+const gradientTexture = textureLoader.load('textures/gradients/3.jpg')</code></pre>                                                                                <p class="">Use it in the <code spellcheck="false">gradientMap</code> property of the material:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Material
+const material = new THREE.MeshToonMaterial({
+    color: parameters.materialColor,
+    gradientMap: gradientTexture
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">Not the toon effect we were expecting.</p>                                                                                <p class="">The reason is that the texture is a very small image composed of 3 pixels going from dark to bright. By default, instead of picking the nearest pixel on the texture, WebGL will try to interpolate the pixels. That's usually a good idea for the look of our experiences, but in this case, it creates a gradient instead of a toon effect.</p>                                                                                <p class="">To fix that, we need to set the <code spellcheck="false">magFilter</code> of the texture to <code spellcheck="false">THREE.NearestFilter</code> so that the closest pixel is used without interpolating it with neighbor pixels:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const gradientTexture = textureLoader.load('textures/gradients/3.jpg')
+gradientTexture.magFilter = THREE.NearestFilter</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/009.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                <p class="">Much better, but we still need to position the meshes properly.</p>                                    
+                                                                                                        
+<h3 class="title has-anchor ">
+    
+    Position
+
+        
+                <span class="anchor js-anchor" data-slug="position">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#position"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="position"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">By default, in Three.js, the field of view is vertical. This means that if you put one object on the top part of the render and one object on the bottom part of the render and then you resize the window, you'll notice that the objects stay put at the top and at the bottom.</p>                                                                                                <p class="">To illustrate this, temporarily add this code:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">mesh1.position.y = 2
+mesh1.scale.set(0.5, 0.5, 0.5)
+
+mesh2.visible = false
+
+mesh3.position.y = - 2
+mesh3.scale.set(0.5, 0.5, 0.5)</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/010.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The torus stays at the top and the torus knot stays at the bottom. When you're done, remove the code above.</p>                                                                                                <p class="">This is good because it means that we only need to make sure that each object is far enough away from the other on the <code spellcheck="false">y</code> axis, so that we don't see them together.</p>                                                                                                <p class="">Create an <code spellcheck="false">objectsDistance</code> variable and choose a random value like <code spellcheck="false">2</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const objectsDistance = 2</code></pre>                                                                                                <p class="">Use that variable to position the meshes on the <code spellcheck="false">y</code> axis. The values must be negative so that the objects go down:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">mesh1.position.y = - objectsDistance * 0
+mesh2.position.y = - objectsDistance * 1
+mesh3.position.y = - objectsDistance * 2</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Increase the <code spellcheck="false">objectsDistance</code> until the objects are far enough apart. A good amount should be <code spellcheck="false">4</code>, but you can go back to change that value later.</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const objectsDistance = 4</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Now, we can only see the first object. The two others will be below. We will position them horizontally once we move the camera with the scroll and they appear again.</p>                                                                                                <p class="">The <code spellcheck="false">objectsDistance</code> will get handy a bit later, which is why we saved the value in a variable.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Permanent rotation
+
+        
+                <span class="anchor js-anchor" data-slug="permanent-rotation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#permanent-rotation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="permanent-rotation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">To give more life to the experience, we are going to add a permanent rotation to the objects.</p>                                                                                                <p class="">First, add the objects to a <code spellcheck="false">sectionMeshes</code> array:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const sectionMeshes = [ mesh1, mesh2, mesh3 ]</code></pre>                                                                                                <p class="">Then, in the <code spellcheck="false">tick</code> function, loop through the <code spellcheck="false">sectionMeshes</code> array and apply a slow rotation by using the <code spellcheck="false">elapsedTime</code> already available:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    const elapsedTime = clock.getElapsedTime()
+
+    // Animate meshes
+    for(const mesh of sectionMeshes)
+    {
+        mesh.rotation.x = elapsedTime * 0.1
+        mesh.rotation.y = elapsedTime * 0.12
+    }
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/013.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">All the meshes (though we can see only one here) should slowly rotate.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Camera
+
+                
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="camera">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#camera"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="camera"></span>
+        </span>
+        
+</h2>
+
+                                                                                                
+<h3 class="title has-anchor ">
+    
+    Scroll
+
+        
+                <span class="anchor js-anchor" data-slug="scroll">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#scroll"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="scroll"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">It's time to make the camera move with the scroll.</p>                                                                                                <p class="">First, we need to retrieve the scroll value. This can be done with the <code spellcheck="false">window.scrollY</code> property.</p>                                                                                                <p class="">Create a <code spellcheck="false">scrollY</code> variable and assign it <code spellcheck="false">window.scrollY</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Scroll
+ */
+let scrollY = window.scrollY</code></pre>                                                                                                <p class="">But then, we need to update that value when the user scrolls. To do that, listen to the <code spellcheck="false">'scroll'</code> event on <code spellcheck="false">window</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('scroll', () =&gt;
+{
+    scrollY = window.scrollY
+
+    console.log(scrollY)
+})</code></pre>                                                                                                <p class="">You should see the scroll value in the logs. Remove the <code spellcheck="false">console.log</code>.</p>                                                                                                <p class="">In the <code spellcheck="false">tick</code> function, use <code spellcheck="false">scrollY</code> to make the camera move (before doing the render):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    // ...
+
+    // Animate camera
+    camera.position.y = scrollY
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/014.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Not quite right yet. The camera is way too sensitive and going in the wrong direction. We need to work a little on that value.</p>                                                                                                <p class=""><code spellcheck="false">scrollY</code> is positive when scrolling down, but the camera should go down on the <code spellcheck="false">y</code> axis. Let's invert the value:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">camera.position.y = - scrollY</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/015.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Better, but still too sensitive. Here's why.</p>                                                                                                <p class=""><code spellcheck="false">scrollY</code> contains the amount of pixels that have been scrolled. If we scroll 1000 pixels (which is not that much), the camera will go down of 1000 units in the scene (which is a lot).</p>                                                                                                <p class="">Each section has exactly the same size as the viewport. This means that when we scroll the distance of one viewport height, the camera should reach the next object.</p>                                                                                                <p class="">To do that, we need to divide <code spellcheck="false">scrollY</code> by the height of the viewport which is <code spellcheck="false">sizes.height</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">camera.position.y = - scrollY / sizes.height</code></pre>                                                                                                <p class="">The camera is now going down of <code spellcheck="false">1</code> unit for each section scrolled. But the objects are currently separated by <code spellcheck="false">4</code> units which is the <code spellcheck="false">objectsDistance</code> variable:</p>                                                                                                <p class="">We need to multiply the value by <code spellcheck="false">objectsDistance</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">camera.position.y = - scrollY / sizes.height * objectsDistance</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/016.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">To put it in a nutshell, if the user scrolls down one section, then the camera will move down to the next object.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Position object horizontally
+
+        
+                <span class="anchor js-anchor" data-slug="position-object-horizontally">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#position-object-horizontally"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="position-object-horizontally"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Now is a good time to position the objects left and right to match the titles:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">mesh1.position.x = 2
+mesh2.position.x = - 2
+mesh3.position.x = 2</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/017.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Parallax
+
+        
+                <span class="anchor js-anchor" data-slug="parallax">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#parallax"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="parallax"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We call parallax the action of seeing one object through different observation points. This is done naturally by our eyes and it's how we feel the depth of things.</p>                                                                                                <p class="">To make our experience more immersive, we are going to apply this parallax effect by making the camera move horizontally and vertically according to the mouse movements. It'll create a natural interaction, and help the user feel the depth.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Cursor
+
+        
+                <span class="anchor js-anchor" data-slug="cursor">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#cursor"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="cursor"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">First, we need to retrieve the cursor position.</p>                                                                                                <p class="">To do that, create a <code spellcheck="false">cursor</code> object with <code spellcheck="false">x</code> and <code spellcheck="false">y</code> properties:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Cursor
+ */
+const cursor = {}
+cursor.x = 0
+cursor.y = 0</code></pre>                                                                                                <p class="">Then, listen to the <code spellcheck="false">mousemove</code> event on <code spellcheck="false">window</code> and update those values:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('mousemove', (event) =&gt;
+{
+    cursor.x = event.clientX
+    cursor.y = event.clientY
+
+    console.log(cursor)
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/018.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You should get the pixel positions of the cursor in the console.</p>                                                                                                <p class="">While we could use those values directly, it's always better to adapt them to the context.</p>                                                                                                <p class="">First, the amplitude depends on the size of the viewport and users with different screen resolutions will have different results. We can normalize the value (from <code spellcheck="false">0</code> to <code spellcheck="false">1</code>) by dividing them by the size of the viewport:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('mousemove', (event) =&gt;
+{
+    cursor.x = event.clientX / sizes.width
+    cursor.y = event.clientY / sizes.height
+
+    console.log(cursor)
+})</code></pre>                                                                                                <p class="">While this is better already, we can do even more.</p>                                                                                                <p class="">We know that the camera will be able to go as much on the left as on the right. This is why, instead of a value going from <code spellcheck="false">0</code> to <code spellcheck="false">1</code> it's better to have a value going from <code spellcheck="false">-0.5</code> to <code spellcheck="false">0.5</code>.</p>                                                                                                <p class="">To do that, subtract <code spellcheck="false">0.5</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('mousemove', (event) =&gt;
+{
+    cursor.x = event.clientX / sizes.width - 0.5
+    cursor.y = event.clientY / sizes.height - 0.5
+
+    console.log(cursor)
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/019.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">That's a clean value adapted to the context.</p>                                                                                                <p class="">Remove the <code spellcheck="false">console.log</code>.</p>                                                                                                <p class="">We can now use the cursor values in the <code spellcheck="false">tick</code> function. Create a <code spellcheck="false">parallaxX</code> and a <code spellcheck="false">parallaxY</code> variable and put the <code spellcheck="false">cursor.x</code> and <code spellcheck="false">cursor.y</code> in them:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    // ...
+
+    // Animate camera
+    camera.position.y = - scrollY / sizes.height * objectsDistance
+
+    const parallaxX = cursor.x
+    const parallaxY = cursor.y
+    camera.position.x = parallaxX
+    camera.position.y = parallaxY
+
+    // ...
+}</code></pre>                                                                                                <p class="">Unfortunately, we have two issues. The <code spellcheck="false">x</code> and <code spellcheck="false">y</code> axes don't seem synchronized in terms of direction. And, the camera scroll doesn't work anymore.</p>                                                                                                <p class="">Let's fix the first issue. When we move the cursor to the left, the camera seems to go to the left. Same thing for the right. But when we move the cursor up, the camera seems to move down and the opposite when moving the cursor down.</p>                                                                                                <p class="">To fix that weird feeling, invert the <code spellcheck="false">cursor.y</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const parallaxX = cursor.x
+const parallaxY = - cursor.y
+camera.position.x = parallaxX
+camera.position.y = parallaxY</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/020.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">For the second issue, the problem is that we update the <code spellcheck="false">camera.position.y</code> twice and the second one will replace the first one.</p>                                                                                                <p class="">To fix that, we are going to put the camera in a <a href="https://threejs.org/docs/index.html?q=group#api/en/objects/Group" target="_blank">Group</a> and apply the parallax on the group and not the camera itself.</p>                                                                                                <p class="">Right before instantiating the <code spellcheck="false">camera</code>, create the <a href="https://threejs.org/docs/index.html?q=group#api/en/objects/Group" target="_blank">Group</a>, add it to the scene and add the <code spellcheck="false">camera</code> to the <a href="https://threejs.org/docs/index.html?q=group#api/en/objects/Group" target="_blank">Group</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Camera
+ */
+// Group
+const cameraGroup = new THREE.Group()
+scene.add(cameraGroup)
+
+// Base camera
+const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100)
+camera.position.z = 6
+cameraGroup.add(camera)</code></pre>                                                                                                <p class="">This shouldn't change the result, but now, the camera is inside a group.</p>                                                                                                <p class="">In the <code spellcheck="false">tick</code> function, instead of applying the parallax on the camera, apply it on the <code spellcheck="false">cameraGroup</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    // ...
+
+    // Animate camera
+    camera.position.y = - scrollY / sizes.height * objectsDistance
+
+    const parallaxX = cursor.x
+    const parallaxY = - cursor.y
+    
+    cameraGroup.position.x = parallaxX
+    cameraGroup.position.y = parallaxY
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/021.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The scroll animation and parallax animation are now mixed together nicely. But we can do even better.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Easing
+
+        
+                <span class="anchor js-anchor" data-slug="easing">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#easing"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="easing"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">The parallax animation is a good start, but it feels a bit too mechanic. Having such a linear animation is impossible in real life for a number of reasons: the camera has weight, there is friction with the air and surfaces, muscles can't make such a linear movement, etc. This is why the movement feels a bit wrong. We are going to add some "easing" (also called "smoothing" or "lerping") and we are going to use a well-known formula.</p>                                                                                                <p class="">The idea behind the formula is that, on each frame, instead of moving the camera straight to the target, we are going to move it (let's say) a 10th closer to the destination. Then, on the next frame, another 10th closer. Then, on the next frame, another 10th closer.</p>                                                                                                <p class="">On each frame, the camera will get a little closer to the destination. But, the closer it gets, the slower it moves because it's always a 10th of the actual position toward the target position.</p>                                                                                                <p class="">First, we need to change the <code spellcheck="false">=</code> to <code spellcheck="false">+=</code> because we are adding to the actual position:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">cameraGroup.position.x += parallaxX
+    cameraGroup.position.y += parallaxY</code></pre>                                                                                                <p class="">Then, we need to calculate the distance from the actual position to the destination:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">cameraGroup.position.x += (parallaxX - cameraGroup.position.x)
+    cameraGroup.position.y += (parallaxY - cameraGroup.position.y)</code></pre>                                                                                                <p class="">Finally, we only want a 10th of that distance:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 0.1
+    cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 0.1</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/022.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The animation feels a lot smoother, but there is still a problem that some of you might have noticed.</p>                                                                                                <p class="">If you test the experience on a high frequency screen, the <code spellcheck="false">tick</code> function will be called more often and the camera will move faster toward the target. While this is not a big issue, it's not accurate and it's preferable to have the same result across devices as much as possible.</p>                                                                                                <p class="">To fix that, we need to use the time spent between each frame.</p>                                                                                                <p class="">Right after instantiating the <a href="https://threejs.org/docs/index.html?q=clock#api/en/core/Clock" target="_blank">Clock</a>, create a <code spellcheck="false">previousTime</code> variable:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const clock = new THREE.Clock()
+let previousTime = 0</code></pre>                                                                                                <p class="">At the beginning of the <code spellcheck="false">tick</code> function, right after setting the <code spellcheck="false">elapsedTime</code>, calculate the <code spellcheck="false">deltaTime</code> by subtracting the <code spellcheck="false">previousTime</code> from the <code spellcheck="false">elapsedTime</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+
+    // ...
+}</code></pre>                                                                                                <p class="">And then, update the <code spellcheck="false">previousTime</code> to be used on the next frame:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
+
+    console.log(deltaTime)
+
+    // ...
+}</code></pre>                                                                                                <p class="">You now have the time spent between the current frame and the previous frame in seconds. For high frequency screens, the value will be smaller because less time was needed.</p>                                                                                                <p class="">We can now use that <code spellcheck="false">deltaTime</code> on the parallax, but, because the <code spellcheck="false">deltaTime</code> is in seconds, the value will be very small (around <code spellcheck="false">0.016</code> for most common screens running at 60fps). Consequently, the effect will be very slow.</p>                                                                                                <p class="">To fix that, we can change <code spellcheck="false">0.1</code> to something like <code spellcheck="false">5</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 5 * deltaTime
+    cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 5 * deltaTime</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/023.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We now have a nice easing that will feel the same across different screen frequencies.</p>                                                                                                <p class="">Finally, now that we have the animation set properly, we can lower the amplitude of the effect:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const parallaxX = cursor.x * 0.5
+    const parallaxY = - cursor.y * 0.5</code></pre>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Particles
+
+                
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="particles">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#particles"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="particles"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">A good way to make the experience more immersive and to help the user feel the depth is to add particles.</p>                                                                                                <p class="">We are going to create very simple square particles and spread them around the scene.</p>                                                                                                <p class="">Because we need to position the particles ourselves, we are going to create a custom <a href="https://threejs.org/docs/index.html?q=bufferG#api/en/core/BufferGeometry" target="_blank">BufferGeometry</a> like we did in the <strong>Particles</strong> and <strong>Galaxy Generator</strong> lessons.</p>                                                                                                <p class="">Create a <code spellcheck="false">particlesCount</code> variable and a <code spellcheck="false">positions</code> variable using a <code spellcheck="false">Float32Array</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Particles
+ */
+// Geometry
+const particlesCount = 200
+const positions = new Float32Array(particlesCount * 3)</code></pre>                                                                                                <p class="">Create a loop and add random coordinates to the <code spellcheck="false">positions</code> array:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; particlesCount; i++)
+{
+    positions[i * 3 + 0] = Math.random()
+    positions[i * 3 + 1] = Math.random()
+    positions[i * 3 + 2] = Math.random()
+}</code></pre>                                                                                                <p class="">We will change the positions later, but for now, let's keep things simple and make sure that our geometry is working.</p>                                                                                                <p class="">Instantiate the <a href="https://threejs.org/docs/index.html?q=bufferG#api/en/core/BufferGeometry" target="_blank">BufferGeometry</a> and set the <code spellcheck="false">position</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const particlesGeometry = new THREE.BufferGeometry()
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))</code></pre>                                                                                                <p class="">Create the material using <a href="https://threejs.org/docs/index.html?q=PointsMaterial#api/en/materials/PointsMaterial" target="_blank">PointsMaterial</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Material
+const particlesMaterial = new THREE.PointsMaterial({
+    color: parameters.materialColor,
+    sizeAttenuation: true,
+    size: 0.03
+})</code></pre>                                                                                                <p class="">Create the particles using <a href="https://threejs.org/docs/index.html?q=points#api/en/objects/Points" target="_blank">Points</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Points
+const particles = new THREE.Points(particlesGeometry, particlesMaterial)
+scene.add(particles)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/39/024.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should get a bunch of particles spread around in a cube.</p>                                                                                                <p class="">We went through this part fast because we already learned how to make particles in an earlier lesson. If you struggled, it is normal. It is still a bit hard, and easy to make mistakes.</p>                                                                                                <p class="">We can now position the particles on the three axes.</p>                                                                                                <p class="">For the <code spellcheck="false">x</code> (horizontal) and <code spellcheck="false">z</code> (depth), we can use random values that can be as much positive as they are negative:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; particlesCount; i++)
+{
+    positions[i * 3 + 0] = (Math.random() - 0.5) * 10
+    positions[i * 3 + 1] = Math.random()
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 10
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/025.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">For the <code spellcheck="false">y</code> (vertical) it's a bit more tricky. We need to make the particles start high enough and then spread far enough below so that we reach the end with the scroll.</p>                                                                                                <p class="">To do that, we can use the <code spellcheck="false">objectsDistance</code> variable and multiply by the number of objects which is the <code spellcheck="false">length</code> of the <code spellcheck="false">sectionMeshes</code> array:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(let i = 0; i &lt; particlesCount; i++)
+{
+    positions[i * 3 + 0] = (Math.random() - 0.5) * 10
+    positions[i * 3 + 1] = objectsDistance * 0.5 - Math.random() * objectsDistance * sectionMeshes.length
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 10
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/026.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Like for the objects material, we can update the color of the particles in the change event of the tweak:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui
+    .addColor(parameters, 'materialColor')
+    .onChange(() =&gt;
+    {
+        material.color.set(parameters.materialColor)
+        particlesMaterial.color.set(parameters.materialColor)
+    })</code></pre>                                                                                                <p class="">That's all for the particles, but you can obviously improve them as we did in the previous lessons with random sizes, random alpha. And, we can even animate them.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Triggered rotations
+
+                
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="triggered-rotations">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#triggered-rotations"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="triggered-rotations"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">As a final feature and to make the exercise just a bit harder, we are going to make the objects do a little spin when we arrive at the corresponding section in addition to the permanent rotation.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Knowing when to trigger the animation
+
+        
+                <span class="anchor js-anchor" data-slug="knowing-when-to-trigger-the-animation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#knowing-when-to-trigger-the-animation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="knowing-when-to-trigger-the-animation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">First, we need a way to know when we reach a section. There are plenty of ways of doing that and we could even use a library, but in our case, we can use the <code spellcheck="false">scrollY</code> value and do some math to find the current section.</p>                                                                                                <p class="">After creating the <code spellcheck="false">scrollY</code> variable, create a <code spellcheck="false">currentSection</code> variable and set it to <code spellcheck="false">0</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">let scrollY = window.scrollY
+let currentSection = 0</code></pre>                                                                                                <p class="">In the <code spellcheck="false">'scroll'</code> event callback function, calculate the current section by dividing the <code spellcheck="false">scrollY</code> by <code spellcheck="false">sizes.height</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('scroll', () =&gt;
+{
+    scrollY = window.scrollY
+
+    const newSection = scrollY / sizes.height
+    
+    console.log(newSection)
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/027.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">This works because each section is exactly one height of the viewport.</p>                                                                                                <p class="">To get the exact section instead of that float value, we can use <code spellcheck="false">Math.round()</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('scroll', () =&gt;
+{
+    scrollY = window.scrollY
+
+    const newSection = Math.round(scrollY / sizes.height)
+    
+    console.log(newSection)
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/028.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We can now test if <code spellcheck="false">newSection</code> is different from <code spellcheck="false">currentSection</code>. If so, that means we changed the section and we can update the <code spellcheck="false">currentSection</code> in order to do our animation:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('scroll', () =&gt;
+{
+    scrollY = window.scrollY
+    const newSection = Math.round(scrollY / sizes.height)
+
+    if(newSection != currentSection)
+    {
+        currentSection = newSection
+
+        console.log('changed', currentSection)
+    }
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/029.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Animating the meshes
+
+        
+                <span class="anchor js-anchor" data-slug="animating-the-meshes">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#animating-the-meshes"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="animating-the-meshes"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We can now animate the meshes and, to do that, we are going to use <a href="https://greensock.com/gsap/" target="_blank">GSAP</a>.</p>                                                                                                <p class="">Add GSAP to the dependencies by running <code spellcheck="false">npm install gsap@3.12</code> in the terminal. We are using a very specific version of GSAP  to make sure that the code is the same. If you feel like using the latest version, run <code spellcheck="false">npm install gsap</code> but you might have to use a different syntax.</p>                                                                                                <p class="">If you get vulnerability warnings, don't pay it any mind. It's not dangerous.</p>                                                                                                <p class="">Once the dependency is added, import GSAP at the start of the code:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import gsap from 'gsap'</code></pre>                                                                                                <p class="">Then, in the <code spellcheck="false">if</code> statement we did earlier, we can do the animation with <code spellcheck="false">gsap.to()</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('scroll', () =&gt;
+{
+    // ...
+    
+    if(newSection != currentSection)
+    {
+        // ...
+
+        gsap.to(
+            sectionMeshes[currentSection].rotation,
+            {
+                duration: 1.5,
+                ease: 'power2.inOut',
+                x: '+=6',
+                y: '+=3'
+            }
+        )
+    }
+})</code></pre>                                                                                                <p class="">While this code is valid, it will unfortunately not work. The reason is that, on each frame, we are already updating the <code spellcheck="false">rotation.x</code> and <code spellcheck="false">rotation.y</code> of each mesh with the <code spellcheck="false">elapsedTime</code>.</p>                                                                                                <p class="">To fix that, in the tick function, instead of setting a very specific rotation based on the <code spellcheck="false">elapsedTime</code>, we are going to add the <code spellcheck="false">deltaTime</code> to the current rotation:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    // ...
+
+    for(const mesh of sectionMeshes)
+    {
+        mesh.rotation.x += deltaTime * 0.1
+        mesh.rotation.y += deltaTime * 0.12
+    }
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/030.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">To add more randomness to the animation, especially for the cone, we can also animate the <code spellcheck="false">z</code> axis:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gsap.to(
+            sectionMeshes[currentSection].rotation,
+            {
+                duration: 1.5,
+                ease: 'power2.inOut',
+                x: '+=6',
+                y: '+=3',
+                z: '+=1.5'
+            }
+        )</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/39/031.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Go further
+
+                
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="go-further">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#go-further"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="go-further"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We kept things really simple, but you can go much further.</p>                                                                                                <ul class="">
+            <li>Add more content to the HTML</li>
+            <li>Animate other properties like the material</li>
+            <li>Animate the HTML texts</li>
+            <li>Improve the particles</li>
+            <li>Add more tweaks to the Debug UI</li>
+            <li>Test other colors</li>
+            <li>Etc.</li>
+    </ul>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Physics</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/physics" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/39/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(338deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

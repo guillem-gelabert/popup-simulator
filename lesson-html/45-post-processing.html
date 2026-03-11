@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>45. post processing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/procedural-terrain-shader"><div class="sibling-info"><div class="sibling-label">44.</div><div class="sibling-title">Procedural Terrain</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">45.</div><h2 class="title">Post-processing</h2><p class="difficulty">Difficulty <span class="value">
+                                Hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/performance-tips"><div class="sibling-info"><div class="sibling-label">46.</div><div class="sibling-title">Performance tips</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/29/45-post-processing.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/29/45-post-processing-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/29" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Post-processing is about adding effects on the final image (the render). People mostly use this technique in filmmaking, but we can do it in WebGL too.</p>                                                                                <p class="">Post-processing can be subtle to improve the image slightly or to create huge effects.</p>                                                                                <p class="">Here are some examples of what you can use post-processing for:</p>                                                                                <ul class="">
+            <li>Depth of field</li>
+            <li>Bloom</li>
+            <li>God ray</li>
+            <li>Motion blur</li>
+            <li>Glitch effect</li>
+            <li>Outlines</li>
+            <li>Color variations</li>
+            <li>Antialiasing</li>
+            <li>Reflections and refractions</li>
+            <li>Etc.</li>
+    </ul>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="84">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:24</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">We will use the same setup as the <strong>Realistic Model Render</strong> lesson but with the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/DamagedHelmet" target="_blank"><strong>Damaged Helmet</strong></a> model by <a href="https://www.artstation.com/theblueturtle" target="_blank">Leonardo Carrion</a>. It's a popular model with many details and good textures that should go well with our post-processing.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    How it works
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="117">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:57</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="how-it-works">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#how-it-works"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="how-it-works"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Most of the time, post-processing works the same way.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Render target
+
+        
+                <span class="anchor js-anchor" data-slug="render-target">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#render-target"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="render-target"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Instead of rendering in the canvas, we do the render in what we call a render target. That render target will give us a texture very similar to the usual texture. In a simpler way, we render in a texture instead of the canvas on the screen.</p>                                                                                <p class="">The term "render target" is specific to Three.js. Other contexts mostly use the word "buffer".</p>                                                                                <p class="">This texture is then applied to a plane facing the camera and covering the whole view. This plane uses a material with a special fragment shader that will do the post-processing effect. If the post-processing effect consists of redden the image, it would merely multiply the red value of the pixel in that fragment shader.</p>                                                                                <p class="">Most post-process effects are doing more than just tweaking the color values, but you get the idea.</p>                                                                                <p class="">In Three.js those "effects" are called "passes". We will refer to that term from now on.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Ping-pong buffering
+
+        
+                <span class="anchor js-anchor" data-slug="ping-pong-buffering">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#ping-pong-buffering"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="ping-pong-buffering"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">We can have multiple passes on our post-process: one doing the motion blur, one doing the color changes, one doing the depth of field, etc. Because we can have multiples passes, the post-processing needs two render targets. The reason is that we can't get the texture of a render target while drawing in it at the same time. The idea is to draw in the first render target while taking the texture from the second one. At the next pass, we switch those render targets, take the texture from the second, and draw on the first. And again at the next pass, we switch them, and again, and again. That is what we call <strong>ping pong buffering</strong>.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Final pass on the canvas
+
+        
+                <span class="anchor js-anchor" data-slug="final-pass-on-the-canvas">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#final-pass-on-the-canvas"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="final-pass-on-the-canvas"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">The last pass won't be in a render target because we can put it directly on the canvas so the user can see the final result.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    In the end
+
+        
+                <span class="anchor js-anchor" data-slug="in-the-end">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#in-the-end"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="in-the-end"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">All of these can be very complicated for beginners, but, fortunately, we don't have to do it on our own.</p>                                                                                <p class="">Actually, we could have start without even explaining those render target, textures, ping pong buffering, etc. but it's always good to understand what is really going on behind the scene.</p>                                                                                <p class="">All we have to do is use the <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a> class that will handle most of the heavy lifting for us.</p>                                    
+                                                                                                        
+<h2 class="title has-anchor ">
+    
+    EffectComposer
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="791">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">13:11</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="effectcomposer">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#effectcomposer"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="effectcomposer"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">As we said, <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a> will handle all the process of creating the render targets, doing the ping-pong thing, sending the texture of the previous pass to the current pass, drawing the last one on the canvas, etc.</p>                                                                                                <p class="">First, we need to import it because it's not available in the <code spellcheck="false">THREE</code> variable:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'</code></pre>                                                                                                <p class="">We will also need a first pass called <code spellcheck="false">RenderPass</code>. This pass is in charge of the first render of our scene, but instead of doing it in the canvas, it will happen in a render target created inside the <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'</code></pre>                                                                                                <p class="">We can now instantiate our <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a> and use our <code spellcheck="false">renderer</code> as parameter. Like the <a href="https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer" target="_blank">WebGLRenderer</a>, we need to provide a pixel ratio with <code spellcheck="false">setPixelRatio(...)</code> and resize it with <code spellcheck="false">setSize(...)</code>. We will use the same parameters as for the <code spellcheck="false">renderer</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Post processing
+ */
+const effectComposer = new EffectComposer(renderer)
+effectComposer.setSize(sizes.width, sizes.height)
+effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))</code></pre>                                                                                                <p class="">Then we can instantiate our first pass and add it to our <code spellcheck="false">effectComposer</code> with the <code spellcheck="false">addPass(...)</code> method. The RenderPass needs the <code spellcheck="false">scene</code> and the <code spellcheck="false">camera</code> as parameters:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const renderPass = new RenderPass(scene, camera)
+effectComposer.addPass(renderPass)</code></pre>                                                                                                <p class="">In the <code spellcheck="false">tick</code> function, instead of doing the renders like we used to, we will achieve the renders with <code spellcheck="false">effectComposer</code>. Replace the <code spellcheck="false">renderer.render(...)</code> with the following code:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    // ...
+
+    // Render
+    // renderer.render(scene, camera)
+    effectComposer.render()
+
+    // ...
+}</code></pre>                                                                                                <p class="">The <code spellcheck="false">effectComposer</code> will start doing the renders with the ping pong thing and its render targets. But because we only have one pass —the <code spellcheck="false">renderPass</code>— it will render it directly in the canvas like before.</p>                                                                                                <p class="">It's time to add some neat post-process passes.</p>                                                                                                <p class="">You can find a list of available passes in the documentation: <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer</a></p>                                                                                                <p class="">We will use some of them to see how we can set things up, and then we will create our own pass.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    DotScreenPass
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1326">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">22:06</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="dotscreenpass">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#dotscreenpass"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="dotscreenpass"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The <code spellcheck="false">DotScreenPass</code> will apply some kind of black and white raster effect. We just need to import the <code spellcheck="false">DotScreenPass</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js'</code></pre>                                                                                                <p class="">Instantiate it and add it to the <code spellcheck="false">effectComposer</code>. Make sure to add it after the <code spellcheck="false">renderPass</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const dotScreenPass = new DotScreenPass()
+effectComposer.addPass(dotScreenPass)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">To disable a pass, simply comment it or change its <code spellcheck="false">enabled</code> property to <code spellcheck="false">false</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const dotScreenPass = new DotScreenPass()
+dotScreenPass.enabled = false
+effectComposer.addPass(dotScreenPass)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Use this to test the different passes separately.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    GlitchPass
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1424">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">23:44</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="glitchpass">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#glitchpass"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="glitchpass"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The <code spellcheck="false">GlitchPass</code> will add screen glitches like when the cameras get hacked in the movies.</p>                                                                                                <p class="">Import it and add it just like the <code spellcheck="false">DotScreenPass</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
+
+// ...
+
+const glitchPass = new GlitchPass()
+effectComposer.addPass(glitchPass)</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/29/003.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Some passes also have editable properties. The <code spellcheck="false">GlitchPass</code> have a <code spellcheck="false">goWild</code> property that, if <code spellcheck="false">true</code>, will result in a non-stop glitch:</p>                                                                                                <p class=""><strong>Be careful if you are sensible to flashes or fast movements!</strong></p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">glitchPass.goWild = true</code></pre>                                                                                                
+<h2 class="title has-anchor ">
+    
+    RGBShiftPass
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1541">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">25:41</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="rgbshiftpass">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#rgbshiftpass"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="rgbshiftpass"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Some passes need extra work like the RGBShift pass.</p>                                                                                                <p class="">The RGBShift isn't available as a pass but as a shader. We need to import this shader and apply it to a <code spellcheck="false">ShaderPass</code> and then add this ShaderPass to the <code spellcheck="false">effectComposer</code>. That is precisely what happens in the <code spellcheck="false">DotScreenPass</code> and the <code spellcheck="false">GlitchPass</code> but we have to do it ourselves this time.</p>                                                                                                <p class="">First, import the <code spellcheck="false">ShaderPass</code> and the <code spellcheck="false">RGBShiftShader</code> located in <code spellcheck="false">three/examples/jsm/shaders/</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'</code></pre>                                                                                                <p class="">Then instantiate the <code spellcheck="false">ShaderPass</code> with the <code spellcheck="false">RGBShiftShader</code> as parameter and add it to the <code spellcheck="false">effectComposer</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// ...
+
+const rgbShiftPass = new ShaderPass(RGBShiftShader)
+effectComposer.addPass(rgbShiftPass)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">And that's all.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Fixing the color
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1714">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">28:34</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="fixing-the-color">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fixing-the-color"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fixing-the-color"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">You might have noticed a color change in the render, as if everything became darker, and you are right. Disable the previous shaders <code spellcheck="false">dotScreenPass</code> and the <code spellcheck="false">rgbShiftPass</code> to see it more clearly with the <code spellcheck="false">glitchPass</code> —without the <code spellcheck="false">goWild</code>.</p>                                                                                                <p class="">What's happening here is that the <code spellcheck="false">renderer.outputColorSpace = THREE.SRGBColorSpace</code> doesn't work anymore. You can comment it, and you'll see no difference. Passes are rendered in render targets, and those don't support color space the same way.</p>                                                                                                <p class="">We need to add one more pass named <code spellcheck="false">GammaCorrectionShader</code> that will converter the colors space to SRGB.</p>                                                                                                <p class="">This pass works exactly like the <code spellcheck="false">RGBShiftShader</code> pass. First, we need to import it:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'</code></pre>                                                                                                <p class="">Then, we can instantiate a <code spellcheck="false">ShaderPass</code> with the <code spellcheck="false">GammaCorrectionShader</code> as a parameter. Make sure to do it as the last pass:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// ...
+
+const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader)
+effectComposer.addPass(gammaCorrectionPass)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The color should be fixed.</p>                                                                                                <p class="">If you want to learn more about Gamma color correction check this <a href="https://blog.johnnovak.net/2016/09/21/what-every-coder-should-know-about-gamma/" target="_blank">What Every Coder Should Know About Gamma</a> article.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Resizing
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1982">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">33:02</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="resizing">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#resizing"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="resizing"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Reduce the window to a minimal resolution, refresh and increase the resolution to the maximum size. Everything should look bad, like a small image that we stretched up.</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/29/006.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">That is because the <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a> and its passes need to be resized. We also need to set the appropriate pixel ratio like we do for the <code spellcheck="false">renderer</code>.</p>                                                                                                <p class="">In the <code spellcheck="false">window.addEventListener('resize', ...)</code> callback function, call the <code spellcheck="false">setSize(...)</code> and the <code spellcheck="false">setPixelRatio(...)</code> methods as we did when we instantiated <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('resize', () =&gt;
+{
+    // ...
+
+    // Update effect composer
+    effectComposer.setSize(sizes.width, sizes.height)
+    effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/29/007.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You can resize the window as you want; the resolution should be fine.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Fixing the antialias
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2165">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">36:05</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="fixing-the-antialias">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fixing-the-antialias"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fixing-the-antialias"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">There's another feature that seems to stop working. If you look at edges on the helmet, you'll see that the aliasing is back —if you are using a screen with a pixel ratio above <code spellcheck="false">1</code>, you probably can't see the problem.</p>                                                                                                <p class="">Be careful; if you only have the <code spellcheck="false">renderPass</code> available, you won't see the problem because the render is done in the canvas with antialias support. Enable at least one pass to see the problem.</p>                                                                                                <p class="">That is because the render target used by <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a> does not support the default antialias. We have four available options:</p>                                                                                                <ul class="">
+            <li>Say goodbye to the antialias.</li>
+            <li>Provide our own render target on which we add the antialias, but that won't work on all the modern browsers.</li>
+            <li>Use a pass to do the antialias but with lesser performances and a slightly different result.</li>
+            <li>A combination of the two previous options where we test if the browser supports the antialias on the render target, and if not, we use an antialias pass.</li>
+    </ul>                                                                                                <p class="">Things suddenly got complicated.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Adding the antialias to the render target
+
+        
+                <span class="anchor js-anchor" data-slug="adding-the-antialias-to-the-render-target">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#adding-the-antialias-to-the-render-target"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="adding-the-antialias-to-the-render-target"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">By default <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a> is using a <a href="https://threejs.org/docs/?q=rendertarget#api/en/renderers/WebGLRenderTarget" target="_blank">WebGLRenderTarget</a> without the antialias.</p>                                                                                                <p class="">Fortunately, we can provide our own render target as the second parameter of <code spellcheck="false">EffectComposer</code>. We are going to provide the same render target to begin with and make sure that everything is working. Then, we are going to add the antialias.</p>                                                                                                <p class="">If you look at the code of the <a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a> located in <code spellcheck="false">/node_modules/three/examples/jsm/postprocessing/EffectComposer.js</code> you'll see the <code spellcheck="false">renderTarget</code> being instantiated with specific parameters.</p>                                                                                                <p class="">The first two parameters are the <code spellcheck="false">width</code> and <code spellcheck="false">height</code>. We can use random values because the render target will be resized when the <code spellcheck="false">setSize(...)</code> function will be called on <code spellcheck="false">effectComposer</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const renderTarget = new THREE.WebGLRenderTarget(
+    800,
+    600
+)</code></pre>                                                                                                <p class="">Then, we can send that <code spellcheck="false">renderTarget</code> to <code spellcheck="false">effectComposer</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const effectComposer = new EffectComposer(renderer, renderTarget)</code></pre>                                                                                                <p class="">We should get the exact same result, but now, we have control over the render target.</p>                                                                                                <p class="">The <a href="https://threejs.org/docs/?q=rendertarget#api/en/renderers/WebGLRenderTarget" target="_blank">WebGLRenderTarget</a> class can actually receive a third parameter that is an object and that will contain some options.</p>                                                                                                <p class="">The only option that we need to provide is the <code spellcheck="false">samples</code> property that will enable the antialias:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const renderTarget = new THREE.WebGLRenderTarget(
+    800,
+    600,
+    {
+        samples: 2
+    }
+)</code></pre>                                                                                                <p class="">The more samples, the better the antialias with <code spellcheck="false">0</code> corresponding to no samples at all. Be careful, every increase on that value will lower the performance.</p>                                                                                                <p class="">As we said earlier, if the user has a pixel ratio above <code spellcheck="false">1</code>, the pixel density is already high enough to not be able to distinguish the aliasing. In that case, we don’t really need an antialias and we should let the <code spellcheck="false">samples</code> property to <code spellcheck="false">1</code>.</p>                                                                                                <p class="">We can retrieve the pixel ratio from the <code spellcheck="false">renderer</code> with <code spellcheck="false">samples: renderer.getPixelRatio()</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const renderTarget = new THREE.WebGLRenderTarget(
+    800,
+    600,
+    {
+        samples: renderer.getPixelRatio() === 1 ? 2 : 0
+    }
+)</code></pre>                                                                                                <p class="">And that’s it!</p>                                                                                                <p class="">Sadly, this won't work for every browsers. That is a matter of WebGL 2 support. People updated WebGL a few years ago, and browsers slowly add support to the different features. You can see how the support is going on here: <a href="https://caniuse.com/#feat=webgl2" target="_blank">https://caniuse.com/#feat=webgl2</a></p>                                                                                                <p class="">At the moment of writing this lesson, major browsers like Safari and iOS Safari only supported it recently.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Using an antialias pass
+
+        
+                <span class="anchor js-anchor" data-slug="using-an-antialias-pass">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#using-an-antialias-pass"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="using-an-antialias-pass"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Let’s comment the <code spellcheck="false">samples</code> property in order to test the antialias pass properly:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const renderTarget = new THREE.WebGLRenderTarget(
+    800,
+    600,
+    {
+        // samples: renderer.getPixelRatio() === 1 ? 2 : 0
+    }
+)</code></pre>                                                                                                <p class="">We have different choices for the antialias pass:</p>                                                                                                <ul class="">
+            <li>FXAA: Performant, but the result is just "ok" and can be blurry</li>
+            <li>SMAA: Usually better than FXAA but less performant —not to be confused with MSAA</li>
+            <li>SSAA: Best quality but the worst performance</li>
+            <li>TAA: Performant but limited result</li>
+            <li>And many others.</li>
+    </ul>                                                                                                <p class="">Choosing the best antialias pass is a matter of performance and visual expectations. Try them until you're satisfied with what you see at a reasonable frame rate.</p>                                                                                                <p class="">For this lesson, we will go for the SMAA.</p>                                                                                                <p class="">Earlier, we said that we should add the <code spellcheck="false">gammaCorrectionPass</code> at the very end, but the antialias pass should be added after it in order to optimise it.</p>                                                                                                <p class="">Import the <code spellcheck="false">SMAAPass</code>, instantiate it and add it to <code spellcheck="false">effectComposer</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
+
+// ...
+
+const smaaPass = new SMAAPass()
+effectComposer.addPass(smaaPass)</code></pre>                                                                                                <p class="">The aliasing should be gone.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Combining the two solutions
+
+        
+                <span class="anchor js-anchor" data-slug="combining-the-two-solutions">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#combining-the-two-solutions"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="combining-the-two-solutions"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The cool thing with the <code spellcheck="false">samples</code> property that we added earlier to the <a href="https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderTarget" target="_blank">WebGLRenderTarget</a> is that if it’s not supported (because the browser is using WebGL 1) it’ll be ignored without triggering any error.</p>                                                                                                <p class="">This means that we can let it like that and add the <code spellcheck="false">SMAAPass</code> only if the user has a screen with a pixel ratio equal to <code spellcheck="false">1</code> and his configuration doesn’t support WebGL 2.</p>                                                                                                <p class="">To know if the browser supports WebGL 2 we can use the <code spellcheck="false">capabilities</code> property on the <code spellcheck="false">renderer</code>. This property contains many details about what is supported. The property we need is <code spellcheck="false">isWebGL2</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">if(renderer.getPixelRatio() === 1 &amp;&amp; !renderer.capabilities.isWebGL2)
+{
+    const smaaPass = new SMAAPass()
+    effectComposer.addPass(smaaPass)
+
+    console.log('Using SMAA')
+}</code></pre>                                                                                                <p class="">And we get a nice picture on every browsers with a minimal drawback.</p>                                                                                                <p class="">If you want to test your code with WebGL1, you can replace your <a href="https://threejs.org/docs/?q=WebGLRender#api/en/renderers/WebGLRenderer" target="_blank">WebGLRenderer</a> by <a href="https://threejs.org/docs/?q=WebGL1Renderer#api/en/renderers/WebGL1Renderer" target="_blank">WebGL1Renderer</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const renderer = new THREE.WebGL1Renderer({
+    // ...
+})</code></pre>                                                                                                <p class="">Don’t forget to put it back once you are done testing.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    UnrealBloomPass
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3856">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:04:16</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="unrealbloompass">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#unrealbloompass"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="unrealbloompass"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Let's get back to our passes with probably the coolest one, the UnrealBloomPass.</p>                                                                                                <p class="">This pass will add bloom on our render that looks amazing. It's useful to recreate things like light glows, fire heat, lasers, lightsabers or radioactive stuff.</p>                                                                                                <p class="">Import the <code spellcheck="false">UnrealBloomPass</code> and add it to the <code spellcheck="false">effectComposer</code> but ruggt before the <code spellcheck="false">GammaCorrectionPass</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+
+// ...
+
+const unrealBloomPass = new UnrealBloomPass()
+effectComposer.addPass(unrealBloomPass)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="">Not bad, but everything seems to glow and we need to tweak some parameters. There are 3 main parameters:</p>                                                                                                <ul class="">
+            <li><code spellcheck="false">strength</code>: How strong is the glow.</li>
+            <li><code spellcheck="false">radius</code>: How far that brightness can spread.</li>
+            <li><code spellcheck="false">threshold</code>: At what luminosity limit things start to glow.</li>
+    </ul>                                                                                                <p class="">Use the following parameters and add the tweaks to your Dat.GUI:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">unrealBloomPass.strength = 1
+unrealBloomPass.radius = 1
+unrealBloomPass.threshold = 0.5
+
+gui.add(unrealBloomPass, 'enabled')
+gui.add(unrealBloomPass, 'strength').min(0).max(2).step(0.001)
+gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001)
+gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001)</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/29/009.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">This is probably too much glow but you get the idea.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Creating our own pass
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4038">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:07:18</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="creating-our-own-pass">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#creating-our-own-pass"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="creating-our-own-pass"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Creating our own pass is as easy as making a custom shader.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Tint pass
+
+        
+                <span class="anchor js-anchor" data-slug="tint-pass">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#tint-pass"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="tint-pass"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are going to start with an effortless pass that lets us control the color tint.</p>                                                                                                <p class="">First, we create a shader. The shader is a simple object with the following properties:</p>                                                                                                <ul class="">
+            <li><code spellcheck="false">uniforms</code>: Same format as the uniforms we are used too.</li>
+            <li><code spellcheck="false">vertexShader</code>: This one has almost always the same code and will put the plane in front of the view.</li>
+            <li><code spellcheck="false">fragmentShader</code>: The fragment shader that will do the post-processing effect.</li>
+    </ul>                                                                                                <p class="">Let's create that shader with minimal code:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const TintShader = {
+    uniforms:
+    {
+    },
+    vertexShader: `
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        void main()
+        {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    `
+}</code></pre>                                                                                                <p class="">Then we create the pass with <code spellcheck="false">ShaderPass</code> and add it to our <code spellcheck="false">effectComposer</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tintPass = new ShaderPass(TintShader)
+effectComposer.addPass(tintPass)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/010.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The screen should become red because our fragment shader sets the <code spellcheck="false">gl_FragColor</code> to a red color.</p>                                                                                                <p class="">We need to get the texture from the previous pass. This texture is automatically stored in the <code spellcheck="false">tDiffuse</code> uniform. We must add the uniform with a <code spellcheck="false">null</code> value —<a href="https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer" target="_blank">EffectComposer</a> will update it— and retrieve the value in the <code spellcheck="false">fragmentShader</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const TintShader = {
+    uniforms:
+    {
+        tDiffuse: { value: null }
+    },
+
+    // ...
+
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+        
+        void main()
+        {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    `
+}</code></pre>                                                                                                <p class="">Now that we have the texture of the previous pass, we need to retrieve the pixels as we've already done in a previous lesson. To get the pixels from a <code spellcheck="false">sampler2D</code> (a texture), we need to use <code spellcheck="false">texture2D(...)</code>. It would require a texture as the first parameter and UV coordinates as the second parameter.</p>                                                                                                <p class="">The problem is that we don't have those UV coordinates right now. We need to do as usual and create a <code spellcheck="false">varying</code> named <code spellcheck="false">vUv</code> containing the <code spellcheck="false">uv</code> from the vertex shader:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const TintShader = {
+
+    // ...
+
+    vertexShader: `
+        varying vec2 vUv;
+
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+            vUv = uv;
+        }
+    `,
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+
+        varying vec2 vUv;
+
+        void main()
+        {
+            vec4 color = texture2D(tDiffuse, vUv);
+            gl_FragColor = color;
+        }
+    `
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">The render is back. But now, we can play with the texture in the <code spellcheck="false">fragmentShader</code>.</p>                                                                                                <p class="">To change the tint, play with the <code spellcheck="false">r</code>, <code spellcheck="false">g</code>, and <code spellcheck="false">b</code> properties of <code spellcheck="false">color</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const TintShader = {
+
+    // ...
+
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+
+        varying vec2 vUv;
+
+        void main()
+        {
+            vec4 color = texture2D(tDiffuse, vUv);
+            color.r += 0.1;
+
+            gl_FragColor = color;
+        }
+    `
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/29/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">To go further, let's create a uniform to control the tint. First, add the <code spellcheck="false">uTint</code> to the <code spellcheck="false">uniforms</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const TintShader = {
+    uniforms:
+    {
+        tDiffuse: { value: null },
+        uTint: { value: null }
+    },
+
+    // ...
+
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform vec3 uTint;
+
+        varying vec2 vUv;
+
+        void main()
+        {
+            vec4 color = texture2D(tDiffuse, vUv);
+            color.rgb += uTint;
+
+            gl_FragColor = color;
+        }
+    `
+}</code></pre>                                                                                                <p class="">As you can see, we let the value to <code spellcheck="false">null</code>. Do not set the values directly in the shader object. You must set them on the material once you have created the pass because the shader is intended to be used multiple times —even if you don't. It's like a template for the pass:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tintPass = new ShaderPass(TintShader)
+tintPass.material.uniforms.uTint.value = new THREE.Vector3()</code></pre>                                                                                                <p class="">Then we can add the tweaks to our lil-gui:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui.add(tintPass.material.uniforms.uTint.value, 'x').min(- 1).max(1).step(0.001).name('red')
+gui.add(tintPass.material.uniforms.uTint.value, 'y').min(- 1).max(1).step(0.001).name('green')
+gui.add(tintPass.material.uniforms.uTint.value, 'z').min(- 1).max(1).step(0.001).name('blue')</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/29/013.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Displacement pass
+
+        
+                <span class="anchor js-anchor" data-slug="displacement-pass">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#displacement-pass"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="displacement-pass"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Let's try another custom pass. This time, we won't fiddle with the color but with the UV to produce what we call a displacement.</p>                                                                                                <p class="">Create a new shader named <code spellcheck="false">DisplacementShader</code>, then a new pass named <code spellcheck="false">displacementPass</code> from the <code spellcheck="false">ShaderPass</code> and add it to <code spellcheck="false">effectComposer</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const DisplacementShader = {
+    uniforms:
+    {
+        tDiffuse: { value: null }
+    },
+    vertexShader: `
+        varying vec2 vUv;
+
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+            vUv = uv;
+        }
+    `,
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+
+        varying vec2 vUv;
+
+        void main()
+        {
+            vec4 color = texture2D(tDiffuse, vUv);
+
+            gl_FragColor = color;
+        }
+    `
+}
+
+const displacementPass = new ShaderPass(DisplacementShader)
+effectComposer.addPass(displacementPass)</code></pre>                                                                                                <p class="">Now, let's create a <code spellcheck="false">newUv</code> based on <code spellcheck="false">vUv</code> but with some distortion:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const DisplacementShader = {
+
+    // ...
+
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+
+        varying vec2 vUv;
+
+        void main()
+        {
+            vec2 newUv = vec2(
+                vUv.x,
+                vUv.y + sin(vUv.x * 10.0) * 0.1
+            );
+            vec4 color = texture2D(tDiffuse, newUv);
+
+            gl_FragColor = color;
+        }
+    `
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/29/014.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Here, we solely applied a <code spellcheck="false">sin(...)</code> on the <code spellcheck="false">y</code> axis based on the <code spellcheck="false">x</code> axis. You should see the render waving.</p>                                                                                                <p class="">Let's animate it. Add a <code spellcheck="false">uTime</code> uniform:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const DisplacementShader = {
+    uniforms:
+    {
+        tDiffuse: { value: null },
+        uTime: { value: null }
+    },
+    
+    // ...
+
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform float uTime;
+
+        varying vec2 vUv;
+
+        void main()
+        {
+            vec2 newUv = vec2(
+                vUv.x,
+                vUv.y + sin(vUv.x * 10.0 + uTime) * 0.1
+            );
+            vec4 color = texture2D(tDiffuse, newUv);
+
+            gl_FragColor = color;
+        }
+    `
+}</code></pre>                                                                                                <p class="">Set its value to <code spellcheck="false">0</code> after creating the pass:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const displacementPass = new ShaderPass(DisplacementShader)
+displacementPass.material.uniforms.uTime.value = 0
+effectComposer.addPass(displacementPass)</code></pre>                                                                                                <p class="">And as always, update it in the <code spellcheck="false">tick</code> function:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const clock = new THREE.Clock()
+
+const tick = () =&gt;
+{
+    const elapsedTime = clock.getElapsedTime()
+
+    // Update passes
+    displacementPass.material.uniforms.uTime.value = elapsedTime
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/29/015.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The waves are now animated.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Futuristic interface displacement
+
+        
+                <span class="anchor js-anchor" data-slug="futuristic-interface-displacement">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#futuristic-interface-displacement"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="futuristic-interface-displacement"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Instead of a sinus displacement, we can use a texture. You can find a very plain beehive futuristic interface with normal texture in <code spellcheck="false">/static/textures/interfaceNormalMap.png</code>.</p>                                                                                                <p class="">Add a <code spellcheck="false">uNormalMap</code> uniform:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const DisplacementShader = {
+    uniforms:
+    {
+        // ...
+        uNormalMap: { value: null }
+    },
+
+    // ...
+}</code></pre>                                                                                                <p class="">Update it while loading the texture —the <a href="https://threejs.org/docs/index.html#api/en/loaders/TextureLoader" target="_blank">TextureLoader</a> is already in the code:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png')</code></pre>                                                                                                <p class="">Now update the fragmentShader of the <code spellcheck="false">DisplacementShader</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const DisplacementShader = {
+    // ...
+
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform float uTime;
+        uniform sampler2D uNormalMap;
+
+        varying vec2 vUv;
+
+        void main()
+        {
+            vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
+            vec2 newUv = vUv + normalColor.xy * 0.1;
+            vec4 color = texture2D(tDiffuse, newUv);
+
+            vec3 lightDirection = normalize(vec3(- 1.0, 1.0, 0.0));
+            float lightness = clamp(dot(normalColor, lightDirection), 0.0, 1.0);
+            color.rgb += lightness * 2.0;
+
+            gl_FragColor = color;
+        }
+    `
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/29/016.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We won't disclose what's happening here because it's not the proper way to achieve this effect, but you should see a compelling interface displacement. Regrettably, the texture fits the screen, and if your resolution isn't proportional, it won't look terrific. No worries, it was just for the show anyway.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Go further
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="5736">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:35:36</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="go-further">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#go-further"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="go-further"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">What you can do now is try other passes and possibly add new custom passes if you get some ideas or if there are things you want to try.</p>                                                                                                <p class="">Keep in mind that each pass you add will have to be rendered on each frame. That can have severe performances drawback.</p>                                                                                                <p class="">You could also separate the custom passes into different files and even split the shaders in the <code spellcheck="false">.glsl</code> files. This way, you get a cleaner and reusable code.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Performance tips</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/performance-tips" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/29/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(336deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

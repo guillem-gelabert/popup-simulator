@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>21. imported models</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/physics"><div class="sibling-info"><div class="sibling-label">20.</div><div class="sibling-title">Physics</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">21.</div><h2 class="title">Imported models</h2><p class="difficulty">Difficulty <span class="value">
+                                Hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/raycaster-and-mouse-events"><div class="sibling-info"><div class="sibling-label">22.</div><div class="sibling-title">Raycaster and Mouse Events</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/21/21-imported-models.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/21/21-imported-models-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/21" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Three.js lets you create many primitive geometries, but when it comes to more complex shapes, we better use a dedicated 3D software.</p>                                                                                <p class="">In this lesson, we will use already made models, but we will learn how to create a model entirely within a 3D software in a future lesson.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Formats
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="72">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:12</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="formats">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#formats"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="formats"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Through times, many 3D model formats have been used. Each one responded to a problem, such as what data is embedded in the model, the weight, its compression, compatibility, copyrights, etc.</p>                                                                                <p class="">That is why, today, we have access to hundreds of model formats: <a href="https://en.wikipedia.org/wiki/List_of_file_formats#3D_graphics" target="_blank">https://en.wikipedia.org/wiki/List_of_file_formats#3D_graphics</a>.</p>                                                                                <p class="">Some formats are dedicated to one software. Some are known to be very light but sometimes lack specific data. Some are known to have almost all data you could need in them but are heavy. Some formats are open source, some formats are not, some are binary, some are ASCII, and it goes on and on.</p>                                                                                <p class="">If you need precise data and can't find the adequate format supported by your software, you can even create your own quite easily.</p>                                                                                <p class="">Here's a list of popular formats you might come across:</p>                                                                                <ul class="">
+            <li>OBJ</li>
+            <li>FBX</li>
+            <li>STL</li>
+            <li>PLY</li>
+            <li>COLLADA</li>
+            <li>3DS</li>
+            <li>GLTF</li>
+    </ul>                                                                                <p class="">We won't cover all of these formats. It would be boring, and we don't need to because one format is becoming a standard and should cover most of your needs.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    GLTF
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="269">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">04:29</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="gltf">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gltf"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gltf"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">GLTF stands for GL Transmission Format. It's made by the Khronos Group (the guys behind OpenGL, WebGL, Vulkan, Collada and with many members like AMD / ATI, Nvidia, Apple, id Software, Google, Nintendo, etc.)</p>                                                                                <p class="">GLTF has become very popular these past few years.</p>                                                                                <p class="">It supports very different sets of data. You can obviously have data like the geometries and the materials but you can also have data like cameras, lights, scene graph, animations, skeletons, morphing and even multiple scene.</p>                                                                                <p class="">It also supports various file formats like json, binary, embed textures.</p>                                                                                <p class="">GLTF has become the standard when it comes to real-time. And because it's becoming a standard, most 3D softwares, game engines, and libraries support it. That means that you can easily have a similar result in different environments.</p>                                                                                <p class="">That doesn't mean that you have to use GLTF in all cases. If you merely need a geometry, you better use another format like OBJ, FBX, STL, or PLY. You should test different formats on every project to see if you have all the data you need, if the file isn't too heavy, how long it takes to uncompress the information if it's compressed, etc.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Find a model
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="476">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">07:56</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="find-a-model">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#find-a-model"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="find-a-model"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">First, we need a model. As we said earlier, we will learn how to create our own model in a 3D software later, but for now, let's use a pre-made one.</p>                                                                                <p class="">The GLTF team also provides various models from a simple triangle to realistic models and things like animations, morphings, clearcoat materials, etc.</p>                                                                                <p class="">You can find them in this repository: <a href="https://github.com/KhronosGroup/glTF-Sample-Assets" target="_blank">https://github.com/KhronosGroup/glTF-Sample-Assets</a></p>                                                                                <p class="">If you want to test those models, you'll have to download or clone the whole repository and take the files you need. But we will start with a simple <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Duck" target="_blank">duck</a> that you can already find in the <code spellcheck="false">/static/models/</code> folder in the starter.</p>                                    
+                                                                                                        
+<h2 class="title has-anchor ">
+    
+    GLTF formats
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="577">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">09:37</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="gltf-formats">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gltf-formats"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gltf-formats"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">While GLTF is a format itself, it can have different file formats too. It's a little complex but for good reasons.</p>                                                                                                <p class="">If you open the <code spellcheck="false">/static/models/Duck/</code> folder, you'll see 4 different folders. Each one contains the duck but in different GLTF formats:</p>                                                                                                <ul class="">
+            <li>glTF</li>
+            <li>glTF-Binary</li>
+            <li>glTF-Draco</li>
+            <li>glTF-Embedded</li>
+    </ul>                                                                                                <p class="">You can even find other formats, but those 4 are the most important and cover what we need to learn.</p>                                                                                                <p class="">Be careful; your OS might hide the extension of some of these files. Refer to the file names from your code editor that should show the extension.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    glTF
+
+        
+                <span class="anchor js-anchor" data-slug="gltf-1">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gltf-1"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gltf-1"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">This format is kind of the default format. The <code spellcheck="false">Duck.gltf</code> file is a JSON that you can open in your editor. It contains various information like cameras, lights, scenes, materials, objects transformations, but neither the geometries nor the textures. The <code spellcheck="false">Duck0.bin</code> file is a binary that you can't read like this. It usually contains data like the geometries and all information associated with the vertices like UV coordinates, normals, vertex colors, etc. The <code spellcheck="false">DuckCM.png</code> is simply the texture of the duck.</p>                                                                                                <p class="">When we load this format, we only load the <code spellcheck="false">Duck.gltf</code> that contains references to the other files that will then be loaded automatically.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    glTF-Binary
+
+        
+                <span class="anchor js-anchor" data-slug="gltf-binary">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gltf-binary"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gltf-binary"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">This format is composed of only one file. It contains all the data we talked about in the glTF default format. That is a binary file, and you can't just open it in your code editor to see what's inside.</p>                                                                                                <p class="">This format can be a little lighter and more comfortable to load because there is only one file, but you won't be able to easily alter its data. For example, if you want to resize or compress the textures, you just can't because it's inside that binary file, merge with the rest.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    glTF-Draco
+
+        
+                <span class="anchor js-anchor" data-slug="gltf-draco">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gltf-draco"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gltf-draco"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">This format is like the <strong>glTF default</strong> format, but the buffer data (typically the geometry) is compressed using the <a href="https://github.com/google/draco" target="_blank">Draco algorithm</a>. If you compare the <code spellcheck="false">.bin</code> file size, you'll see that it's much lighter.</p>                                                                                                <p class="">While there is a separate folder for this format, you can apply the Draco compression to the other formats.</p>                                                                                                <p class="">Let's put this one on the side, and we will talk more about it later.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    glTF-Embedded
+
+        
+                <span class="anchor js-anchor" data-slug="gltf-embedded">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gltf-embedded"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gltf-embedded"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">This format is like the <strong>glTF-Binary</strong> format because it's only one file, but this file is actually a JSON that you can open in your editor.</p>                                                                                                <p class="">The only benefit of this format is to have only one easily editable file.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Choosing
+
+        
+                <span class="anchor js-anchor" data-slug="choosing">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#choosing"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="choosing"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Choosing the right format is a matter of how you want to handle the assets.</p>                                                                                                <p class="">If you want to be able to alter the textures or the coordinates of the lights after exporting, you better go for the <strong>glTF-default</strong>. It also presents the advantage of loading the different files separately, resulting in a load speed improvement.</p>                                                                                                <p class="">If you want only one file per model and don't care about modifying the assets, you better go for <strong>glTF-Binary</strong>.</p>                                                                                                <p class="">In both cases, you must decide if you want to use the <strong>Draco</strong> compression or not, but we will cover this part later.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1043">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">17:23</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The starter is composed of one empty plane.</p>                                                                                                <p class="">Because GLTF is a standard, it clearly supports lights. Usually, when you import a GLTF into your Three.js project, you'll end up with <a href="https://threejs.org/docs/#api/en/objects/Mesh" target="_blank">Meshes</a> that have <a href="https://threejs.org/docs/#api/en/materials/MeshStandardMaterial" target="_blank">MeshStandardMaterial</a> and, as you probably remember, if you don't have lights in your scene, you won't see much of those materials.</p>                                                                                                <p class="">There is already an <a href="https://threejs.org/docs/#api/en/lights/AmbientLight" target="_blank">AmbientLight</a> and a <a href="https://threejs.org/docs/#api/en/lights/DirectionalLight" target="_blank">DirectionalLight</a> in the starter.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Load the model in Three.js
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1133">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">18:53</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="load-the-model-in-three-js">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#load-the-model-in-three-js"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="load-the-model-in-three-js"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">To load GLTF files in Three.js, we must use the <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a>. This class isn't available by default in the <code spellcheck="false">THREE</code> variable. We need to import it from the <code spellcheck="false">examples/</code> folder located in the <code spellcheck="false">three</code> dependency:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'</code></pre>                                                                                                <p class="">then we can instantiate it like we did for the <a href="https://threejs.org/docs/index.html#api/en/loaders/TextureLoader" target="_blank">TextureLoader</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Models
+ */
+const gltfLoader = new GLTFLoader()</code></pre>                                                                                                <p class="">And if we need it, we can also use a <a href="https://threejs.org/docs/#api/en/loaders/managers/LoadingManager" target="_blank">LoadingManager</a> as we did in the <strong>Textures</strong> lesson.</p>                                                                                                <p class="">To load models, great news, it's almost as easy as loading a texture. We call the <code spellcheck="false">load(...)</code> method and use the right parameters:</p>                                                                                                <ul class="">
+            <li>The path to the file</li>
+            <li>The success callback function</li>
+            <li>The progress callback function</li>
+            <li>The error callback function</li>
+    </ul>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/Duck/glTF/Duck.gltf',
+    (gltf) =&gt;
+    {
+        console.log('success')
+        console.log(gltf)
+    },
+    (progress) =&gt;
+    {
+        console.log('progress')
+        console.log(progress)
+    },
+    (error) =&gt;
+    {
+        console.log('error')
+        console.log(error)
+    }
+)</code></pre>                                                                                                <p class="">You should see the progress and the success function being called. If the file couldn't be loaded, the error functions might be called. Check the path, and don't forget that we must not add the <code spellcheck="false">/static</code> part.</p>                                                                                                <p class="">Let's pretend we know what we are doing and remove the progress and error callback:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/Duck/glTF/Duck.gltf',
+    (gltf) =&gt;
+    {
+        console.log(gltf)
+    }
+)</code></pre>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Add the loaded model to our scene
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1478">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">24:38</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="add-the-loaded-model-to-our-scene">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#add-the-loaded-model-to-our-scene"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="add-the-loaded-model-to-our-scene"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">If you look at the object logged in the console, you'll find a lot of elements. The most important part is the <code spellcheck="false">scene</code> property because we have only one scene in the exported model.</p>                                                                                                <p class="">This <code spellcheck="false">scene</code> contains everything we need. But it also includes more. Always start by studying what is available in it and watch the <code spellcheck="false">scale</code> property of the different <a href="https://threejs.org/docs/#api/en/objects/Group" target="_blank">Groups</a>, <a href="https://threejs.org/docs/#api/en/core/Object3D" target="_blank">Object3D</a>, and <a href="https://threejs.org/docs/#api/en/objects/Mesh" target="_blank">Mesh</a>.</p>                                                                                                <p class="">We get something like this:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">THREE.Group: scene
+└───Array: children
+    └───THREE.Object3D
+        └───Array: children
+            ├───THREE.PerspectiveCamera
+            └───THREE.Mesh</code></pre>                                                                                                <p class="">The Mesh should be our duck. We don't really care about the <a href="https://threejs.org/docs/#api/en/cameras/PerspectiveCamera" target="_blank">PerspectiveCamera</a>. Both the camera and the duck seem to be in the first and only <a href="https://threejs.org/docs/#api/en/core/Object3D" target="_blank">Object3D</a> in the scene's children array. Even worst, that <a href="https://threejs.org/docs/#api/en/core/Object3D" target="_blank">Object3D</a> has a <code spellcheck="false">scale</code> set to a minimal value.</p>                                                                                                <p class="">As you can see, it's a little complex even to get our duck, and it's where most beginners get lost.</p>                                                                                                <p class="">All we want is to get our duck in the scene. We have multiples ways of doing it:</p>                                                                                                <ul class="">
+            <li>Add the whole <code spellcheck="false">scene</code> in our scene. We can do that because even if its name is <code spellcheck="false">scene</code>, it's in fact a <a href="https://threejs.org/docs/#api/en/objects/Group" target="_blank">Group</a>.</li>
+            <li>Add the children of the <code spellcheck="false">scene</code> to our scene and ignore the unused <a href="https://threejs.org/docs/#api/en/cameras/PerspectiveCamera" target="_blank">PerspectiveCamera</a>.</li>
+            <li>Filter the children before adding to the scene to remove the unwanted objects like the <a href="https://threejs.org/docs/#api/en/cameras/PerspectiveCamera" target="_blank">PerspectiveCamera</a>.</li>
+            <li>Add only the <a href="https://threejs.org/docs/#api/en/objects/Mesh" target="_blank">Mesh</a> but end up with a duck that could be wrongly scaled, positioned or rotated.</li>
+            <li>Open the file in a 3D software and remove the <a href="https://threejs.org/docs/#api/en/cameras/PerspectiveCamera" target="_blank">PerspectiveCamera</a> then export it again.</li>
+    </ul>                                                                                                <p class="">Because our model structure is simple, we will add the <a href="https://threejs.org/docs/#api/en/core/Object3D" target="_blank">Object3D</a> to our scene, and ignore the unused <a href="https://threejs.org/docs/#api/en/cameras/PerspectiveCamera" target="_blank">PerspectiveCamera</a> inside. In future lessons, we will add the whole scene as one object:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/Duck/glTF/Duck.gltf',
+    (gltf) =&gt;
+    {
+        scene.add(gltf.scene.children[0])
+    }
+)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should see the duck.</p>                                                                                                <p class="">You can try with other formats, but not the Draco that won't work yet:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/Duck/glTF/Duck.gltf', // Default glTF
+
+// Or
+gltfLoader.load(
+    '/models/Duck/glTF-Binary/Duck.glb', // glTF-Binary
+
+// Or
+gltfLoader.load(
+    '/models/Duck/glTF-Embedded/Duck.gltf', // glTF-Embedded</code></pre>                                                                                                <p class="">Another model named <code spellcheck="false">FlightHelmet</code> (also taken from the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0" target="_blank">glTF model samples</a>) is available in the <code spellcheck="false">/static/models/</code> folder. This model comes in only one format, which is the default glTF.</p>                                                                                                <p class="">Try to load this model:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/FlightHelmet/glTF/FlightHelmet.gltf',
+    (gltf) =&gt;
+    {
+        scene.add(gltf.scene.children[0])
+    }
+)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Instead of a beautiful helmet, we only get a few parts.</p>                                                                                                <p class="">The problem is that we added only the first child of the loaded <code spellcheck="false">scene</code> to our scene.</p>                                                                                                <p class="">What we can try is to loop on the children and add them to the scene:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">for(const child of gltf.scene.children)
+{
+    scene.add(child)
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">That will result in more elements, but not all of them. Even worst, when refreshing, you may get different parts.</p>                                                                                                <p class="">The problem is that when we add a child from one scene to the other, it gets automatically removed from the first scene. That means that the first scene now has fewer children in it.</p>                                                                                                <p class="">When we add the first object, it gets removed from the first scene, and the second element just moved to the first place. But your loop now takes the second element of the array. You'll always have elements left in the <code spellcheck="false">children</code> array.</p>                                                                                                <p class="">There are multiple solutions to this problem. The first solution is to take the first children of the loaded scene and add it to our scene until there is none left:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">while(gltf.scene.children.length)
+{
+    scene.add(gltf.scene.children[0])
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">We now get the whole helmet.</p>                                                                                                <p class="">Another solution would be to duplicate the <code spellcheck="false">children</code> array in order to have an unaltered independent array. To do that, we can use the spread operator <code spellcheck="false">...</code> and put the result in a brand new array <code spellcheck="false">[]</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const children = [...gltf.scene.children]
+for(const child of children)
+{
+    scene.add(child)
+}</code></pre>                                                                                                <p class="">This is a native JavaScript technique to duplicate an array without touching the original one.</p>                                                                                                <p class="">Finally, one good and simple solution we mentioned earlier is to add the <code spellcheck="false">scene</code> property:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">scene.add(gltf.scene)</code></pre>                                                                                                <p class="">Our helmet is too small, and we could just increase the scale, but instead, we'll get back to our Duck and try the Draco compressed version.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Draco compression
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2640">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">44:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="draco-compression">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#draco-compression"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="draco-compression"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Let's get back to our duck but this time, we are going to use the Draco version:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/Duck/glTF-Draco/Duck.gltf',</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Sadly, we don't get any duck. If you look at the logs, you should see a warning looking like this <code spellcheck="false">No DRACOLoader instance provided</code>. We need to provide a <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank">DRACOLoader</a> instance to our <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> so it can load compressed files.</p>                                                                                                <p class="">As we saw when browsing the files, the Draco version can be much lighter than the default version. Compression is applied to the buffer data (typically the geometry). It doesn't matter if you are using the <strong>default glTF</strong>, the <strong>binary glTF</strong> or the <strong>embedded glTF</strong>.</p>                                                                                                <p class="">It's not even exclusive to glTF, and you can use it with other formats. But both glTF and Draco got popular simultaneously, so the implementation went faster with glTF exporters.</p>                                                                                                <p class="">Google develops the algorithm under the open-source Apache License:</p>                                                                                                <ul class="">
+            <li>Website: <a href="https://google.github.io/draco/" target="_blank">https://google.github.io/draco/</a></li>
+            <li>Git repository: <a href="https://github.com/google/draco" target="_blank">https://github.com/google/draco</a></li>
+    </ul>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Add the DRACOLoader
+
+        
+                <span class="anchor js-anchor" data-slug="add-the-dracoloader">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#add-the-dracoloader"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="add-the-dracoloader"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Three.js already supports Draco. We must start by importing the <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank">DRACOLoader</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'</code></pre>                                                                                                <p class="">Then we can instantiate the loader (before the <code spellcheck="false">gltfLoader</code>):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const dracoLoader = new DRACOLoader()</code></pre>                                                                                                <p class="">The decoder is available in native JavaScript but also Web Assembly (wasm), and it can run in a worker (another thread as we saw at the end of the Physics lesson). Those two features significantly improve performances, but they imply having a wholly separated code.</p>                                                                                                <p class="">Three.js already provided this seperated code. To find it, we must browse into the Three.js dependency and copy the Draco decoder folder into our <code spellcheck="false">/static/</code> folder.</p>                                                                                                <p class="">This Draco folder is located in <code spellcheck="false">/node_modules/three/examples/jsm/libs/</code>. Take the whole <code spellcheck="false">/draco/</code> folder and copy it into your <code spellcheck="false">/static/</code> folder. We can now provide the path to this folder to our <code spellcheck="false">dracoLoader</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">dracoLoader.setDecoderPath('/draco/')</code></pre>                                                                                                <p class="">Finally, we can provide the <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank">DRACOLoader</a> instance to the <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> instance with the <code spellcheck="false">setDRACOLoader(...)</code> method:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.setDRACOLoader(dracoLoader)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Your duck should be back but this time it's a Draco compressed version.</p>                                                                                                <p class="">You can still load not compressed glTF file with the <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> and the Draco decoder is only loaded when needed.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    When to use the Draco compression
+
+        
+                <span class="anchor js-anchor" data-slug="when-to-use-the-draco-compression">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#when-to-use-the-draco-compression"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="when-to-use-the-draco-compression"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">While you might think that the Draco compression is a win-win situation, it is not. Yes, the geometries are lighter, but first, you have to load the <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank">DRACOLoader</a> class and the decoder. Secondly, it takes time and resources for your computer to decode a compressed file that can result in a short freeze at the start of the experience, even if we are using a worker and Web Assembly code.</p>                                                                                                <p class="">You'll have to adapt and decide what the best solution is. If you only have one model with a 100kB geometry, you probably don't need Draco. But if you have many MB of models to load and don't care about some freezes at the start of the experience, you might need the Draco compression.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Animations
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3334">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">55:34</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="animations">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#animations"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="animations"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">As we said earlier, glTF also supports animations. And Three.js can handle those animations.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Load an animated model
+
+        
+                <span class="anchor js-anchor" data-slug="load-an-animated-model">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#load-an-animated-model"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="load-an-animated-model"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">First, we need an animated model. We can use the fox located in <code spellcheck="false">/static/models/Fox/</code> folder (also taken from the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Fox" target="_blank">glTF model samples</a>).</p>                                                                                                <p class="">Change the path to load that fox:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/Fox/glTF/Fox.gltf',</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/21/007.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We have a problem; the fox is way too big. If you can't see it, look above or zoom out.</p>                                                                                                <p class="">Before handling the animation, let's fix the scale. If you look at the composition of the imported scene, the fox is composed of one <a href="https://threejs.org/docs/#api/en/core/Object3D" target="_blank">Object3D</a>, itself made of a <a href="https://threejs.org/docs/#api/en/objects/Bone" target="_blank">Bone</a> and a <a href="https://threejs.org/docs/#api/en/objects/SkinnedMesh" target="_blank">SkinnedMesh</a>. We won't explain what those are, but the idea is that we shouldn't simply scale the <a href="https://threejs.org/docs/#api/en/core/Object3D" target="_blank">Object3D</a>. Even if it would work in this case, it would probably not work with more complex models.</p>                                                                                                <p class="">What we can do here, is scale the loaded scene and add it directly to our scene:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load(
+    '/models/Fox/glTF/Fox.gltf',
+    (gltf) =&gt;
+    {
+        gltf.scene.scale.set(0.025, 0.025, 0.025)
+        scene.add(gltf.scene)
+    }
+)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Handle the animation
+
+        
+                <span class="anchor js-anchor" data-slug="handle-the-animation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#handle-the-animation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="handle-the-animation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">If you look at the loaded <code spellcheck="false">gltf</code> object, you can see a property named <code spellcheck="false">animations</code> containing multiple <a href="https://threejs.org/docs/#api/en/animation/AnimationClip" target="_blank">AnimationClip</a>.</p>                                                                                                <p class="">These <a href="https://threejs.org/docs/#api/en/animation/AnimationClip" target="_blank">AnimationClip</a> cannot be used easily. We first need to create an <a href="https://threejs.org/docs/#api/en/animation/AnimationMixer" target="_blank">AnimationMixer</a>. An <a href="https://threejs.org/docs/#api/en/animation/AnimationMixer" target="_blank">AnimationMixer</a> is like a player associated with an object that can contain one or many <a href="https://threejs.org/docs/#api/en/animation/AnimationClip" target="_blank">AnimationClips</a>. The idea is to create one for each object that needs to be animated.</p>                                                                                                <p class="">Inside the success function, create a mixer and send the <code spellcheck="false">gltf.scene</code> as parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const mixer = new THREE.AnimationMixer(gltf.scene)</code></pre>                                                                                                <p class="">We can now add the <a href="https://threejs.org/docs/#api/en/animation/AnimationClip" target="_blank">AnimationClips</a> to the mixer with the <code spellcheck="false">clipAction(...)</code> method. Let's start with the first animation:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const action = mixer.clipAction(gltf.animations[0])</code></pre>                                                                                                <p class="">This method returns a <a href="https://threejs.org/docs/#api/en/animation/AnimationAction" target="_blank">AnimationAction</a>, and we can finally call the <code spellcheck="false">play()</code> method on it:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">action.play()</code></pre>                                                                                                <p class="">Regrettably, still no animation.</p>                                                                                                <p class="">To play the animation, we must tell the mixer to update itself at each frame. The problem is that our <code spellcheck="false">mixer</code> variable has been declared in the load callback function, and we don't have access to it in the <code spellcheck="false">tick</code> function. To fix that, we can declare the <code spellcheck="false">mixer</code> variable with a <code spellcheck="false">null</code> value outside of the load callback function and update it when the model is loaded:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">let mixer = null
+
+gltfLoader.load(
+    '/models/Fox/glTF/Fox.gltf',
+    (gltf) =&gt;
+    {
+        gltf.scene.scale.set(0.03, 0.03, 0.03)
+        scene.add(gltf.scene)
+
+        mixer = new THREE.AnimationMixer(gltf.scene)
+        const action = mixer.clipAction(gltf.animations[0])
+        action.play()
+    }
+)</code></pre>                                                                                                <p class="">And finally, we can update the mixer in the <code spellcheck="false">tick</code> function with the already calculated <code spellcheck="false">deltaTime</code>.</p>                                                                                                <p class="">But before updating it, we must test if the <code spellcheck="false">mixer</code> variable is different from <code spellcheck="false">null</code>. This way, we update the mixer if the model is loaded, meaning that the animation is not ready:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    // ...
+
+    if(mixer)
+    {
+        mixer.update(deltaTime)
+    }
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/21/009.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The animation should be running. You can test the other animations by changing the value in the <code spellcheck="false">clipAction(...)</code> method.</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const action = mixer.clipAction(gltf.animations[2])</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/21/010.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Three.js editor
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3865">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:04:25</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="three-js-editor">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#three-js-editor"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="three-js-editor"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Three.js posses its own online editor. You can find it here: <a href="https://threejs.org/editor/" target="_blank">https://threejs.org/editor/</a></p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">It's like a 3D software but online and with fewer features. You can create primitives, lights, materials, etc.</p>                                                                                                <p class="">And because you can import models, it's a good way to test if your model is working fine. Though be careful; you can only test models composed of one file. You can try with the glTF-Binary or the glTF-Embedded duck.</p>                                                                                                <p class="">Drag and drop the model into the editor.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">You should see a black duck because there is no light. Add an <code spellcheck="false">AmbientLight</code> and a <code spellcheck="false">DirectionalLight</code> from the <code spellcheck="false">Add</code> menu to see it more clearly.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/21/013.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1792 1120'%3E%3C/svg%3E" width="1792" height="1120"></span>
+</p>                                                                                                <p class="">Finally, you can export your scene in various formats that you can re-use in your code but we are getting out of the scope.</p>                                                                                                <p class="">That's it for the moment but we're going to use loaded models multiple time in the following lessons.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Raycaster and Mouse Events</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/raycaster-and-mouse-events" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/21/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(228deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>40. particles morphing shader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/particles-cursor-animation-shader"><div class="sibling-info"><div class="sibling-label">39.</div><div class="sibling-title">Particles Cursor Animation</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">40.</div><h2 class="title">Particles Morphing</h2><p class="difficulty">Difficulty <span class="value">
+                                Hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/gpgpu-flow-field-particles-shaders"><div class="sibling-info"><div class="sibling-label">41.</div><div class="sibling-title">GPGPU Flow Field Particles</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/68/40-particles-morphing-shader.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/68/40-particles-morphing-shader-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a><a href="/assets/lessons/68/40-particles-morphing-shader-resources.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Resources</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/68" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Let’s continue our particles series with a classic yet difficult exercise. We are going to morph particles:</p>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/000.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                <p class="">There are multiple ways of doing it and we could do it in JS by updating the attribute itself. But as we saw in previous lessons, updating the attribute is bad for performance and it would be impossible to maintain a good frame rate with a large amount of particles.</p>                                                                                <p class="">Another solution is by using GPGPU. It’s a good, but difficult solution which is why we won’t use it. Although it’s not for particle morphing, we’ll learn about GPGPU in one of the next lessons.</p>                                                                                <p class="">Finally, there is an easier solution that relies mostly on the vertex shader, and that we are going to discover now.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="99">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:39</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">The starter is quite similar to the previous lesson with particles ready to be enhanced:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <ul class="">
+            <li>A tweakable <code spellcheck="false">clearColor</code></li>
+            <li>Some models in one file named <code spellcheck="false">models.glb</code> that you can find in the <code spellcheck="false">static/</code> folder (you can download the original Blender file using the <code spellcheck="false">Resources</code> button)</li>
+            <li>A <code spellcheck="false">GLTFLoader</code> instance with a <code spellcheck="false">DracoLoader</code> instance associated with it</li>
+            <li>A sphere made out of particles using a <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a></li>
+            <li>The <code spellcheck="false">vite-plugin-glsl</code> dependency to handle GLSL files</li>
+            <li><code spellcheck="false">OrbitControls</code> to rotate around</li>
+            <li><code spellcheck="false">gsap</code> in the dependencies</li>
+    </ul>                                                                                <p class="">The particle size is already handled in the <code spellcheck="false">vertex.glsl</code>. We use a <code spellcheck="false">uSize</code> uniform to control it from the JS. Then, perspective is applied and the final size is relative to the height of the render, as seen in previous lessons.</p>                                                                                <p class="">Also, note that everything related to particles has been set as properties of the <code spellcheck="false">particles</code> object to keep things organised.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Theory
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="258">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">04:18</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="theory">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#theory"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="theory"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">The idea is that we are going to send two sets of positions to the vertex shader, one being the initial shape, and another one being the targeted shape. For the initial shape, we can use the classic <code spellcheck="false">position</code> attribute. For the targeted shape, we need to send a new attribute. Let’s call it <code spellcheck="false">aPositionTarget</code>.</p>                                                                                <p class="">Then, we send a uniform which is going to be a <code spellcheck="false">float</code> going from <code spellcheck="false">0</code> to <code spellcheck="false">1</code>. Let’s name it <code spellcheck="false">uProgress</code>. And we are going to use that <code spellcheck="false">uProgress</code> to mix between <code spellcheck="false">position</code> and <code spellcheck="false">aPositionTarget</code>.</p>                                                                                <p class="">Transitioning from one shape to another should be as simple as animating the <code spellcheck="false">uProgress</code>.</p>                                                                                <p class="">Obviously, we are going to face difficulties and add cool effects on top of it.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Pattern
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="366">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">06:06</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="pattern">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#pattern"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="pattern"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Before tackling the morphing, let’s have some fun and draw a pattern instead of those squares.</p>                                                                                <p class="">We want to draw a bright point at the center of the particle and have that point fade out before it reaches the edges of the particle. We actually did that in the <strong>Shader Patterns</strong> lesson, but let’s create it from scratch:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3C/svg%3E" width="512" height="512"></span>
+</p>                                                                                <p class="">In <code spellcheck="false">fragment.glsl</code>, retrieve the particle UV using <code spellcheck="false">gl_PointCoord</code>, save it as <code spellcheck="false">uv</code> and send it to the <code spellcheck="false">gl_FragColor</code> to make sure it’s working:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    vec2 uv = gl_PointCoord;
+
+    gl_FragColor = vec4(uv, 1.0, 1.0);
+    // ...
+}</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">Next, we need the distance to the center. We are going to use the technique we saw in one of the previous lessons by using the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/length.xhtml" target="_blank">length</a> of the offset <code spellcheck="false">uv</code> instead of the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/distance.xhtml" target="_blank">distance</a> from <code spellcheck="false">vec2(0.5)</code> and send it to <code spellcheck="false">gl_FragColor</code>:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    vec2 uv = gl_PointCoord;
+    float distanceToCenter = length(uv - 0.5);
+    
+    gl_FragColor = vec4(distanceToCenter, distanceToCenter, distanceToCenter, 1.0);
+    // ...
+}</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">Using <code spellcheck="false">distanceToCenter</code>, we can calculate the <code spellcheck="false">alpha</code>.</p>                                                                                <p class="">We want it to be very high at first and plunge very fast. We can use the small number division technique.</p>                                                                                <p class="">The idea is that we take a number below <code spellcheck="false">1</code> and divide it by an increasing value (<code spellcheck="false">distanceToCenter</code> in our case):</p>                                                                                <div class="desmos">
+    <iframe src="https://www.desmos.com/calculator/bm2obywefv?embed" frameborder="0"></iframe>
+</div>                                                                                <p class="">Create a <code spellcheck="false">float alpha</code> variable, to which you assign <code spellcheck="false">0.05</code> , divided by <code spellcheck="false">distanceToCenter</code>. Send it to <code spellcheck="false">gl_FragColor</code>:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float alpha = 0.05 / distanceToCenter;
+    
+    gl_FragColor = vec4(alpha, alpha, alpha, 1.0);
+    // ...
+}</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">Not bad, but <code spellcheck="false">alpha</code> never reaches <code spellcheck="false">0.0</code> at the edges.</p>                                    
+                                                                                                        <p class="">And here comes the trick. Subtract twice the small number you chose from the result:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float alpha = 0.05 / distanceToCenter - 0.1;
+    
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We need to multiply the number by two because the edge of the particle is reached at <code spellcheck="false">0.5</code>, not <code spellcheck="false">1.0</code>, meaning that we need the value to drop twice as fast.</p>                                                                                                <p class="">It doesn’t really matter if you don’t understand this formula, as long as you know how to apply it and how it’ll look.</p>                                                                                                <p class="">Put back the <code spellcheck="false">gl_FragColor</code> to white and use the <code spellcheck="false">alpha</code> on the fourth value:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    vec2 uv = gl_PointCoord;
+    float distanceToCenter = length(uv - 0.5);
+    float alpha = 0.05 / distanceToCenter - 0.1;
+    
+    gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
+    #include &lt;tonemapping_fragment&gt;
+    #include &lt;colorspace_fragment&gt;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">It’s not working because we haven’t set the <code spellcheck="false">transparent</code> to <code spellcheck="false">true</code> on the material, but instead of doing so, we are going to set the <code spellcheck="false">blending</code> to <code spellcheck="false">AdditiveBlending</code> so that the particles’ brightness merges together:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">particles.material = new THREE.ShaderMaterial({
+    // ...
+    blending: THREE.AdditiveBlending
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Next, set the <code spellcheck="false">depthWrite</code> to <code spellcheck="false">false</code> to prevent the occluding issue:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">particles.material = new THREE.ShaderMaterial({
+    // ...
+    depthWrite: false
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/009.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Notice something wrong?</p>                                                                                                <p class="">The particles are way too bright, as if there were many of them on top of each other, and that’s exactly what’s going on.</p>                                                                                                <p class="">As we’ve seen in previous lessons, whenever Three.js can, it’ll re-use the vertices for multiple triangles using what we call the index.</p>                                                                                                <p class="">Even though we are not using triangles since we are drawing particles, WebGL will use the index, resulting in up to 6 particles at the same place in the case of a grid:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/010.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 345 324'%3E%3C/svg%3E" width="345" height="324"></span>
+</p>                                                                                                <p class="">To fix that, remove the index using <code spellcheck="false">setIndex(null)</code> on the geometry:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// Geometry
+particles.geometry = new THREE.SphereGeometry(3)
+particles.geometry.setIndex(null)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">This won’t actually be an issue once we use the models, but it was the opportunity to practice.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Load the models
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1076">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">17:56</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="load-the-models">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#load-the-models"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="load-the-models"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The models we are going to use have been created in Blender.</p>                                                                                                <p class="">These consist of a sphere, Suzanne, a text and a torus.</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/012.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">These models have been subdivided to have roughly the same amount of vertices (around 10,000), but none of them has the exact same amount. However, we will deal with this issue later.</p>                                                                                                <p class="">The objects have been smoothed. Doing that considerably reduces the amount of data contained in the model because a smoothed geometry results in an indexed geometry, meaning that each vertex is unique.</p>                                                                                                <p class="">But didn’t we say that we don’t want the index? Well yes, but we are going to extract the vertices only from the model, not the index, which is why it’s not an issue.</p>                                                                                                <p class="">We already have the <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> instance set with a <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank">DRACOLoader</a> instance. Let’s load the models located in <code spellcheck="false">static/models.glb</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    console.log(gltf)
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/013.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Since we need the models to create the particles, let’s put all the code related to the particles in the callback function of <code spellcheck="false">load()</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    const particles = {}
+
+    // Geometry
+    particles.geometry = new THREE.SphereGeometry(3)
+    particles.geometry.setIndex(null)
+
+    // Material
+    particles.material = new THREE.ShaderMaterial({
+        vertexShader: particlesVertexShader,
+        fragmentShader: particlesFragmentShader,
+        uniforms:
+        {
+            uSize: new THREE.Uniform(0.4),
+            uResolution: new THREE.Uniform(new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio))
+        },
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    })
+
+    // Points
+    particles.points = new THREE.Points(particles.geometry, particles.material)
+    scene.add(particles.points)
+})</code></pre>                                                                                                <p class="">It seems good, but if you resize the window, you’ll get an error:</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/014.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">That’s because we are updating <code spellcheck="false">uResolution</code> in the <code spellcheck="false">resize</code> callback, but the <code spellcheck="false">particles</code> object is created inside the callback function, thus it only exists in there.</p>                                                                                                <p class="">To fix that, we are going to create it outside as <code spellcheck="false">null</code> using a <code spellcheck="false">let</code> and then update it to an object inside the callback:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">let particles = null
+
+gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // ...
+})</code></pre>                                                                                                <p class="">We now have access to it outside of the callback, and we can use an <code spellcheck="false">if</code> statement to test if there is something in <code spellcheck="false">particles</code> before trying to update anything:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">window.addEventListener('resize', () =&gt;
+{
+    // ...
+
+    // Materials
+    if(particles)
+        particles.material.uniforms.uResolution.value.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
+
+    // ...
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/015.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Extract the geometry positions
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1419">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">23:39</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="extract-the-geometry-positions">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#extract-the-geometry-positions"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="extract-the-geometry-positions"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Back to our callback function, we want to extract the geometries from the objects in the loaded model. More specifically, we want the <code spellcheck="false">position</code> attribute and we can use the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">map</a> method available on arrays.</p>                                                                                                <p class="">The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">map</a> methods will go through every item of an array and return whatever we return in the function we send to it.</p>                                                                                                <p class="">Use the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">map</a> on <code spellcheck="false">gltf.scene.children</code> and send it a function with a <code spellcheck="false">child</code> parameter and a <code spellcheck="false">console.log()</code> of that <code spellcheck="false">child</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // Positions
+    gltf.scene.children.map((child) =&gt;
+    {
+        console.log(child)
+    })
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/016.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">As you can see, the function is being called for every item of the <code spellcheck="false">gltf.scene.children</code> array.</p>                                                                                                <p class="">In our case, we want the <code spellcheck="false">position</code> attribute and it’s available in the <code spellcheck="false">child.geometry.attributes.position</code> property:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // Positions
+    gltf.scene.children.map((child) =&gt;
+    {
+        console.log(child.geometry.attributes.position)
+    })
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/017.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Now that we found what we wanted, we need to extract each one and save them all.</p>                                                                                                <p class="">Assign the result of the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">map</a> to a <code spellcheck="false">positions</code> variable and, instead of doing a <code spellcheck="false">console.log()</code>, <code spellcheck="false">return</code> the <code spellcheck="false">child.geometry.attributes.position</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // Positions
+    const positions = gltf.scene.children.map((child) =&gt;
+    {
+        return child.geometry.attributes.position
+    })
+
+    // ...
+})</code></pre>                                                                                                <p class="">You can <code spellcheck="false">console.log(positions)</code> to see what’s inside:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // Positions
+    const positions = gltf.scene.children.map((child) =&gt;
+    {
+        return child.geometry.attributes.position
+    })
+    console.log(positions)
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/018.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We get an array containing all the <code spellcheck="false">position</code> attributes extracted from <code spellcheck="false">gltf.scene.children</code>.</p>                                                                                                <p class="">And since we are using an arrow function, we can write it like this for the same result:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // Positions
+    const positions = gltf.scene.children.map(child =&gt; child.geometry.attributes.position)
+
+    // ...
+})</code></pre>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Harmonise the positions
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1722">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">28:42</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="harmonise-the-positions">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#harmonise-the-positions"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="harmonise-the-positions"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The <code spellcheck="false">positions</code> array contains the vertices of the 4 objects, but none of them have the exact same size.</p>                                                                                                <p class="">We need to harmonise them, and we are going to add values to the smallest ones so that they are all the size of the biggest one.</p>                                                                                                <p class="">First, we need to establish the maximum count of vertices.</p>                                                                                                <p class="">Create a <code spellcheck="false">maxCount</code> property and set it to <code spellcheck="false">0</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // Positions
+    const positions = gltf.scene.children.map(child =&gt; child.geometry.attributes.position)
+
+    particles.maxCount = 0
+
+    // ...
+})</code></pre>                                                                                                <p class="">Loop through the <code spellcheck="false">positions</code> array using a <code spellcheck="false">for(… of …)</code>, compare the number of vertices using the <code spellcheck="false">count</code> property, and if it’s bigger than <code spellcheck="false">particles.maxCount</code>, update <code spellcheck="false">particles.maxCount</code> accordingly:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // Positions
+    const positions = gltf.scene.children.map(child =&gt; child.geometry.attributes.position)
+
+    particles.maxCount = 0
+    for(const position of positions)
+    {
+        if(position.count &gt; particles.maxCount)
+            particles.maxCount = position.count
+    }
+
+    // ...
+})</code></pre>                                                                                                <p class="">Now that we know what the max size of the <code spellcheck="false">positions</code> is, we need to update them. But remember that attributes are made out of <code spellcheck="false">Float32Array</code> and this type of array can’t have its length changed.</p>                                                                                                <p class="">We need to create a brand-new <code spellcheck="false">Float32Array</code> with the right size.</p>                                                                                                <p class="">After calculating the <code spellcheck="false">maxCount</code>, create an empty array <code spellcheck="false">particles.position</code> and loop through the <code spellcheck="false">positions</code> again:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+
+    // Positions
+    // ...
+
+    particles.positions = []
+    for(const position of positions)
+    {
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class=""><code spellcheck="false">particles.positions</code> will contain all 4 new <code spellcheck="false">positions</code> attributes:</p>                                                                                                <p class="">Be very careful of the order you do things. Yes, we are doing a <code spellcheck="false">for(… of …)</code> on <code spellcheck="false">positions</code> again, but it has to be a separate one because we need to calculate the <code spellcheck="false">maxCount</code> first.</p>                                                                                                <p class="">Retrieve the original array of vertices out of the <code spellcheck="false">position</code> and save it as <code spellcheck="false">originalArray</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        const originalArray = position.array
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class="">Create a <code spellcheck="false">Float32Array</code> the size of <code spellcheck="false">maxCount</code> multiplied by <code spellcheck="false">3</code> (because <code spellcheck="false">x</code>, <code spellcheck="false">y</code> and <code spellcheck="false">z</code>) and save it as <code spellcheck="false">newArray</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        const originalArray = position.array
+        const newArray = new Float32Array(particles.maxCount * 3)
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class="">As always, we are being very explicit in the way we code. We could have done it very differently, but it’s important to keep things clear while we learn.</p>                                                                                                <p class="">Still in the <code spellcheck="false">for(… of …)</code>, loop from <code spellcheck="false">0</code> to <code spellcheck="false">particles.maxCount</code>, use a classic <code spellcheck="false">for()</code> and create an <code spellcheck="false">i3</code> variable equal to <code spellcheck="false">i * 3</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        const originalArray = position.array
+        const newArray = new Float32Array(particles.maxCount * 3)
+
+        for(let i = 0; i &lt; particles.maxCount; i++)
+        {
+            const i3 = i * 3
+        }
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class="">We are ready to fill the array. We have the original vertices in <code spellcheck="false">originalArray</code> and we need to fill the <code spellcheck="false">newArray</code>.</p>                                                                                                <p class="">In the <code spellcheck="false">for()</code>, as long as <code spellcheck="false">i3</code> is less than <code spellcheck="false">originalArray.length</code>, take the values from <code spellcheck="false">originalArray</code> and put them in <code spellcheck="false">newArray</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        const originalArray = position.array
+        const newArray = new Float32Array(particles.maxCount * 3)
+
+        for(let i = 0; i &lt; particles.maxCount; i++)
+        {
+            const i3 = i * 3
+
+            if(i3 &lt; originalArray.length)
+            {
+                newArray[i3 + 0] = originalArray[i3 + 0]
+                newArray[i3 + 1] = originalArray[i3 + 1]
+                newArray[i3 + 2] = originalArray[i3 + 2]
+            }
+        }
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class="">Otherwise, we fill the array with a bunch of <code spellcheck="false">0</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        const originalArray = position.array
+        const newArray = new Float32Array(particles.maxCount * 3)
+
+        for(let i = 0; i &lt; particles.maxCount; i++)
+        {
+            const i3 = i * 3
+
+            if(i3 &lt; originalArray.length)
+            {
+                newArray[i3 + 0] = originalArray[i3 + 0]
+                newArray[i3 + 1] = originalArray[i3 + 1]
+                newArray[i3 + 2] = originalArray[i3 + 2]
+            }
+            else
+            {
+                newArray[i3 + 0] = 0
+                newArray[i3 + 1] = 0
+                newArray[i3 + 2] = 0
+            }
+        }
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class="">Later, we will pick random values from the <code spellcheck="false">originalArray</code>, but we have been coding without seeing anything for a while, so let’s keep things simple.</p>                                                                                                <p class="">Still in the <code spellcheck="false">for(… of …)</code> loop (not the classic <code spellcheck="false">for()</code>), create a <code spellcheck="false">Float32BufferAttribute</code> using the <code spellcheck="false">newArray</code>, set the <code spellcheck="false">itemSize</code> to <code spellcheck="false">3</code> and <code spellcheck="false">push()</code> it in the <code spellcheck="false">particles.positions</code> array:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        // ...
+
+        particles.positions.push(new THREE.Float32BufferAttribute(newArray, 3))
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class="">You can <code spellcheck="false">console.log(particles.positions)</code> to check if all the arrays have the same size and are filled with <code spellcheck="false">0</code> at the end (except the biggest one):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        // ...
+    }
+
+    console.log(particles.positions)
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/019.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We have been coding for a while without seeing anything. Fortunately, we can finally test our arrays.</p>                                                                                                <p class="">On the <code spellcheck="false">Geometry</code> part, instead of the <a href="https://threejs.org/docs/#api/en/geometries/SphereGeometry" target="_blank">SphereGeometry</a>, create a <a href="https://threejs.org/docs/#api/en/core/BufferGeometry" target="_blank">BufferGeometry</a>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    
+    // Geometry
+    particles.geometry = new THREE.BufferGeometry()
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/020.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We get nothing because the geometry is empty.</p>                                                                                                <p class="">Set a <code spellcheck="false">'position'</code> attribute using the <code spellcheck="false">setAttribute()</code> method and use any of <code spellcheck="false">particles.positions</code> we prepared. I’ll be using Suzanne (<code spellcheck="false">particles.positions[1]</code>):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    
+    // Geometry
+    particles.geometry = new THREE.BufferGeometry()
+    particles.geometry.setAttribute('position', particles.positions[1])
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/021.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">It’s finally working.</p>                                                                                                <p class="">As mentioned earlier, we don’t need the <code spellcheck="false">setIndex(null)</code> anymore because the vertices are unique and the <code spellcheck="false">BufferGeometry</code> doesn’t have an index by default.</p>                                                                                                <p class="">If you rotate around, you’ll notice the big point at the center:</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/022.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">This point is made up of all the vertices we’ve added to fill the array with their position to <code spellcheck="false">0, 0, 0</code>.</p>                                                                                                <p class="">Back to the <code spellcheck="false">for()</code> where we filled the arrays: instead of setting the filling value to <code spellcheck="false">0</code>, we are going to pick a random vertex from the <code spellcheck="false">originalArray</code>.</p>                                                                                                <p class="">First, create a <code spellcheck="false">randomIndex</code> variable which is going to be the <code spellcheck="false">position.count</code> multiplied by <code spellcheck="false">Math.random()</code>, floored with <code spellcheck="false">Math.floor()</code> so that we get random indexes of the <code spellcheck="false">originalArray</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        // ...
+
+        for(let i = 0; i &lt; particles.maxCount; i++)
+        {
+            // ...
+            else
+            {
+                const randomIndex = Math.floor(position.count * Math.random())
+                newArray[i3 + 0] = 0
+                newArray[i3 + 1] = 0
+                newArray[i3 + 2] = 0
+            }
+        }
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class="">We also need to multiply it by <code spellcheck="false">3</code> because values go 3 by 3 in <code spellcheck="false">originalArray</code> (<code spellcheck="false">x</code>, <code spellcheck="false">y</code> and <code spellcheck="false">z</code>):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        // ...
+
+        for(let i = 0; i &lt; particles.maxCount; i++)
+        {
+            // ...
+            else
+            {
+                const randomIndex = Math.floor(position.count * Math.random()) * 3
+                newArray[i3 + 0] = 0
+                newArray[i3 + 1] = 0
+                newArray[i3 + 2] = 0
+            }
+        }
+    }
+
+    // ...
+}</code></pre>                                                                                                <p class="">Now pick values from <code spellcheck="false">originalArray</code> using the <code spellcheck="false">randomIndex</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    for(const position of positions)
+    {
+        // ...
+
+        for(let i = 0; i &lt; particles.maxCount; i++)
+        {
+            // ...
+            else
+            {
+                const randomIndex = Math.floor(position.count * Math.random()) * 3
+                newArray[i3 + 0] = originalArray[randomIndex + 0]
+                newArray[i3 + 1] = originalArray[randomIndex + 1]
+                newArray[i3 + 2] = originalArray[randomIndex + 2]
+            }
+        }
+    }
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/023.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Now, the particles in the middle are gone and filled vertices are taken randomly from the <code spellcheck="false">originalArray</code>. Some particles look brighter and that’s because there are multiple ones there, which, this time, is on purpose.</p>                                                                                                <p class="">As always, there are shorter ways of writing everything we did, but we want to keep things as simple and easy as possible.</p>                                                                                                <p class="">Let’s make the particles slightly smaller so that we can appreciate the following part.</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    particles.material = new THREE.ShaderMaterial({
+        // ...
+        uniforms:
+        {
+            uSize: new THREE.Uniform(0.2),
+            // ...
+        },
+        // ...
+    })
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/024.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Mix positions
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2735">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">45:35</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="mix-positions">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#mix-positions"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="mix-positions"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Let’s start the fun part and get the particles moving from one shape to the other.</p>                                                                                                <p class="">To do that, we need to have both positions available in the shader.</p>                                                                                                <p class="">Add an <code spellcheck="false">'aPositionTarget'</code> like we added the <code spellcheck="false">'position'</code>, but use a different item from <code spellcheck="false">particles.positions</code> (try with <code spellcheck="false">particles.positions[3]</code>):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Geometry
+    particles.geometry = new THREE.BufferGeometry()
+    particles.geometry.setAttribute('position', particles.positions[1])
+    particles.geometry.setAttribute('aPositionTarget', particles.positions[3])
+
+    // ...
+})</code></pre>                                                                                                <p class="">Unlike the <code spellcheck="false">position</code> attribute, we need to retrieve it manually in the <code spellcheck="false">vertex.glsl</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">attribute vec3 aPositionTarget;</code></pre>                                                                                                <p class="">At the beginning of <code spellcheck="false">main()</code>, create a <code spellcheck="false">float progress</code> variable set to <code spellcheck="false">0.5</code> and a <code spellcheck="false">vec3 mixedPosition</code> variable mixing between the <code spellcheck="false">position</code> and the <code spellcheck="false">aPositionTarget</code> according to <code spellcheck="false">progress</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Mixed position
+    float progress = 0.5;
+    vec3 mixedPosition = mix(position, aPositionTarget, progress);
+    
+    // ...
+}</code></pre>                                                                                                <p class="">Send the <code spellcheck="false">mixedPosition</code> to the <code spellcheck="false">modelPosition</code> instead of <code spellcheck="false">position</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    
+    // Final position
+    vec4 modelPosition = modelMatrix * vec4(mixedPosition, 1.0);
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/025.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">What you see is a perfect mix between Suzanne and the <code spellcheck="false">THREE.JS</code> text.</p>                                                                                                <p class="">Test different <code spellcheck="false">progress</code> values and you’ll understand.</p>                                                                                                <p class="">Consider the result of setting <code spellcheck="false">progress</code> to <code spellcheck="false">0.1</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    float progress = 0.1;
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/026.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Now change <code spellcheck="false">progress</code> to <code spellcheck="false">0.9</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    float progress = 0.9;
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/027.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Uniform
+
+        
+                <span class="anchor js-anchor" data-slug="uniform">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#uniform"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="uniform"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">That’s great, but if we have to change the progress manually, we won’t get very far.</p>                                                                                                <p class="">We are going to use a uniform and animate that uniform from the JS.</p>                                                                                                <p class="">Create a <code spellcheck="false">uProgress</code> uniform using the <a href="https://threejs.org/docs/#api/en/core/Uniform" target="_blank">Uniform</a> class and set it to <code spellcheck="false">0</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    particles.material = new THREE.ShaderMaterial({
+        // ...
+        uniforms:
+        {
+            // ...
+            uProgress: new THREE.Uniform(0)
+        },
+        // ...
+    })
+
+    // ...
+})</code></pre>                                                                                                <p class="">Retrieve it in <code spellcheck="false">vertex.glsl</code> and assign it to <code spellcheck="false">progress</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+uniform float uProgress;
+
+// ...
+
+void main()
+{
+    // Mixed position
+    float progress = uProgress;
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/028.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We get Suzanne because <code spellcheck="false">uProgress</code> is at <code spellcheck="false">0</code>.</p>                                                                                                <p class="">At the end, <code spellcheck="false">uProgress</code> will be animated, but let’s have some fun and add a tweak for it:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Tweaks
+    gui.add(particles.material.uniforms.uProgress, 'value').min(0).max(1).step(0.001).name('uProgress')
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/029.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Better transition
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3068">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">51:08</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="better-transition">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#better-transition"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="better-transition"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Our transition is working but all the particles are starting at the same time, go to their destination at a linear speed and arrive at the same time. Lame.</p>                                                                                                <p class="">To fix that, we are going to make them start at a different time and, in the process, make the animation start slowly, accelerate in the middle and slow down when arriving.</p>                                                                                                <p class="">To control the delay before they start, we are going to use a Perlin Noise so that it feels like pieces of the models are separating.</p>                                                                                                <p class="">Actually, this time, we are going to use the <strong>Simplex Noise</strong> instead of the <strong>Perlin Noise</strong>. It’s very similar, although it looks more natural, less grid-ish, it’s more performant (especially at higher dimensions). It’s also written by <strong>Ken Perlin</strong>.</p>                                                                                                <p class="">You can find it on the same Gist we used before: <a href="https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83" target="_blank">https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83</a></p>                                                                                                <p class="">Here is a slightly reformatted version:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">//	Simplex 3D Noise 
+//	by Ian McEwan, Ashima Arts
+//
+vec4 permute(vec4 x){ return mod(((x*34.0)+1.0)*x, 289.0); }
+vec4 taylorInvSqrt(vec4 r){ return 1.79284291400159 - 0.85373472095314 * r; }
+
+float simplexNoise3d(vec3 v)
+{
+    const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+    const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+
+    // First corner
+    vec3 i  = floor(v + dot(v, C.yyy) );
+    vec3 x0 =   v - i + dot(i, C.xxx) ;
+
+    // Other corners
+    vec3 g = step(x0.yzx, x0.xyz);
+    vec3 l = 1.0 - g;
+    vec3 i1 = min( g.xyz, l.zxy );
+    vec3 i2 = max( g.xyz, l.zxy );
+
+    //  x0 = x0 - 0. + 0.0 * C 
+    vec3 x1 = x0 - i1 + 1.0 * C.xxx;
+    vec3 x2 = x0 - i2 + 2.0 * C.xxx;
+    vec3 x3 = x0 - 1. + 3.0 * C.xxx;
+
+    // Permutations
+    i = mod(i, 289.0 ); 
+    vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))  + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+
+    // Gradients
+    // ( N*N points uniformly over a square, mapped onto an octahedron.)
+    float n_ = 1.0/7.0; // N=7
+    vec3  ns = n_ * D.wyz - D.xzx;
+
+    vec4 j = p - 49.0 * floor(p * ns.z *ns.z);  //  mod(p,N*N)
+
+    vec4 x_ = floor(j * ns.z);
+    vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)
+
+    vec4 x = x_ *ns.x + ns.yyyy;
+    vec4 y = y_ *ns.x + ns.yyyy;
+    vec4 h = 1.0 - abs(x) - abs(y);
+
+    vec4 b0 = vec4( x.xy, y.xy );
+    vec4 b1 = vec4( x.zw, y.zw );
+
+    vec4 s0 = floor(b0)*2.0 + 1.0;
+    vec4 s1 = floor(b1)*2.0 + 1.0;
+    vec4 sh = -step(h, vec4(0.0));
+
+    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+    vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+
+    vec3 p0 = vec3(a0.xy,h.x);
+    vec3 p1 = vec3(a0.zw,h.y);
+    vec3 p2 = vec3(a1.xy,h.z);
+    vec3 p3 = vec3(a1.zw,h.w);
+
+    // Normalise gradients
+    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+    p0 *= norm.x;
+    p1 *= norm.y;
+    p2 *= norm.z;
+    p3 *= norm.w;
+
+    // Mix final noise value
+    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+    m = m * m;
+    return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
+}</code></pre>                                                                                                <p class="">In <code spellcheck="false">src/shaders/</code>, create an <code spellcheck="false">includes/</code> folder. In that folder, create a <code spellcheck="false">simplexNoise3d.glsl</code> file and put the above code in it.</p>                                                                                                <p class="">Back to the <code spellcheck="false">vertex.glsl</code> file, include <code spellcheck="false">../includes/simplexNoise3d.glsl</code>, call a <code spellcheck="false">simplexNoise3d()</code> using the <code spellcheck="false">position</code> and save it in a <code spellcheck="false">float noise</code> variable:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">#include ../includes/simplexNoise3d.glsl
+
+void main()
+{
+    // Mixed position
+    float noise =  simplexNoise3d(position);
+    float progress = uProgress;
+    // ...
+}</code></pre>                                                                                                <p class="">Before doing some math sorcery, let’s see what this <code spellcheck="false">noise</code> looks like.</p>                                                                                                <p class="">Create a <code spellcheck="false">vColor</code> varying, to which you assign the <code spellcheck="false">noise</code> as a <code spellcheck="false">vec3()</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+varying vec3 vColor;
+
+// ...
+
+void main()
+{
+    // ...
+
+    // Varyings
+    vColor = vec3(noise);
+}</code></pre>                                                                                                <p class="">In <code spellcheck="false">fragment.glsl</code>, retrieve the <code spellcheck="false">vColor</code> varying and send it to the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">varying vec3 vColor;
+
+void main()
+{
+    // ...
+    
+    gl_FragColor = vec4(vColor, alpha);
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/030.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">It looks okay, but the parts in the dark indicate that some chunks are below <code spellcheck="false">0.0</code>. The Simplex Noise ranges from <code spellcheck="false">-1</code> to <code spellcheck="false">+1</code>. We would prefer values from <code spellcheck="false">0</code> to <code spellcheck="false">1</code> and we want to be sure the value is clamped in that range. It’s also the opportunity to smooth the value.</p>                                                                                                <p class="">We are going to use the classic <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a>.</p>                                                                                                <p class="">Back to <code spellcheck="false">vertex.glsl</code>, apply a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a> on <code spellcheck="false">noise</code> from <code spellcheck="false">-1</code> to <code spellcheck="false">1</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Mixed position
+    float noise = simplexNoise3d(position);
+    noise = smoothstep(-1.0, 1.0, noise);
+    
+    float progress = uProgress;
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/031.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">That’s better. Let’s keep the <code spellcheck="false">vColor</code>, it’ll come in handy a bit later.</p>                                                                                                <p class="">We now want to offset the <code spellcheck="false">progress</code> according to that <code spellcheck="false">noise</code>. But we also need all the particles to be at <code spellcheck="false">1.0</code> when <code spellcheck="false">uProgress</code> arrives at <code spellcheck="false">1.0</code>.</p>                                                                                                <p class="">Things are getting a little bit complicated.</p>                                                                                                <p class="">In order to understand what’s going on, here is a sample of 8 particles.</p>                                                                                                <p class="">The green line indicates the <code spellcheck="false">progress</code> from <code spellcheck="false">0</code> to <code spellcheck="false">1</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/032.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 841 378'%3E%3C/svg%3E" width="841" height="378"></span>
+</p>                                                                                                <p class="">As you can see, all the green lines have the same length which is <code spellcheck="false">0.6</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/033.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 841 378'%3E%3C/svg%3E" width="841" height="378"></span>
+</p>                                                                                                <p class="">This means they all take as much time to finish their animation. Let’s call this the <code spellcheck="false">duration</code>.</p>                                                                                                <p class="">But they start at a different moments. Let’s call this the <code spellcheck="false">delay</code>.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/034.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 841 378'%3E%3C/svg%3E" width="841" height="378"></span>
+</p>                                                                                                <p class="">Since all the particles <code spellcheck="false">duration</code> is <code spellcheck="false">0.6</code>, it means that the <code spellcheck="false">delay</code> needs to be between <code spellcheck="false">0</code> and <code spellcheck="false">0.4</code> so that none of them finishes after <code spellcheck="false">1</code>. We can calculate the maximum <code spellcheck="false">delay</code> with <code spellcheck="false">1.0 - duration</code>.</p>                                                                                                <p class="">And the <code spellcheck="false">delay</code> will be multiplied by the <code spellcheck="false">noise</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/035.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 841 378'%3E%3C/svg%3E" width="841" height="378"></span>
+</p>                                                                                                <p class="">I’m going to spoil you and tell you that we are going to use a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smootshtep</a> again, which means we need to know the bottom limit and the top limit.</p>                                                                                                <p class="">The bottom limit is <code spellcheck="false">delay</code>, and we have to calculate the top limit which we are going to call <code spellcheck="false">end</code>.</p>                                                                                                <p class="">Since we know when it starts with <code spellcheck="false">delay</code> and how long it takes with <code spellcheck="false">duration</code>, <code spellcheck="false">end</code> can be calculated as the <code spellcheck="false">delay + duration</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/036.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 841 378'%3E%3C/svg%3E" width="841" height="378"></span>
+</p>                                                                                                <p class="">We have everything we need.</p>                                                                                                <p class="">In <code spellcheck="false">vertex.glsl</code>, before the <code spellcheck="false">progress</code>:</p>                                                                                                <ul class="">
+            <li>Create a <code spellcheck="false">float duration</code> equal to <code spellcheck="false">0.4</code></li>
+            <li>Create a <code spellcheck="false">float delay</code> equal to <code spellcheck="false">(1.0 - duration) * noise</code></li>
+            <li>Create a <code spellcheck="false">float end</code> equal to <code spellcheck="false">delay + duration</code></li>
+    </ul>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    
+    float duration = 0.4;
+    float delay = (1.0 - duration) * noise;
+    float end = delay + duration;
+    float progress = uProgress;
+    
+    // ...
+}</code></pre>                                                                                                <p class="">We can now apply a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a> on the <code spellcheck="false">uProgress</code> and have the <code spellcheck="false">delay</code> and the <code spellcheck="false">end</code> as the limits:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    
+    float duration = 0.4;
+    float delay = (1.0 - duration) * noise;
+    float end = delay + duration;
+    float progress = smoothstep(delay, end, uProgress);
+    
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/037.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">It’s working, but only for the beginning animation. The reason is that we are using the <code spellcheck="false">position</code> in the <code spellcheck="false">simplexNoise3d()</code> and this <code spellcheck="false">position</code> corresponds to the initial shape, not the targeted shape.</p>                                                                                                <p class="">To fix that, we are going to calculate a second Simplex Perlin using the <code spellcheck="false">aPositionTarget</code> and mix between the two according to the <code spellcheck="false">uProgress</code>.</p>                                                                                                <p class="">Rename the first <code spellcheck="false">noise</code> to <code spellcheck="false">noiseOrigin</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Mixed position
+    float noiseOrigin = simplexNoise3d(position);
+    // ...
+}</code></pre>                                                                                                <p class="">Create a new one named <code spellcheck="false">noiseTarget</code> and use <code spellcheck="false">aPositionTarget</code> for the <code spellcheck="false">simplexNoise3d()</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Mixed position
+    float noiseOrigin = simplexNoise3d(position);
+    float noiseTarget = simplexNoise3d(aPositionTarget);
+    // ...
+}</code></pre>                                                                                                <p class="">Create the final one named <code spellcheck="false">noise</code> by mixing between <code spellcheck="false">noiseOrigin</code> and <code spellcheck="false">noiseTarget</code> according to <code spellcheck="false">uProgress</code> and keep the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a> on top of it:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Mixed position
+    float noiseOrigin = simplexNoise3d(position);
+    float noiseTarget = simplexNoise3d(aPositionTarget);
+    float noise = mix(noiseOrigin, noiseTarget, uProgress);
+    noise = smoothstep(-1.0, 1.0, noise);
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/038.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The frequency of the Simplex Noise is a bit too high. Multiply it in both <code spellcheck="false">simplexNoise3d()</code> by <code spellcheck="false">0.2</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Mixed position
+    float noiseOrigin = simplexNoise3d(position * 0.2);
+    float noiseTarget = simplexNoise3d(aPositionTarget * 0.2);
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/039.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Animate the progress
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4124">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:08:44</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="animate-the-progress">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#animate-the-progress"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="animate-the-progress"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Back to the JS, we now want to trigger the animation using buttons.</p>                                                                                                <p class="">We are going to have 4 buttons in the debug panel, one for each shape, and clicking on any of them will transition the particles to the corresponding shape.</p>                                                                                                <p class="">Switching the particles to a different shape requires 3 things:</p>                                                                                                <ul class="">
+            <li>Set the <code spellcheck="false">position</code> attribute to the original geometry</li>
+            <li>Set the <code spellcheck="false">aPositionTarget</code> attribute to the targeted geometry</li>
+            <li>Animate <code spellcheck="false">uProgress</code> from <code spellcheck="false">0</code> to <code spellcheck="false">1</code></li>
+    </ul>                                                                                                <p class="">We also need to save the current index so that we know from what geometry we are supposed to transition the next time.</p>                                                                                                <p class="">Let’s start by setting an <code spellcheck="false">index</code> property on the <code spellcheck="false">particles</code> object:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+    particles.index = 0
+
+    // ...
+})</code></pre>                                                                                                <p class="">We can use <code spellcheck="false">particles.index</code> on the initial <code spellcheck="false">position</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    particles = {}
+    particles.index = 0
+
+    // ...
+    particles.geometry.setAttribute('position', particles.positions[particles.index])
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/040.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">In order to automatise the transition to a different geometry, let’s create a <code spellcheck="false">morph</code> method on <code spellcheck="false">particles</code> right before the tweaks:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Methods
+    particles.morph = () =&gt;
+    {
+    }
+
+    // Tweaks
+    // ...
+})</code></pre>                                                                                                <p class="">Add an <code spellcheck="false">index</code> parameter to the <code spellcheck="false">morph</code> method:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Methods
+    particles.morph = (index) =&gt;
+    {
+    }
+
+    // ...
+})</code></pre>                                                                                                <p class="">In the <code spellcheck="false">morph</code> method, we can now do everything we said earlier.</p>                                                                                                <p class="">Set the <code spellcheck="false">position</code> attribute to the original geometry and set the <code spellcheck="false">aPositionTarget</code> attribute to the targeted geometry:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Methods
+    particles.morph = (index) =&gt;
+    {
+        // Update attributes
+        particles.geometry.attributes.position = particles.positions[particles.index]
+        particles.geometry.attributes.aPositionTarget = particles.positions[index]
+    }
+
+    // ...
+})</code></pre>                                                                                                <p class="">Animate the <code spellcheck="false">uProgress</code> uniform from <code spellcheck="false">0</code> to <code spellcheck="false">1</code> using <code spellcheck="false">gsap.fromTo()</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Methods
+    particles.morph = (index) =&gt;
+    {
+        // ...
+
+        // Animate uProgress
+        gsap.fromTo(
+            particles.material.uniforms.uProgress,
+            { value: 0 },
+            { value: 1 }
+        )
+    }
+
+    // ...
+})</code></pre>                                                                                                <p class="">We don’t use <code spellcheck="false">gsap.to()</code>, because we need it to start from <code spellcheck="false">0</code> before going to <code spellcheck="false">1</code>.</p>                                                                                                <p class="">Set the <code spellcheck="false">duration</code> to <code spellcheck="false">3</code> and the <code spellcheck="false">ease</code> to <code spellcheck="false">'linear'</code> because we’re already applying an easing on the progress in the vertex shader thanks to <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothsteps</a>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Methods
+    particles.morph = (index) =&gt;
+    {
+        // ...
+
+        // Animate uProgress
+        gsap.fromTo(
+            particles.material.uniforms.uProgress,
+            { value: 0 },
+            { value: 1, duration: 3, ease: 'linear' }
+        )
+    }
+
+    // ...
+})</code></pre>                                                                                                <p class="">Replace <code spellcheck="false">particles.index</code> by <code spellcheck="false">index</code> so that the next call to <code spellcheck="false">morph</code> will consider the new shape as the old one:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Methods
+    particles.morph = (index) =&gt;
+    {
+        // ...
+
+        // Save index
+        particles.index = index
+    }
+
+    // ...
+})</code></pre>                                                                                                <p class="">We now need to call the <code spellcheck="false">morph</code> method with <code spellcheck="false">0</code>, <code spellcheck="false">1</code>, <code spellcheck="false">2</code> or <code spellcheck="false">3</code> according to the button pressed.</p>                                                                                                <p class="">Unfortunately, we can’t send functions with parameters to lil-gui. To fix that we are going to create 4 functions, and each one calls <code spellcheck="false">morph</code> with the corresponding <code spellcheck="false">index</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    particles.morph0 = () =&gt; { particles.morph(0) }
+    particles.morph1 = () =&gt; { particles.morph(1) }
+    particles.morph2 = () =&gt; { particles.morph(2) }
+    particles.morph3 = () =&gt; { particles.morph(3) }
+})</code></pre>                                                                                                <p class="">Add those methods to <code spellcheck="false">gui</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    gui.add(particles, 'morph0')
+    gui.add(particles, 'morph1')
+    gui.add(particles, 'morph2')
+    gui.add(particles, 'morph3')
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/041.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We have our animated morphing particles and can switch between them with simple buttons.</p>                                                                                                <p class="">By the way, we can ask the tweak for the <code spellcheck="false">uProgress</code> to update itself when the value is being animated using the <code spellcheck="false">listen()</code> method:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    gui.add(particles.material.uniforms.uProgress, 'value').min(0).max(1).step(0.001).name('uProgress').listen()
+
+    // ...
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/042.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Random size
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4672">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:17:52</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="random-size">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#random-size"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="random-size"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Let’s go a little further and make our particles look good.</p>                                                                                                <p class="">First, let’s add some more randomness by assigning different sizes to each particle.</p>                                                                                                <p class="">In <code spellcheck="false">script.js</code>, at the <code spellcheck="false">Geometry</code> part, create a <code spellcheck="false">Float32Array</code> the size of <code spellcheck="false">particles.maxCount</code> and save it as <code spellcheck="false">sizesArray</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Geometry
+    const sizesArray = new Float32Array(particles.maxCount)
+
+    // ...
+})</code></pre>                                                                                                <p class="">Fill it with random values:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Geometry
+    const sizesArray = new Float32Array(particles.maxCount)
+
+    for(let i = 0; i &lt; particles.maxCount; i++)
+	    sizesArray[i] = Math.random()
+
+    // ...
+})</code></pre>                                                                                                <p class="">Send it to the geometry as <code spellcheck="false">aSize</code> with the other attributes:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Geometry
+    particles.geometry.setAttribute('position', particles.positions[particles.index])
+    particles.geometry.setAttribute('aPositionTarget', particles.positions[3])
+    particles.geometry.setAttribute('aSize', new THREE.BufferAttribute(sizesArray, 1))
+
+    // ...
+})</code></pre>                                                                                                <p class="">In <code spellcheck="false">vertex.glsl</code>, retrieve the <code spellcheck="false">aSize</code> attribute and multiply the <code spellcheck="false">gl_PointSize</code> by it:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+attribute float aSize;
+
+// ...
+
+void main()
+{
+    // ...
+    gl_PointSize = aSize * uSize * uResolution.y;
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/043.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Now would be a good time to make all the particles bigger.</p>                                                                                                <p class="">Set the <code spellcheck="false">uSize</code> uniform to <code spellcheck="false">0.4</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+    particles.material = new THREE.ShaderMaterial({
+        // ...
+        uniforms:
+        {
+            uSize: new THREE.Uniform(0.4),
+            // ...
+        },
+        // ...
+    })
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/044.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Color gradient
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4859">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:20:59</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="color-gradient">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#color-gradient"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="color-gradient"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">One final visual improvement we are going to add is the color.</p>                                                                                                <p class="">Currently, we are sending the <code spellcheck="false">perlin</code> as <code spellcheck="false">vColor</code> to the fragment which is why we get white variations only.</p>                                                                                                <p class="">We are going to mix between two colors and use the <code spellcheck="false">perlin</code> as the mix factor.</p>                                                                                                <p class="">In <code spellcheck="false">script.js</code>, in the <code spellcheck="false">Material</code> part, add two colors to <code spellcheck="false">particles</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Material
+    particles.colorA = '#ff7300'
+    particles.colorB = '#0091ff'
+
+    // ...
+})</code></pre>                                                                                                <p class="">Send those colors to a <code spellcheck="false">uColorA</code> and <code spellcheck="false">uColorB</code> uniforms using the <a href="https://threejs.org/docs/#api/en/core/Uniform" target="_blank">Uniform</a> class and the <a href="https://threejs.org/docs/#api/en/math/Color" target="_blank">Color</a> class:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+		particles.material = new THREE.ShaderMaterial({
+        // ...
+        uniforms:
+        {
+            // ...
+            uColorA: new THREE.Uniform(new THREE.Color(particles.colorA)),
+            uColorB: new THREE.Uniform(new THREE.Color(particles.colorB))
+        },
+        // ...
+    })
+
+    // ...
+})</code></pre>                                                                                                <p class="">Add tweaks for <code spellcheck="false">particles.colorA</code> and <code spellcheck="false">particles.colorB</code>, and update the uniforms accordingly when the tweak changes:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+    // Tweak
+    gui.addColor(particles, 'colorA').onChange(() =&gt; { particles.material.uniforms.uColorA.value.set(particles.colorA) })
+    gui.addColor(particles, 'colorB').onChange(() =&gt; { particles.material.uniforms.uColorB.value.set(particles.colorB) })
+
+    // ...
+})</code></pre>                                                                                                <p class="">In <code spellcheck="false">vertex.glsl</code>, retrieve the <code spellcheck="false">uColorA</code> and <code spellcheck="false">uColorB</code> as <code spellcheck="false">vec3</code> uniforms:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform vec3 uColorA;
+uniform vec3 uColorB;</code></pre>                                                                                                <p class="">Update <code spellcheck="false">vColor</code> and send it a mix of <code spellcheck="false">uColorA</code> and <code spellcheck="false">uColorB</code> according to <code spellcheck="false">noise</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    vColor = mix(uColorA, uColorB, noise);
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/045.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">What’s really cool with using <code spellcheck="false">noise</code> is that the color matches with the parts that get separated first.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Frustum culling bug
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="5135">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:25:35</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="frustum-culling-bug">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#frustum-culling-bug"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="frustum-culling-bug"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">If you morph into the text shape and move the camera sideways, at some point the whole object will disappear:</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/046.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">This is because of the frustum culling.</p>                                                                                                <p class="">Frustum culling is a feature that we can find in most real time rendering solutions which prevents rendering objects that are not in the view to save on performance:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/047.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 621 515'%3E%3C/svg%3E" width="621" height="515"></span>
+</p>                                                                                                <p class="">Three.js supports this feature.</p>                                                                                                <p class="">In order to know if objects are in the view or not, Three.js calculates what we call a “bounding”. It’s a mathematical representation of the object based on the vertices. Imagine a sphere or a box surrounding your object. This makes the calculation much easier which is important since Three.js needs to test if objects are in the view or not on each frame.</p>                                                                                                <p class="">In the case of Three.js, the bounding can have the shape of a box or a sphere. By default, Three.js will compute a sphere and you can find it on the geometry itself.</p>                                                                                                <p class="">Try to <code spellcheck="false">console.log()</code> the <code spellcheck="false">boundingSphere</code> after creating the <a href="https://threejs.org/docs/#api/en/objects/Points" target="_blank">Points</a>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+		// Points
+    particles.points = new THREE.Points(particles.geometry, particles.material)
+    scene.add(particles.points)
+    console.log(particles.points.geometry.boundingSphere)
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/048.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We get <code spellcheck="false">null</code>. Weird, but it’s actually for a good reason.</p>                                                                                                <p class="">Three.js calculates the bounding only if needed. At the time of the <code spellcheck="false">console.log()</code>, we haven’t rendered the object yet.</p>                                                                                                <p class="">But on the first render of the object, Three.js will realise that it first needs to know the bounding of the object, will compute it, and then decide to render it or not if it’s in the view. On the next frame, Three.js will use the already computed bounding.</p>                                                                                                <p class="">If we truly want to <code spellcheck="false">console.log()</code> the bounding, we can achieve this by doing it on the next frame, after the initial render, using <code spellcheck="false">requestAnimationFrame</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+		// Points
+    particles.points = new THREE.Points(particles.geometry, particles.material)
+    scene.add(particles.points)
+
+    window.requestAnimationFrame(() =&gt;
+    {
+        console.log(particles.points.geometry.boundingSphere)
+    })
+
+    // ...
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/68/049.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Remove the <code spellcheck="false">console.log()</code>.</p>                                                                                                <p class="">Great, unfortunately, that doesn’t fix our issue.</p>                                                                                                <p class="">But now you understand what’s going on and why the particles disappear when we move the camera sideways.</p>                                                                                                <p class="">Three.js has calculated the bounding sphere according to the initial shape, which was the torus. But the <code spellcheck="false">THREE.JS</code> shape is much larger.</p>                                                                                                <p class="">There are two options to fix that:</p>                                                                                                <ul class="">
+            <li>Ask Three.js to recompute the bounding sphere</li>
+            <li>Ask Three.js to ignore frustum culling</li>
+    </ul>                                                                                                <p class="">Unfortunately, the first one would be difficult to apply, because Three.js uses the <code spellcheck="false">position</code> attribute to calculate the bounding which is, in our case, the origin shape (the one we are leaving).</p>                                                                                                <p class="">So instead, let’s deactivate the frustum culling by setting <code spellcheck="false">frustumCulled</code> to <code spellcheck="false">false</code> on <code spellcheck="false">particles.points</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">gltfLoader.load('./models.glb', (gltf) =&gt;
+{
+    // ...
+
+		// Points
+    particles.points = new THREE.Points(particles.geometry, particles.material)
+    particles.points.frustumCulled = false
+    scene.add(particles.points)
+
+    // ...
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/68/050.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You might think that it’s bad for performance, but if your particles are the main component of your experience, they will always be visible, making the frustum culling unnecessary.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Going further
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="5592">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:33:12</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="going-further">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#going-further"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="going-further"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We are done with the lesson.</p>                                                                                                <p class="">Feel free to go further. Here are suggestions:</p>                                                                                                <ul class="">
+            <li>Refactor the part where we create <code spellcheck="false">particles.positions</code>. We kept it simple, but you can improve it.</li>
+            <li>Add a small movement to the particles at all times to add more life to the experience.</li>
+            <li>Add your own models.</li>
+            <li>Add more particles. I used a modest number of particles composing the shapes, but you can increase it by tenfold without performance issues.</li>
+            <li>Add some particles everywhere because the only particles we have right now are the ones from the models.</li>
+            <li>Add more tweaks to control the transition, especially for the <code spellcheck="false">amplitude</code> variable which can drastically change the look and feel of the animation.</li>
+    </ul>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">GPGPU Flow Field Particles</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/gpgpu-flow-field-particles-shaders" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/68/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(205deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

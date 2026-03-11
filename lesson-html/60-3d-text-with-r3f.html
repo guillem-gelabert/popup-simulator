@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>60. 3d text with r3f</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/load-models-with-r3f"><div class="sibling-info"><div class="sibling-label">59.</div><div class="sibling-title">Load models</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">60.</div><h2 class="title">3D Text</h2><p class="difficulty">Difficulty <span class="value">
+                                Hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/portal-scene-with-r3f"><div class="sibling-info"><div class="sibling-label">61.</div><div class="sibling-title">Portal Scene</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/50/60-3d-text-with-r3f.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/50/60-3d-text-with-r3f-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/50" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">We now have enough knowledge to start building little experiences with R3F and we are going to start simple by reproducing some of the previous lessons.</p>                                                                                <p class="">Because we already know how it works in native Three.js, you’ll see that it’s going to be super easy and much faster. Still, we are going to discover a few new features along the way.</p>                                                                                <p class="">The first lesson we are going to reproduce in R3F is the 3D Text.</p>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/50/000.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="52">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:52</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">The starter setup is even simpler than the previous lessons.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/001.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">We have one cube at the center of the scene, <code spellcheck="false">OrbitControls</code> so that we can rotate around and <code spellcheck="false">Perf</code> to keep an eye on performance.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    The text
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="89">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:29</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="the-text">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#the-text"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="the-text"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Let’s start with the main component and create the 3D text.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Text3D helper
+
+        
+                <span class="anchor js-anchor" data-slug="text3d-helper">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#text3d-helper"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="text3d-helper"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">As discussed in the previous lesson, we need to use <a href="https://threejs.org/docs/#examples/en/geometries/TextGeometry" target="_blank">TextGeometry</a>.</p>                                                                                <p class="">Luckily for us, <a href="https://github.com/pmndrs/drei" target="_blank">drei</a> provides a helper named <code spellcheck="false">Text3D</code> that implements it.</p>                                                                                <p class="">In <code spellcheck="false">Experience.jsx</code>, import <code spellcheck="false">Text3D</code> from <code spellcheck="false">@react-three/drei</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { Text3D, OrbitControls } from '@react-three/drei'</code></pre>                                                                                <p class="">To use <code spellcheck="false">Text3D</code>, we need to provide a typeface font.</p>                                                                                <p class="">One font called <code spellcheck="false">helvetiker_regular.typeface.json</code> is provided in the <code spellcheck="false">/public/fonts/</code> folder.</p>                                                                                <p class="">If you want, you can create your own typeface font with this website <a href="http://gero3.github.io/facetype.js/" target="_blank">http://gero3.github.io/facetype.js/</a></p>                                                                                <p class="">Don’t forget that if you intend to use a font (especially online), you must have the right to do so. Check the license of the font you are about to use.</p>                                                                                <p class="">Add the <code spellcheck="false">&lt;Text3D&gt;</code> anywhere in the JSX and provide the font path in the <code spellcheck="false">font</code> attribute. The text you write between the opening and closing tags will be used to generate the geometry:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    return &lt;&gt;
+
+        {/* ... */}
+
+        &lt;Text3D font="./fonts/helvetiker_regular.typeface.json"&gt;
+            HELLO R3F
+        &lt;/Text3D&gt;
+
+    &lt;/&gt;
+}</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/002.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">You should already see the text.</p>                                                                                <p class="">By default, a <code spellcheck="false">MeshBasicMaterial</code> is applied, but we can change it by providing another material.</p>                                    
+                                                                                                        <p class="">Let’s start with a <code spellcheck="false">&lt;meshNormalMaterial /&gt;</code> that we will replace later with a matcap material:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Text3D font="./fonts/helvetiker_regular.typeface.json"&gt;
+    HELLO R3F
+    &lt;meshNormalMaterial /&gt;
+&lt;/Text3D&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/003.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Now that we have something, we can remove the cube <code spellcheck="false">&lt;mesh&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    return &lt;&gt;
+
+        &lt;Perf position="top-left" /&gt;
+
+        &lt;OrbitControls makeDefault /&gt;
+
+        &lt;Text3D font="./fonts/helvetiker_regular.typeface.json"&gt;
+            HELLO R3F
+            &lt;meshNormalMaterial /&gt;
+        &lt;/Text3D&gt;
+
+    &lt;/&gt;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/004.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Centering
+
+        
+                <span class="anchor js-anchor" data-slug="centering">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#centering"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="centering"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We could use the same technique we used in the <strong>3D Text</strong> lesson to center the geometry, but we can also use the <code spellcheck="false">Center</code> helper from <a href="https://github.com/pmndrs/drei#center" target="_blank">drei</a>.</p>                                                                                                <p class="">Import <code spellcheck="false">Center</code> from <code spellcheck="false">@react-three/drei</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { Center, Text3D, OrbitControls } from '@react-three/drei'</code></pre>                                                                                                <p class="">And add it around the <code spellcheck="false">&lt;Text3D&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Center&gt;
+    &lt;Text3D font="./fonts/helvetiker_regular.typeface.json"&gt;
+        HELLO R3F
+        &lt;meshNormalMaterial /&gt;
+    &lt;/Text3D&gt;
+&lt;/Center&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/005.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Easy.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Parameters
+
+        
+                <span class="anchor js-anchor" data-slug="parameters">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#parameters"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="parameters"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">All parameters that we can use to create the <a href="https://threejs.org/docs/#examples/en/geometries/TextGeometry" target="_blank">TextGeometry</a> can be set as attributes.</p>                                                                                                <p class="">Since we have already talked about them in the <strong>3D Text</strong> lesson, let’s be lazy and set them as follows:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Center&gt;
+    &lt;Text3D
+        font="./fonts/helvetiker_regular.typeface.json"
+        size={ 0.75 }
+        height={ 0.2 }
+        curveSegments={ 12 }
+        bevelEnabled
+        bevelThickness={ 0.02 }
+        bevelSize={ 0.02 }
+        bevelOffset={ 0 }
+        bevelSegments={ 5 }
+    &gt;
+        HELLO R3F
+        &lt;meshNormalMaterial /&gt;
+    &lt;/Text3D&gt;
+&lt;/Center&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/006.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Matcap Material
+
+        
+                <span class="anchor js-anchor" data-slug="matcap-material">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#matcap-material"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="matcap-material"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">It’s time to implement our matcap material.</p>                                                                                                <p class="">First, we need to load the matcap texture. We will see how to load textures in R3F in a future lesson, but in this lesson we are going to use a very specific technique.</p>                                                                                                <p class="">We are going to use a <a href="https://github.com/pmndrs/drei#usematcaptexture" target="_blank">drei</a> helper named <code spellcheck="false">useMatcapTexture</code> that will load matcaps automatically from this repository <a href="https://github.com/emmelleppi/matcaps" target="_blank">https://github.com/emmelleppi/matcaps</a>.</p>                                                                                                <p class="">Be careful, it’s not recommended to use this technique in production because we are dependent on the server that provides the textures.</p>                                                                                                <p class="">Import <code spellcheck="false">useMatcapTexture</code> from <code spellcheck="false">@react-three/drei</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useMatcapTexture, Center, Text3D, OrbitControls } from '@react-three/drei'</code></pre>                                                                                                <p class="">Call it with the following parameters:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    const matcapTexture = useMatcapTexture('7B5254_E9DCC7_B19986_C8AC91', 256)
+    console.log(matcapTexture)
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/007.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">You might notice that everything we log in to the console will be logged twice. It’s the <code spellcheck="false">&lt;Text3D&gt;</code> that triggers a re-render on our component. No big deal, just take it into account when checking the logs.</p>                                                                                                <p class="">The first parameter is the name of the matcap.</p>                                                                                                <p class="">You can find the names of the various matcaps from the repository: <a href="https://github.com/nidorx/matcaps/blob/master/PAGE-17.md#7b5254_e9dcc7_b19986_c8ac91" target="_blank">https://github.com/nidorx/matcaps/blob/master/PAGE-17.md#7b5254_e9dcc7_b19986_c8ac91</a> (this is just one of the many pages).</p>                                                                                                <p class="">The second parameter is the desired width. We can choose between <code spellcheck="false">64</code>, <code spellcheck="false">128</code>, <code spellcheck="false">256</code>, <code spellcheck="false">512</code>, <code spellcheck="false">1024</code></p>                                                                                                <p class="">In our case, <code spellcheck="false">256</code> is more than enough and you should try to use the smallest possible size for performance reasons.</p>                                                                                                <p class="">If you check what’s being logged in the console, you’ll see that <code spellcheck="false">useMatcapTexture</code> returns an array and that only the first value (the actual texture) matters to us.</p>                                                                                                <p class="">We can destructure it to only retrieve that first value:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const [ matcapTexture ] = useMatcapTexture('7B5254_E9DCC7_B19986_C8AC91', 256)
+console.log(matcapTexture)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/008.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Now that we have our texture, we can replace our <code spellcheck="false">&lt;meshNormalMaterial&gt;</code> with a <code spellcheck="false">&lt;meshMatcapMaterial&gt;</code> and use the <code spellcheck="false">matcapTexture</code> on the <code spellcheck="false">matcap</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/009.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">In this example, we are going to stick with bright colors to change from the original <strong>3D Text </strong>a bit. Feel free to change the setup, change the background of the renderer, and test other matcaps.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Donuts
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1102">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">18:22</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="donuts">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#donuts"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="donuts"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">As Homer Simpsons said, “Donuts. Is there anything they can't do?”</p>                                                                                                <p class="">In life, we need donuts and in WebGL too.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    First donut
+
+        
+                <span class="anchor js-anchor" data-slug="first-donut">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#first-donut"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="first-donut"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are going to create just one donut to start with.</p>                                                                                                <p class="">Create a <code spellcheck="false">&lt;mesh&gt;</code> with a <code spellcheck="false">&lt;torusGeometry&gt;</code> in it and duplicate the <code spellcheck="false">&lt;meshMatcapMaterial&gt;</code> that we used for the text:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    // ...
+
+    return &lt;&gt;
+
+        {/* ... */}
+
+        &lt;mesh&gt;
+            &lt;torusGeometry /&gt;
+            &lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+        &lt;/mesh&gt;
+
+    &lt;/&gt;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/010.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Here’s a nice thick donut.</p>                                                                                                <p class="">The default settings of <code spellcheck="false">&lt;torusGeometry /&gt;</code> make it look good enough. Yet, if you want to tweak the geometry, you can do it using the <code spellcheck="false">args</code> attribute.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Multiple donuts
+
+        
+                <span class="anchor js-anchor" data-slug="multiple-donuts">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#multiple-donuts"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="multiple-donuts"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">That’s a cool donut, but how can we have a hundred of them?</p>                                                                                                <p class="">We could duplicate it and try to position them randomly, but it would take ages and would probably not look very random. Instead, we need to do a loop and place them randomly.</p>                                                                                                <p class="">Unfortunately, as we saw earlier, we can’t do a <code spellcheck="false">for</code> loop in the JSX.</p>                                                                                                <p class="">There are multiple alternatives and we already saw one that implies using the <code spellcheck="false">map</code> method. But the <code spellcheck="false">map</code> implies that we have an array. And because we need 100 donuts, we need an array 100 long. We don’t really care about what’s inside that array, as long as it’s 100 long.</p>                                                                                                <p class="">Let’s experiment a little right before the <code spellcheck="false">return</code>.</p>                                                                                                <p class="">Create a <code spellcheck="false">tempArray</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    // ...
+    
+    const tempArray = []
+    console.log(tempArray)
+
+    return // ...
+}</code></pre>                                                                                                <p class="">This array currently has no element inside. We want it to be 100 long and we can do that with <code spellcheck="false">Array(100)</code> instead of <code spellcheck="false">[]</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tempArray = Array(100)
+console.log(tempArray)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/011.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">You might notice that the array is being logged twice and it’s because our component is being re-rendered.</p>                                                                                                <p class="">This is because some reactive data has changed in the component and, in this case, it’s caused by the <code spellcheck="false">&lt;Text3D&gt;</code>. When the font finishes loading, the geometry is created and the scene has to be updated.</p>                                                                                                <p class="">This is actually a normal behaviour. We could ask the component to wait for the <code spellcheck="false">&lt;Text3D&gt;</code> before rendering by using a <code spellcheck="false">&lt;Suspense&gt;</code> wrapping <code spellcheck="false">&lt;Text3D&gt;</code>, but it’s actually not a big deal and it makes the rest of the scene (the donuts) visible while the font is loading which is why we are going to keep it like this.</p>                                                                                                <p class="">We now have a 100 elements long array. Easy? Unfortunately, we can’t <code spellcheck="false">map</code> on it.</p>                                                                                                <p class="">If we try, we get nothing in the console:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tempArray = Array(100)
+tempArray.map(() =&gt;
+{
+    console.log('value')
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/012.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">It’s because, although its length is 100, it is still considered as empty.</p>                                                                                                <p class="">To fix that, we can create a new array based on the values of that array.</p>                                                                                                <p class="">To get the values of the array (not the array itself but only what’s inside), we can use the spread operator:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tempArray = [...Array(100)]
+tempArray.map(() =&gt;
+{
+    console.log('value')
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/013.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">(again, if you see twice the amount, it’s because the component is being re-rendered)</p>                                                                                                <p class="">Weirdly, the result array we get is filled with a hundred instances of <code spellcheck="false">undefined</code> and we can loop on it (welcome to JavaScript).</p>                                                                                                <p class="">Note that they are other ways of creating an array, but we will see that later in the chapter.</p>                                                                                                <p class="">Remove the <code spellcheck="false">tempArray</code>.</p>                                                                                                <p class="">Let’s transpose that in the JSX:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{ [...Array(100)].map(() =&gt;
+    &lt;mesh&gt;
+        &lt;torusGeometry /&gt;
+        &lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+    &lt;/mesh&gt;
+) }</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/014.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">The function we provide to map returns the <code spellcheck="false">&lt;mesh&gt;</code> which results in 100 donuts one on top of each other.</p>                                                                                                <p class="">Let’s add some randomness to the <code spellcheck="false">position</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{ [...Array(100)].map(() =&gt;
+    &lt;mesh
+        position={ [
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        ] }
+    &gt;
+        &lt;torusGeometry /&gt;
+        &lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+    &lt;/mesh&gt;
+) }</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/015.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And to the <code spellcheck="false">scale</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{ [...Array(100)].map(() =&gt;
+    &lt;mesh
+        position={ [
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        ] }
+        scale={ 0.2 + Math.random() * 0.2 }
+    &gt;
+        &lt;torusGeometry /&gt;
+        &lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+    &lt;/mesh&gt;
+) }</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/016.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And to the <code spellcheck="false">rotation</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{ [...Array(100)].map(() =&gt;
+    &lt;mesh
+        position={ [
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        ] }
+        scale={ 0.2 + Math.random() * 0.2 }
+        rotation={ [
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            0
+        ] }
+    &gt;
+        &lt;torusGeometry /&gt;
+        &lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+    &lt;/mesh&gt;
+) }</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/017.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We have our donuts, but if you check the console, you should see a warning triggered by React:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/018.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">It’s because we are creating components in a loop, but we forgot to set a <code spellcheck="false">key</code> to those components.</p>                                                                                                <p class="">Here, we don’t have a unique ID. The warning isn’t even relevant since we are not going to manipulate the array, change the elements order, etc.</p>                                                                                                <p class="">Let’s face it, we won’t be able to sleep knowing that we left a warning. We need to get rid of it.</p>                                                                                                <p class="">Retrieve the index from the <code spellcheck="false">map</code> by setting two arguments (<code spellcheck="false">value</code> and <code spellcheck="false">index</code>) and use the index on the <code spellcheck="false">key</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{ [...Array(100)].map((value, index) =&gt;
+    &lt;mesh
+        key={ index }
+        position={ [
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        ] }
+        scale={ 0.2 + Math.random() * 0.2 }
+        rotation={ [
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            0
+        ] }
+    &gt;
+        &lt;torusGeometry /&gt;
+        &lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+    &lt;/mesh&gt;
+) }</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/019.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Optimisation
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1790">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">29:50</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="optimisation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#optimisation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="optimisation"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Our little experiment seems complete, but we’ve forgotten something important.</p>                                                                                                <p class="">We made performance mistakes, which is crystal clear in the performance monitoring.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Geometries
+
+        
+                <span class="anchor js-anchor" data-slug="geometries">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#geometries"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="geometries"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We have many geometries although we should have only two (the donut and the text).</p>                                                                                                <p class="">To fix that, we are going to do kind of a silly trick in 3 steps:</p>                                                                                                <ul class="">
+            <li>Create one <code spellcheck="false">&lt;torusGeometry&gt;</code> outside of the donut. Meaning that it won’t be associated with anything.</li>
+            <li>Store it by using <code spellcheck="false">useState</code>.</li>
+            <li>Put it back on the <code spellcheck="false">&lt;mesh&gt;</code> of the donuts from the state.</li>
+    </ul>                                                                                                <p class="">It’s going to be a bit hard, but don’t worry, we will see an easier solution right after.</p>                                                                                                <p class="">Import <code spellcheck="false">useState</code> from <code spellcheck="false">react</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useState } from 'react'</code></pre>                                                                                                <p class="">Create a <code spellcheck="false">torusGeometry</code> and <code spellcheck="false">setTorusGometry</code> state with <code spellcheck="false">useState</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    const [ torusGeometry, setTorusGeometry ] = useState()
+
+    // ...
+}</code></pre>                                                                                                <p class="">Move the <code spellcheck="false">&lt;torusGeometry&gt;</code> outside of the <code spellcheck="false">&lt;mesh&gt;</code> and the map (this will break the current torus):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;torusGeometry args={ [ 1, 0.6, 16, 32 ] } /&gt;
+
+{ [...Array(100)].map((value, index) =&gt;
+    &lt;mesh
+        key={ index }
+        position={ [
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        ] }
+        scale={ 0.2 + Math.random() * 0.2 }
+        rotation={ [
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            0
+        ] }
+    &gt;
+        &lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+    &lt;/mesh&gt;
+) }</code></pre>                                                                                                <p class="">Send the <code spellcheck="false">setTorusGometry</code> function to the <code spellcheck="false">ref</code> of the <code spellcheck="false">&lt;torusGeometry&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;torusGeometry ref={ setTorusGeometry } /&gt;</code></pre>                                                                                                <p class="">When sending a function to the <code spellcheck="false">ref</code> attribute, React will call that function with the component as the parameter which would look a bit like <code spellcheck="false">setTorusGometry(&lt;torusGeometry&gt;)</code> (although this code won’t work and is only used to explain).</p>                                                                                                <p class="">In the end, the variable <code spellcheck="false">torusGeometry</code> now contains the <code spellcheck="false">&lt;torusGeometry&gt;</code> and we can send it to our <code spellcheck="false">&lt;mesh&gt;</code> with the <code spellcheck="false">geometry</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;mesh
+    key={ index }
+    geometry={ torusGeometry }
+    position={ [
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10
+    ] }
+    scale={ 0.2 + Math.random() * 0.2 }
+    rotation={ [
+        Math.random() * Math.PI,
+        Math.random() * Math.PI,
+        0
+    ] }
+&gt;
+    &lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+&lt;/mesh&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/020.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">A bit tricky, but we now have only two geometries for the whole scene (the text and one torus).</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Material
+
+        
+                <span class="anchor js-anchor" data-slug="material">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#material"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="material"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">If you check the “shaders” in the performance monitoring, you’ll see that there is only one shader and that’s because Three.js automatically re-uses shaders when possible.</p>                                                                                                <p class="">We could leave it like that, but let’s separate the material as we did for the geometry so that we’re only using one material for the text and the donuts.</p>                                                                                                <p class="">We are going to do the same trick we did for the geometry by resorting to <code spellcheck="false">useState</code>.</p>                                                                                                <p class="">Move the <code spellcheck="false">&lt;meshMatcapMaterial&gt;</code> out of the donuts <code spellcheck="false">&lt;mesh&gt;</code> and remove it from the <code spellcheck="false">&lt;Text3D&gt;</code> too:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;torusGeometry ref={ setTorusGeometry } /&gt;
+&lt;meshMatcapMaterial matcap={ matcapTexture } /&gt;
+
+&lt;Center&gt;
+    &lt;Text3D
+        font="./fonts/helvetiker_regular.typeface.json"
+        size={ 0.75 }
+        height={ 0.2 }
+        curveSegments={ 12 }
+        bevelEnabled
+        bevelThickness={ 0.02 }
+        bevelSize={ 0.02 }
+        bevelOffset={ 0 }
+        bevelSegments={ 5 }
+    &gt;
+        HELLO R3F
+    &lt;/Text3D&gt;
+&lt;/Center&gt;
+
+{ [...Array(100)].map((value, index) =&gt;
+    &lt;mesh
+        key={ index }
+        geometry={ torusGeometry }
+        position={ [
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        ] }
+        scale={ 0.2 + Math.random() * 0.2 }
+        rotation={ [
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            0
+        ] }
+    /&gt;
+) }</code></pre>                                                                                                <p class="">Create a <code spellcheck="false">material</code> and <code spellcheck="false">setMaterial</code> state with <code spellcheck="false">useState</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    const [ torusGeometry, setTorusGeometry ] = useState()
+    const [ material, setMaterial ] = useState()
+
+    // ...
+}</code></pre>                                                                                                <p class="">Send the <code spellcheck="false">setMaterial</code> to the <code spellcheck="false">ref</code> attribute of the <code spellcheck="false">&lt;meshMatcapMaterial&gt;</code></p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;meshMatcapMaterial ref={ setMaterial } matcap={ matcapTexture } /&gt;</code></pre>                                                                                                <p class="">Send the <code spellcheck="false">material</code> state to the <code spellcheck="false">material</code> attribute of the <code spellcheck="false">&lt;Text3D&gt;</code> and donuts <code spellcheck="false">&lt;mesh&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;torusGeometry ref={ setTorusGeometry } /&gt;
+&lt;meshMatcapMaterial ref={ setMaterial } matcap={ matcapTexture } /&gt;
+
+&lt;Center&gt;
+    &lt;Text3D
+        material={ material }
+        font="./fonts/helvetiker_regular.typeface.json"
+        size={ 0.75 }
+        height={ 0.2 }
+        curveSegments={ 12 }
+        bevelEnabled
+        bevelThickness={ 0.02 }
+        bevelSize={ 0.02 }
+        bevelOffset={ 0 }
+        bevelSegments={ 5 }
+    &gt;
+        HELLO R3F
+    &lt;/Text3D&gt;
+&lt;/Center&gt;
+
+{ [...Array(100)].map((value, index) =&gt;
+    &lt;mesh
+        key={ index }
+        geometry={ torusGeometry }
+        material={ material }
+        position={ [
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        ] }
+        scale={ 0.2 + Math.random() * 0.2 }
+        rotation={ [
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            0
+        ] }
+    /&gt;
+) }</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/021.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">No visual difference, but now everything is set and clean.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Simpler solution
+
+        
+                <span class="anchor js-anchor" data-slug="simpler-solution">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#simpler-solution"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="simpler-solution"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Although it’s working, using <code spellcheck="false">useState</code> like this is kind of a stretch and makes your code more complicated than it should be.</p>                                                                                                <p class="">As we’ve seen in previous lessons, nothing prevents us from creating variables outside of the component function.</p>                                                                                                <p class="">We are going to create the geometry and the material before the <code spellcheck="false">Experience</code> function using good old Three.js.</p>                                                                                                <p class="">First, remove or comment the <code spellcheck="false">torusGeometry</code> and <code spellcheck="false">material</code> states (the code should break):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    // const [ torusGeometry, setTorusGeometry ] = useState()
+    // const [ material, setMaterial ] = useState()
+
+    // ...
+}</code></pre>                                                                                                <p class="">And remove or comment the <code spellcheck="false">&lt;torusGeometry&gt;</code> and <code spellcheck="false">&lt;meshMatcapMaterial&gt;</code> (still broken):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{/* &lt;torusGeometry ref={ setTorusGeometry } /&gt; */}
+{/* &lt;meshMatcapMaterial ref={ setMaterial } matcap={ matcapTexture } /&gt; */}</code></pre>                                                                                                <p class="">Since we are going to use native Three.js, let’s import <code spellcheck="false">THREE</code> from <code spellcheck="false">three</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import * as THREE from 'three'</code></pre>                                                                                                <p class="">And now, we can instantiate a <code spellcheck="false">TorusGeometry</code> that we assign to a <code spellcheck="false">torusGeometry</code> variable and a <code spellcheck="false">MeshMatcapMaterial</code> that we assign to a <code spellcheck="false">material</code> variable but outside of the <code spellcheck="false">Experience</code> function:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const torusGeometry = new THREE.TorusGeometry(1, 0.6, 16, 32)
+const material = new THREE.MeshMatcapMaterial()
+
+export default function Experience()
+{
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/022.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">The good news is that we can already see something. The bad news is that we lost the matcap texture.</p>                                                                                                <p class="">Unfortunately, the <code spellcheck="false">matcapTexture</code> is only available in the <code spellcheck="false">Experience</code> function that will be triggered when the component is being rendered.</p>                                                                                                <p class="">Since we want to apply the texture only once, we are going use <code spellcheck="false">useEffect</code>.</p>                                                                                                <p class="">Import <code spellcheck="false">useEffect</code> from <code spellcheck="false">react</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useEffect, useState } from 'react'</code></pre>                                                                                                <p class="">Call <code spellcheck="false">useEffect</code> in the <code spellcheck="false">Experience</code> with an empty dependencies array so that it’s called only on the first component render:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    // ...
+
+    useEffect(() =&gt;
+    {
+    }, [])
+
+    // ...
+}</code></pre>                                                                                                <p class="">In <code spellcheck="false">useEffect</code>, we can assign the <code spellcheck="false">matcapTexture</code> to the <code spellcheck="false">matcap</code> property of the <code spellcheck="false">material</code>. We also have to tell the material that it needs to be updated using the <code spellcheck="false">needsUpdate</code> property:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    material.matcap = matcapTexture
+    material.needsUpdate = true
+}, [])</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/023.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We are almost there, but as you can see, the texture looks too bright. It’s because R3F automatically changed the <code spellcheck="false">colorSpace</code> of the <code spellcheck="false">matcapTexture</code> texture when we used it in the <code spellcheck="false">&lt;meshMatcapMaterial&gt;</code> and we need to do it manually.</p>                                                                                                <p class="">Set the <code spellcheck="false">colorSpace</code> of <code spellcheck="false">matcapTexture</code> to <code spellcheck="false">THREE.SRGBColorSpace</code> and also set it’s <code spellcheck="false">needsUpdate</code> property to <code spellcheck="false">true</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    matcapTexture.colorSpace = THREE.SRGBColorSpace
+    matcapTexture.needsUpdate = true
+
+    material.matcap = matcapTexture
+    material.needsUpdate = true
+}, [])</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/50/024.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And everything is working as it should.</p>                                                                                                <p class="">As you can see, creating variables outside of the component can make things easier like with the <code spellcheck="false">torusGeometry</code>, but also harder like with the <code spellcheck="false">material</code>. It’s up to you, your project and your preferences.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Animating the donuts
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2762">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">46:02</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="animating-the-donuts">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#animating-the-donuts"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="animating-the-donuts"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We’ve reached the point where we’ve achieved what we had initially without using R3F.</p>                                                                                                <p class="">As you can see, it was easier and the code is minimalist. And since it was too easy, let’s go a little further and animate the donuts.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Accessing the donuts
+
+        
+                <span class="anchor js-anchor" data-slug="accessing-the-donuts">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#accessing-the-donuts"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="accessing-the-donuts"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are going to animate the donuts in the <code spellcheck="false">useFrame</code>, but this means that we need a reference to them.</p>                                                                                                <p class="">Referring to multiple objects is a bit tricky in React.</p>                                                                                                <p class="">We are going to test a first “silly” technique, by animating the donuts to prove that it’s working and then test a more appropriate technique.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Using a group as reference
+
+        
+                <span class="anchor js-anchor" data-slug="using-a-group-as-reference">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#using-a-group-as-reference"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="using-a-group-as-reference"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">We are going to use a <code spellcheck="false">&lt;group&gt;</code> as the parent of our donuts so that we can refer all donuts through its <code spellcheck="false">children</code> property.</p>                                                                                                <p class="">Create the <code spellcheck="false">&lt;group&gt;</code> around the donuts:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;group&gt;
+    { [...Array(100)].map((value, index) =&gt;
+        {/* ... */}
+    ) }
+&lt;/group&gt;</code></pre>                                                                                                <p class="">Import <code spellcheck="false">useRef</code> from <code spellcheck="false">react</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useRef, useEffect, useState } from 'react'</code></pre>                                                                                                <p class="">Create a reference named <code spellcheck="false">donutsGroup</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    const donutsGroup = useRef()
+
+    // ...
+}</code></pre>                                                                                                <p class="">Associate it with the group using the <code spellcheck="false">ref</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;group ref={ donutsGroup }&gt;
+    { [...Array(100)].map((value, index) =&gt;
+        {/* ... */}
+    ) }
+&lt;/group&gt;</code></pre>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Updating the donuts
+
+        
+                <span class="anchor js-anchor" data-slug="updating-the-donuts">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#updating-the-donuts"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="updating-the-donuts"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We now have access to the donuts as the <code spellcheck="false">children</code> of the <code spellcheck="false">donutsGroup</code> reference. Remember that every class, which inherits from <a href="https://threejs.org/docs/#api/en/core/Object3D.children" target="_blank">Object3D</a> (which is the case for the <code spellcheck="false">Group</code>) has a <code spellcheck="false">children</code> property.</p>                                                                                                <p class="">In order to animate those children, we first need to import <code spellcheck="false">useFrame</code> from <code spellcheck="false">@react-three/fiber</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useFrame } from '@react-three/fiber'</code></pre>                                                                                                <p class="">Call it in <code spellcheck="false">Experience</code> and send it a function:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    // ...
+
+    useFrame(() =&gt;
+    {
+    })
+
+    // ...
+}</code></pre>                                                                                                <p class="">Retrieve the <code spellcheck="false">state</code> and <code spellcheck="false">delta</code> parameters (we don’t need the <code spellcheck="false">state</code>, but if we have to set it if we want access to <code spellcheck="false">delta</code>):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useFrame((state, delta) =&gt;
+{
+})</code></pre>                                                                                                <p class="">Loop through the <code spellcheck="false">children</code> of the <code spellcheck="false">donutsGroup.current</code> (don’t forget the <code spellcheck="false">current</code> since it’s a reference) with a <code spellcheck="false">for … of</code> and update their <code spellcheck="false">rotation.y</code> property with the <code spellcheck="false">delta</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useFrame((state, delta) =&gt;
+{
+    for(const donut of donutsGroup.current.children)
+    {
+        donut.rotation.y += delta * 0.2
+    }
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/50/025.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">And that’s it, the donuts are rotating.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Having an array as reference
+
+        
+                <span class="anchor js-anchor" data-slug="having-an-array-as-reference">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#having-an-array-as-reference"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="having-an-array-as-reference"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The problem with the <code spellcheck="false">&lt;group&gt;</code> is, that its sole purpose is to compensate for a structural flaw. We don’t need a <code spellcheck="false">Group</code>, all we want is a way to loop on the donuts.</p>                                                                                                <p class="">Let’s see how we can get rid of the <code spellcheck="false">&lt;group&gt;</code> and still have access to the donuts in a reference.</p>                                                                                                <p class="">First, we need to understand that the reference is only an object with a <code spellcheck="false">current</code> property containing what we want to save and keep.</p>                                                                                                <p class="">Knowing that, we are going to create a reference with its <code spellcheck="false">current</code> being an empty array and, then, we’re going to add the donuts to that array ourselves.</p>                                                                                                <p class="">First, let’s do some clean-up by removing the <code spellcheck="false">donutGroup</code> reference, the <code spellcheck="false">&lt;group&gt;</code> and the loop inside the <code spellcheck="false">useFrame</code>.</p>                                                                                                <p class="">Then, create a <code spellcheck="false">donuts</code> reference using <code spellcheck="false">useRef</code> and send it an empty array as a parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    const donuts = useRef([])
+
+    // ...
+}</code></pre>                                                                                                <p class="">Sending a value to <code spellcheck="false">useRef</code> will set that value as the default <code spellcheck="false">current</code> property of the reference.</p>                                                                                                <p class="">Now, to the donut <code spellcheck="false">&lt;mesh&gt;</code>, we are going to add a <code spellcheck="false">ref</code> attribute but pass it a function.</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{ [...Array(100)].map((value, index) =&gt;
+    &lt;mesh
+        ref={ () =&gt; {} }
+        // ...
+    /&gt;
+) }</code></pre>                                                                                                <p class="">React will call the function and send the actual component as a parameter.</p>                                                                                                <p class="">We can then save it in the <code spellcheck="false">donuts.current</code> property of <code spellcheck="false">donuts</code> using <code spellcheck="false">push()</code> because it’s a simple array:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;mesh
+    ref={ (element) =&gt; donuts.current.push(element) }
+    // ...
+/&gt;</code></pre>                                                                                                <p class="">But we’ve made a mistake.</p>                                                                                                <p class="">Every time the <code spellcheck="false">Experience</code> component is rendered, donuts are added to the reference.</p>                                                                                                <p class="">Even if it concerns the same donuts and R3F knows it should not create a new donut, our reference will keep filling up with the same donuts.</p>                                                                                                <p class="">To fix that, we can add elements to the array at a specific position using the <code spellcheck="false">index</code> of the <code spellcheck="false">map</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{ [...Array(100)].map((value, index) =&gt;
+    &lt;mesh
+        ref={ (element) =&gt; donuts.current[index] = element }
+        // ...
+    /&gt;
+) }</code></pre>                                                                                                <p class="">We now have our reference to the donuts without resorting to silly tricks.</p>                                                                                                <p class="">We can go back to the <code spellcheck="false">useFrame</code> and do the loop again to update the rotations, but this time on the <code spellcheck="false">donuts.current</code> array.</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useFrame((state, delta) =&gt;
+{
+    for(const donut of donuts.current)
+    {
+        donut.rotation.y += delta * 0.2
+    }
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/50/026.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Everything works the same way but without the cost of having a <code spellcheck="false">&lt;group&gt;</code> on top of the donuts.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Portal Scene</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/portal-scene-with-r3f" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/50/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(302deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

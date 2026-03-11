@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>59. load models with r3f</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/environment-and-staging-with-r3f"><div class="sibling-info"><div class="sibling-label">58.</div><div class="sibling-title">Environment and Staging</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">59.</div><h2 class="title">Load models</h2><p class="difficulty">Difficulty <span class="value">
+                                Medium
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/3d-text-with-r3f"><div class="sibling-info"><div class="sibling-label">60.</div><div class="sibling-title">3D Text</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/49/59-load-models-with-r3f.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/49/59-load-models-with-r3f-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/49" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">In one of the previous lessons, we created a hamburger (although I realised it should have been named “cheeseburger”) and learned how to implement it in Three.js.</p>                                                                                <p class="">We are going to do the same with R3F and discover some tips and tricks along the way.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="33">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:33</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">The starter is similar to the previous lesson with a sphere, a cube and a green floor.</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/000.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">We’ve also added <code spellcheck="false">&lt;Perf /&gt;</code> from <code spellcheck="false">r3f-perf</code> in order to keep an eye on performance.</p>                                                                                <p class="">We activated the shadows on the <code spellcheck="false">&lt;Canvas&gt;</code> and added <code spellcheck="false">castShadow</code> and <code spellcheck="false">receiveShadow</code> on the corresponding <code spellcheck="false">&lt;mesh&gt;</code> and <code spellcheck="false">&lt;directionalLight&gt;</code>.</p>                                                                                <p class="">The <code spellcheck="false">@react-three/drei</code> dependency is already installed within the project and we are using the <code spellcheck="false">OrbitControls</code> helper to be able to move the camera around.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Clean up
+
+        
+                <span class="anchor js-anchor" data-slug="clean-up">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#clean-up"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="clean-up"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">In <code spellcheck="false">Experience.jsx</code>, we can start by removing the sphere <code spellcheck="false">&lt;mesh&gt;</code> and the cube <code spellcheck="false">&lt;mesh&gt;</code> that were there just to make sure that the shadows function:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    return &lt;&gt;
+
+        &lt;Perf position="top-left" /&gt;
+
+        &lt;OrbitControls makeDefault /&gt;
+
+        &lt;directionalLight castShadow position={ [ 1, 2, 3 ] } intensity={ 4.5 } /&gt;
+        &lt;ambientLight intensity={ 1.5 } /&gt;
+
+        &lt;mesh receiveShadow position-y={ - 1 } rotation-x={ - Math.PI * 0.5 } scale={ 10 }&gt;
+            &lt;planeGeometry /&gt;
+            &lt;meshStandardMaterial color="greenyellow" /&gt;
+        &lt;/mesh&gt;
+
+    &lt;/&gt;
+}</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/001.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Loading a model
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="97">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:37</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="loading-a-model">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#loading-a-model"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="loading-a-model"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">We have a bunch of models available in the <code spellcheck="false">/public/</code> folder and we are going to focus on the two <code spellcheck="false">hamburger</code> files for now.</p>                                                                                <p class="">One is DRACO compressed (<code spellcheck="false">hamburger-draco.glb</code>) and the other is not (<code spellcheck="false">hamburger.glb</code>).</p>                                                                                <p class="">In the following part, we are only going to discuss GLTF loading since it’s the standard and the most frequently used format, but the solutions we are going to see can be used with other formats.</p>                                                                                <p class="">R3F provides a hook named <code spellcheck="false">useLoader</code> that abstract loading.</p>                                                                                <p class="">In <code spellcheck="false">Experience.jsx</code>, import <code spellcheck="false">useLoader</code> from <code spellcheck="false">@react-three/fiber</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useLoader } from '@react-three/fiber'</code></pre>                                                                                <p class="">To use it, we need to send it the Three.js loader class we want to use and the path to the file.</p>                                                                                <p class="">Because it’s a GLTF, we need to import <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> from <code spellcheck="false">three</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'</code></pre>                                                                                <p class="">In <code spellcheck="false">Experience</code>, we can now call <code spellcheck="false">useLoader</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    const model = useLoader(GLTFLoader, './hamburger.glb')
+    console.log(model)
+
+    // ...
+}</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/002.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">Note that we started the path to the file with <code spellcheck="false">./</code> which should work in most cases. <code spellcheck="false">'./hamburger.glb'</code> will look for the file named <code spellcheck="false">hamburger.glb</code> in the same folder and since the files located in the <code spellcheck="false">/public/</code> folder are made available like if they are at the root of the website, the model will load. Still, when putting your experience online, you might have to do some tweaks according to your website, the path to access it, specific folders structure and rewriting rules.</p>                                                                                <p class="">Back to our project, you should see an object containing our model in the console.</p>                                                                                <p class="">To display it in our scene, we need to add <code spellcheck="false">model.scene</code> somewhere in the JSX. Unfortunately, we can’t just write it like this:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">{ model.scene }</code></pre>                                                                                <p class="">Or like this:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;model.scene /&gt;</code></pre>                                                                                <p class="">These commands are not supported by R3F and they don’t really make sense.</p>                                    
+                                                                                                        <p class="">What we need is <code spellcheck="false">&lt;primitive&gt;</code>.</p>                                                                                                <p class=""><code spellcheck="false">&lt;primitive&gt;</code> is some kind of holder for whatever we want to put in it.</p>                                                                                                <p class="">It’s not a real object that we will be able to see in the scene, but it’s a container supported by R3F that will handle and display whatever we put in its <code spellcheck="false">object</code> attribute.</p>                                                                                                <p class="">Add a <code spellcheck="false">&lt;primitive&gt;</code> with the <code spellcheck="false">model.scene</code> as the <code spellcheck="false">object</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    const model = useLoader(GLTFLoader, './hamburger.glb')
+
+    return &lt;&gt;
+
+        {/* ... */}
+
+        &lt;primitive object={ model.scene } /&gt;
+
+    &lt;/&gt;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/003.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">A giant hamburger! My favorite type of hamburger.</p>                                                                                                <p class="">It’s obviously too big and we can reduce its size with the <code spellcheck="false">scale</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;primitive object={ model.scene } scale={ 0.35 } /&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/004.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Remember that sending one value to the <code spellcheck="false">scale</code> attribute will apply it to all 3 axes.</p>                                                                                                <p class="">You might have noticed that the shadows are missing. We are going to fix that later in the lesson.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    DRACO
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="599">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">09:59</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="draco">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#draco"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="draco"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">But what about a DRACO compressed model?</p>                                                                                                <p class="">If we try to load it, we get an error:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const model = useLoader(GLTFLoader, './hamburger-draco.glb')</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/005.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">As we discussed in previous lessons, we need to instantiate a <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank">DRACOLoader</a> class and add it to the <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> instance with <code spellcheck="false">setDRACOLoader()</code>.</p>                                                                                                <p class="">To do that, we can pass a third argument to the <code spellcheck="false">useLoader()</code> and send it a function that will give us access to the loader instance:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const model = useLoader(
+    GLTFLoader,
+    './hamburger-draco.glb',
+    (loader) =&gt;
+    {
+        console.log(loader)
+    }
+)</code></pre>                                                                                                <p class="">Here, we can associate a <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank">DRACOLoader</a> instance, but first, we need to import it from <code spellcheck="false">three</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'</code></pre>                                                                                                <p class="">We can then instantiate it in the function (the DRACO decoder folder is available in the <code spellcheck="false">/public/</code> folder) and associate it with the <a href="https://threejs.org/docs/#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader</a> instance using <code spellcheck="false">setDRACOLoader()</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const model = useLoader(
+    GLTFLoader,
+    './hamburger-draco.glb',
+    (loader) =&gt;
+    {
+        const dracoLoader = new DRACOLoader()
+        dracoLoader.setDecoderPath('./draco/')
+        loader.setDRACOLoader(dracoLoader)
+    }
+)</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/006.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And our hamburger is back, but DRACO compressed.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Lazy loading
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="858">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">14:18</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="lazy-loading">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#lazy-loading"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="lazy-loading"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">You can’t notice it because the hamburger model is quite light and we are running the server locally, but currently, R3F is holding the rendering of the <code spellcheck="false">Experience</code> as long as everything isn’t ready in our scene. That also includes the loading of the model.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Loading a bigger model
+
+        
+                <span class="anchor js-anchor" data-slug="loading-a-bigger-model">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#loading-a-bigger-model"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="loading-a-bigger-model"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">To see that more clearly, we can switch to the <strong>Flight Helmet</strong> that we used in the <strong>Realistic Render</strong> lesson.</p>                                                                                                <p class="">Change the path of the file to <code spellcheck="false">'./FlightHelmet/glTF/FlightHelmet.gltf'</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const model = useLoader(
+    GLTFLoader,
+    './FlightHelmet/glTF/FlightHelmet.gltf',
+    (loader) =&gt;
+    {
+        const dracoLoader = new DRACOLoader()
+        dracoLoader.setDecoderPath('./draco/')
+        loader.setDRACOLoader(dracoLoader)
+    }
+)</code></pre>                                                                                                <p class="">The model is too small and a bit too high. Fix it with <code spellcheck="false">scale</code> and <code spellcheck="false">position-y</code> on the <code spellcheck="false">&lt;primitive&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;primitive object={ model.scene } scale={ 5 } position-y={ - 1 } /&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/007.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Network throttling
+
+        
+                <span class="anchor js-anchor" data-slug="network-throttling">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#network-throttling"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="network-throttling"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We can now activate the Network throttling to simulate a real-life experience with a model that takes time to load.</p>                                                                                                <p class="">The following instructions assume that you are using Chrome, but most modern browsers have very similar features and you should be able to handle it yourself.</p>                                                                                                <p class="">Open your <strong>Developer Tools</strong> and go into the <code spellcheck="false">Network</code> tab. Here, you’ll be able to activate the throttling.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/008.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Be careful, the default values aren’t always adapted and you might want to <strong>add</strong> a custom connection speed (<code spellcheck="false">100Mbit/s</code> in download works well in our case).</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/009.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Reloading with this throttling should end up with a white page for a few seconds before seeing the scene.</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/010.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">If setting that throttling isn’t convenient for you, you can skip this step and follow along. The model is so heavy (even in local) that we can notice a delay anyway.</p>                                                                                                <p class="">Also, remember that you need to keep your <strong>Developer Tools </strong>open if you want the network throttling to work.</p>                                                                                                <p class="">This delay is bad because the user won’t be able to see anything for a while.</p>                                                                                                <p class="">Instead, we would like the scene to be visible with the floor (or whatever we already have inside) and once the model is loaded and ready, it should appear.</p>                                                                                                <p class="">We call this “lazy loading”.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Suspense
+
+        
+                <span class="anchor js-anchor" data-slug="suspense">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#suspense"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="suspense"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">To implement a lazy loading, we can use the <code spellcheck="false">&lt;Suspense&gt;</code> tag.</p>                                                                                                <p class=""><code spellcheck="false">&lt;Suspense&gt;</code> is a React component that will wait for the process to be done (loading the model in our case) before rendering the component.</p>                                                                                                <p class="">Unfortunately, we have only one component in our application and it’s <code spellcheck="false">Experience</code>.</p>                                                                                                <p class="">Waiting for the model to load before rendering <code spellcheck="false">Experience</code> would produce the same result.</p>                                                                                                <p class="">We need to put our model in a separated component.</p>                                                                                                <p class="">Create a <code spellcheck="false">/src/Model.jsx</code> file and export a <code spellcheck="false">Model</code> function by <code spellcheck="false">default</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Model()
+{
+    return null
+}</code></pre>                                                                                                <p class="">In <code spellcheck="false">Experience.jsx</code>, import <code spellcheck="false">Model</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import Model from './Model.jsx'</code></pre>                                                                                                <p class="">Add <code spellcheck="false">&lt;Model&gt;</code> to the JSX near the <code spellcheck="false">&lt;primitive&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;primitive object={ model.scene } scale={ 5 } position-y={ - 1 } /&gt;
+&lt;Model /&gt;</code></pre>                                                                                                <p class="">Now, we need to move the code related to the model from the <code spellcheck="false">Experience</code> to the <code spellcheck="false">Model</code>.</p>                                                                                                <p class="">Move the <code spellcheck="false">useLoader</code>, <code spellcheck="false">GLTFLoader</code> and <code spellcheck="false">DRACOLoader</code> imports:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useLoader } from '@react-three/fiber'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'</code></pre>                                                                                                <p class="">Move <code spellcheck="false">useLoader()</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Model()
+{
+    const model = useLoader(
+        GLTFLoader,
+        './FlightHelmet/glTF/FlightHelmet.gltf',
+        (loader) =&gt;
+        {
+            const dracoLoader = new DRACOLoader()
+            dracoLoader.setDecoderPath('./draco/')
+            loader.setDRACOLoader(dracoLoader)
+        }
+    )
+
+    return null
+}</code></pre>                                                                                                <p class="">Now move the <code spellcheck="false">&lt;primitive&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Model()
+{
+    // ...
+
+    return &lt;primitive object={ model.scene } scale={ 5 } position-y={ - 1 } /&gt;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/011.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We should get the exact same result, but now our model and its loading are inside a component.</p>                                                                                                <p class="">We can finally add the <code spellcheck="false">&lt;Suspense&gt;</code>.</p>                                                                                                <p class="">In <code spellcheck="false">Experience.jsx</code>, import <code spellcheck="false">Suspense</code> from <code spellcheck="false">react</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { Suspense } from 'react'</code></pre>                                                                                                <p class="">Wrap the <code spellcheck="false">&lt;Model&gt;</code> in <code spellcheck="false">&lt;Suspense&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Suspense&gt;
+    &lt;Model /&gt;
+&lt;/Suspense&gt;</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/012.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Reload the page and you’ll see that the floor appears first, we can interact with the scene and, later, the model appears.</p>                                                                                                <p class="">Lazy loading using <code spellcheck="false">&lt;Suspense&gt;</code> is a bit tricky because we need to create components, but it’s actually a common practice to separate everything into small components in React. It makes our code more maintainable and more reusable.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Fallback
+
+        
+                <span class="anchor js-anchor" data-slug="fallback">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fallback"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fallback"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">One cool feature with the <code spellcheck="false">&lt;Supense&gt;</code> is that we can set a fallback.</p>                                                                                                <p class="">The fallback is what the user will see if the component is not ready (in our case, while the model is loading).</p>                                                                                                <p class="">To define the fallback, we can use the <code spellcheck="false">fallback</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Suspense
+    fallback={  }
+&gt;</code></pre>                                                                                                <p class="">In there, we can put anything we want to make sure that the user can see something while it’s loading.</p>                                                                                                <p class="">We can set a <code spellcheck="false">&lt;mesh&gt;</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Suspense
+    fallback={ &lt;mesh position-y={ 0.5 } scale={ [ 2, 3, 2 ] }&gt;&lt;boxGeometry args={ [ 1, 1, 1, 2, 2, 2 ] } /&gt;&lt;meshBasicMaterial wireframe color="red" /&gt;&lt;/mesh&gt; }
+&gt;</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/013.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">If you reload, you’ll see the wireframe box for a brief moment.</p>                                                                                                <p class="">But writing components inside an attribute isn’t very convenient.</p>                                                                                                <p class="">As a first solution, we could have written it in multiple lines:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Suspense
+    fallback={
+        &lt;mesh position-y={ 0.5 } scale={ [ 2, 3, 2 ] }&gt;
+            &lt;boxGeometry args={ [ 1, 1, 1, 2, 2, 2 ] } /&gt;
+            &lt;meshBasicMaterial wireframe color="red" /&gt;
+        &lt;/mesh&gt;
+    }
+&gt;
+    &lt;Model /&gt;
+&lt;/Suspense&gt;</code></pre>                                                                                                <p class="">It’s already better, but let’s go even further and create a component.</p>                                                                                                <p class="">In <code spellcheck="false">/src/</code> create a <code spellcheck="false">Placeholder.jsx</code> file that exports a function by <code spellcheck="false">default</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Placeholder()
+{
+}</code></pre>                                                                                                <p class="">In there, we can return the same <code spellcheck="false">&lt;mesh&gt;</code> we put in the <code spellcheck="false">fallback</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Placeholder()
+{
+    return &lt;mesh position-y={ 0.5 } scale={ [ 2, 3, 2 ] }&gt;
+        &lt;boxGeometry args={ [ 1, 1, 1, 2, 2, 2 ] } /&gt;
+        &lt;meshBasicMaterial wireframe color="red" /&gt;
+    &lt;/mesh&gt;
+}</code></pre>                                                                                                <p class="">In <code spellcheck="false">Experience.jsx</code>, import the <code spellcheck="false">Placholder</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import Placeholder from './Placeholder.jsx'</code></pre>                                                                                                <p class="">And use it in the <code spellcheck="false">fallback</code> attribute:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Suspense fallback={ &lt;Placeholder /&gt; }&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/014.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Currently, we set the position and scale according to the helmet model. But what if we have different models in our projects with various sizes and positions?</p>                                                                                                <p class="">A good solution would be to let the developer set attributes on the <code spellcheck="false">&lt;Placeholder&gt;</code> and forward them to the <code spellcheck="false">&lt;mesh&gt;</code>.</p>                                                                                                <p class="">In <code spellcheck="false">Placeholder</code>, retrieve the <code spellcheck="false">props</code> parameter and apply them all to the <code spellcheck="false">&lt;mesh&gt;</code> with the spread operator (<code spellcheck="false">...</code>):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Placeholder(props)
+{
+    return &lt;mesh { ...props } &gt;
+        {/* ... */}
+    &lt;/mesh&gt;
+}</code></pre>                                                                                                <p class="">And now, we can set attributes on the <code spellcheck="false">&lt;Placeholder&gt;</code> if needed:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Suspense fallback={ &lt;Placeholder position-y={ 0.5 } scale={ [ 2, 3, 2 ] } /&gt; }&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/015.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And the cool part is that we can use our <code spellcheck="false">Placeholder</code> anywhere we want.</p>                                                                                                <p class="">Before continuing, let’s get back to our hamburger and disable the Network Throttling.</p>                                                                                                <p class="">In <code spellcheck="false">Model.jsx</code>, change the path back to <code spellcheck="false">'./hamburger.glb'</code>, remove the <code spellcheck="false">position-y</code> attribute and set the <code spellcheck="false">scale</code> to <code spellcheck="false">0.35</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Model()
+{
+    const model = useLoader(
+        GLTFLoader,
+        './hamburger.glb',
+        // ...
+    )
+
+    return &lt;primitive object={ model.scene } scale={ 0.35 } /&gt;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/016.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    GLTF loading with drei
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2322">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">38:42</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="gltf-loading-with-drei">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gltf-loading-with-drei"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gltf-loading-with-drei"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">It wasn’t that complicated, and yet, we had to do some twists and apply a bunch of techniques. But as always, there is an easier way thanks to <a href="https://github.com/pmndrs/drei" target="_blank">drei</a>.</p>                                                                                                <p class=""><a href="https://github.com/pmndrs/drei" target="_blank">Drei</a> implements multiple loader helpers like <code spellcheck="false">useGLTF</code> and <code spellcheck="false">useFBX</code>.</p>                                                                                                <p class="">In <code spellcheck="false">Model.jsx</code>, import <code spellcheck="false">useGLTF</code> from <code spellcheck="false">@react-three/drei</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useGLTF } from '@react-three/drei'</code></pre>                                                                                                <p class="">Now replace the whole <code spellcheck="false">useLoader()</code> call by <code spellcheck="false">useGLTF()</code> with the path to the file as the only parameter:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Model()
+{
+    const model = useGLTF('./hamburger.glb')
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/017.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And that’s it, we can remove the import of <code spellcheck="false">useLoader</code>, <code spellcheck="false">GLTFLoader</code>, and <code spellcheck="false">DRACOLoader</code>.</p>                                                                                                <p class="">You might wonder how can we handle the DRACO compressed version.</p>                                                                                                <p class="">Easy, you don’t. <code spellcheck="false">useGLTF</code> will take care of everything for us and we don’t even have to provide the DRACO decoder in the <code spellcheck="false">/public/</code> folder.</p>                                                                                                <p class="">Try with the compressed model:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const model = useGLTF('./hamburger-draco.glb')</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/018.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Preloading
+
+        
+                <span class="anchor js-anchor" data-slug="preloading">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#preloading"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="preloading"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Currently, our model will start loading only when the component is instantiated.</p>                                                                                                <p class="">In our case, we’ve added the model directly to the <code spellcheck="false">Experience</code> without any condition, so the model will start loading straight away. But if we had some conditions, such as the player who needs to enter the castle in order to instantiate the throne room or any interior decoration, then it would take a moment to load the throne and the user would see nothing but the placeholder for a moment (provided that we have a placeholder).</p>                                                                                                <p class="">Maybe we are fine with that, but maybe we want to load the model as soon as possible to make sure it’s ready when the player arrives in the castle.</p>                                                                                                <p class="">And we can do exactly that with the <code spellcheck="false">preload</code> method on <code spellcheck="false">useGLTF</code>.</p>                                                                                                <p class="">This might sound a bit weird, but even if <code spellcheck="false">useGLTF</code> is a function, it can have properties and methods (welcome to JavaScript).</p>                                                                                                <p class="">In the <code spellcheck="false">Model.jsx</code> file, after the <code spellcheck="false">Model</code> function, call the <code spellcheck="false">preload</code> with the model URL:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Model({ ...props })
+{
+    // ...
+}
+
+useGLTF.preload('./hamburger-draco.glb')</code></pre>                                                                                                <p class="">And that’s all. Even if it’s not relevant to our case, the hamburger will start loading immediately even if we don’t add <code spellcheck="false">&lt;Model&gt;</code> in our JSX.</p>                                                                                                <p class="">It’s important to use the exact same file path. If we are pre-loading the non-draco model and then start loading the draco model when the component is added, we loaded one for nothing and we will still have to wait for the second one to be loaded.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Multiple instances
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2765">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">46:05</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="multiple-instances">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#multiple-instances"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="multiple-instances"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">As Pippin said: “What about the second breakfast?”</p>                                                                                                <p class="">In our case, what if we want a second hamburger? Or three? Or a hundred?</p>                                                                                                <p class=""><a href="https://github.com/pmndrs/drei" target="_blank">Drei</a> makes that possible with the <code spellcheck="false">Clone</code> helper.</p>                                                                                                <p class="">In <code spellcheck="false">Model.jsx</code>, import <code spellcheck="false">Clone</code> from <code spellcheck="false">@react-three/drei</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { Clone, useGLTF } from '@react-three/drei'</code></pre>                                                                                                <p class="">Replace the <code spellcheck="false">&lt;primitive&gt;</code> by <code spellcheck="false">&lt;Clone&gt;</code> with the same attributes:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;Clone object={ model.scene } scale={ 0.35 } /&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/019.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We get the same result, but now we can create other clones very easily (don’t forget to use a fragment <code spellcheck="false">&lt;&gt;&lt;&gt;</code> since the component must <code spellcheck="false">return</code> only one element):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Model()
+{
+    // ...
+    
+    return &lt;&gt;
+        &lt;Clone object={ model.scene } scale={ 0.35 } position-x={ - 4 } /&gt;
+        &lt;Clone object={ model.scene } scale={ 0.35 } position-x={ 0 } /&gt;
+        &lt;Clone object={ model.scene } scale={ 0.35 } position-x={ 4 } /&gt;
+    &lt;/&gt;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/020.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">If you check the performance monitoring, you’ll see that the amount of geometries and shaders stays the same. <code spellcheck="false">Clone</code> creates multiple meshes, it is still based on the same geometries and materials.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    GLTF to component
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2933">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">48:53</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="gltf-to-component">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#gltf-to-component"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="gltf-to-component"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">If we want to manipulate the different parts of a hamburger, we need to traverse the loaded model, search for the right child, save it in some ways and apply whatever we need to it.</p>                                                                                                <p class="">Another option would be to open it in a 3D software, change it and export it again.</p>                                                                                                <p class="">None of those solutions are convenient.</p>                                                                                                <p class="">Wouldn’t it be awesome to have our hamburger available as a component with everything inside a simple JSX that we can manipulate, however we want?</p>                                                                                                <p class="">That’s what <strong>GLTF -&gt; React Three Fiber</strong> does.</p>                                                                                                <p class="">There is a command-line tool available here <a href="https://github.com/pmndrs/gltfjsx" target="_blank">https://github.com/pmndrs/gltfjsx</a></p>                                                                                                <p class="">And an online version available here <a href="https://gltf.pmnd.rs/" target="_blank">https://gltf.pmnd.rs/</a></p>                                                                                                <p class="">Let’s use the online version.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Converting our model
+
+        
+                <span class="anchor js-anchor" data-slug="converting-our-model">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#converting-our-model"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="converting-our-model"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Drag and drop the hamburger file (draco or not) into <a href="https://gltf.pmnd.rs/" target="_blank">https://gltf.pmnd.rs</a> and it’ll convert your model into a component:</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/021.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You can use the Debug UI to change some settings, and, as you can see, shadows are activated by default:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/022.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Let’s keep the default setting.</p>                                                                                                <p class="">In <code spellcheck="false">/src/</code>, create a <code spellcheck="false">Hamburger.jsx</code> file and paste the code that <strong>GLTF -&gt; React Three Fiber</strong> generated. You can use the buttons on the Debug UI to copy, but you can also download the file as a <code spellcheck="false">.zip</code>. This file will contain a minimalist React project with everything you need in it.</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/*
+Auto-generated by: https://github.com/pmndrs/gltfjsx
+*/
+
+import React, { useRef } from "react";
+import { useGLTF } from "@react-three/drei";
+
+export function Model(props) {
+  const { nodes, materials } = useGLTF("/hamburger.glb");
+  return (
+    &lt;group {...props} dispose={null}&gt;
+      &lt;mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.bottomBun.geometry}
+        material={materials.BunMaterial}
+      /&gt;
+      &lt;mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.meat.geometry}
+        material={materials.SteakMaterial}
+        position={[0, 2.82, 0]}
+      /&gt;
+      &lt;mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.cheese.geometry}
+        material={materials.CheeseMaterial}
+        position={[0, 3.04, 0]}
+      /&gt;
+      &lt;mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.topBun.geometry}
+        material={materials.BunMaterial}
+        position={[0, 1.77, 0]}
+      /&gt;
+    &lt;/group&gt;
+  );
+}
+
+useGLTF.preload("/hamburger.glb");</code></pre>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Refactoring
+
+        
+                <span class="anchor js-anchor" data-slug="refactoring">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#refactoring"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="refactoring"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">This component is almost ready to use, but we need to do some refactoring.</p>                                                                                                <p class="">First, if you are a maniac like me, you can refactor the various line breaks, indents, semicolons, etc.</p>                                                                                                <p class="">Next, the tool assumes that our model is available in the root directory (the <code spellcheck="false">/public/</code> folder), which is the case for us. But in other circumstances, make sure that the path in the <code spellcheck="false">useGLTF()</code> and the <code spellcheck="false">useGLTF.preload()</code> are the same.</p>                                                                                                <p class="">Still, we can add the leading <code spellcheck="false">./</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// ...
+
+    const { nodes, materials } = useGLTF("./hamburger.glb");
+
+// ...
+
+useGLTF.preload("./hamburger.glb");</code></pre>                                                                                                <p class="">Then, this function is not being exported by <code spellcheck="false">default</code>. It’s no big deal and we can still import it as <code spellcheck="false">Model</code>, but let’s rename it to <code spellcheck="false">Hamburger</code> and export it as <code spellcheck="false">default</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">// ...
+
+export default function Hamburger(props) {
+
+// ...</code></pre>                                                                                                <p class="">Our component is ready.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Import
+
+        
+                <span class="anchor js-anchor" data-slug="import">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#import"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="import"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">In <code spellcheck="false">Experience.jsx</code>, import <code spellcheck="false">Hamburger</code> from <code spellcheck="false">./Hamburger.jsx</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import Hamburger from './Hamburger.jsx'</code></pre>                                                                                                <p class="">And replace the <code spellcheck="false">&lt;Model /&gt;</code> with it, while adding a <code spellcheck="false">scale</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    return &lt;&gt;
+
+        {/* ... */}
+
+        &lt;Suspense fallback={ &lt;Placeholder position-y={ 0.5 } scale={ [ 2, 3, 2 ] } /&gt; }&gt;
+            &lt;Hamburger scale={ 0.35 } /&gt;
+        &lt;/Suspense&gt;
+
+    &lt;/&gt;
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/023.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Now our hamburger’s back and with the shadows included as a bonus.</p>                                                                                                <p class="">And since every part of the model are written as <code spellcheck="false">&lt;mesh&gt;</code> and <code spellcheck="false">&lt;group&gt;</code> in <code spellcheck="false">Hamburger.jsx</code>, we have a lot more control over it.</p>                                                                                                <p class="">As an example, we can move the top bun by changing its position directly (the last <mesh> in <code spellcheck="false">Hamburger.jsx</code>):</mesh></p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Hamburger(props) {
+  const { nodes, materials } = useGLTF("./hamburger.glb");
+  return (
+    &lt;group {...props} dispose={null}&gt;
+      {/* ... */}
+      &lt;mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.topBun.geometry}
+        material={materials.BunMaterial}
+        position={[0, 3.77, 0]}
+      /&gt;
+    &lt;/group&gt;
+  );
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/024.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Let’s put back the original position:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Hamburger(props) {
+  const { nodes, materials } = useGLTF("./hamburger.glb");
+  return (
+    &lt;group {...props} dispose={null}&gt;
+      {/* ... */}
+      &lt;mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.topBun.geometry}
+        material={materials.BunMaterial}
+        position={[0, 1.77, 0]}
+      /&gt;
+    &lt;/group&gt;
+  );
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/025.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Fixing the shadow
+
+        
+                <span class="anchor js-anchor" data-slug="fixing-the-shadow">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fixing-the-shadow"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fixing-the-shadow"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">The shadows look a bit weird with stripes crossing the surface of the hamburger.</p>                                                                                                <p class="">As discussed in previous lessons, this is called shadow acne and it’s due to the model casting shadows on itself.</p>                                                                                                <p class="">We can fix this issue by tweaking the <code spellcheck="false">bias</code> or <code spellcheck="false">shadowBias</code> on the directional light shadow in <code spellcheck="false">Experience.jsx</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;directionalLight castShadow position={ [ 1, 2, 3 ] } intensity={ 4.5 } shadow-normalBias={ 0.04 } /&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/026.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Animation
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3772">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:02:52</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="animation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#animation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="animation"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The last topic we need to talk about is animation.</p>                                                                                                <p class="">We are going to use the usual animated Fox provided by the Kronos Group in the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Fox" target="_blank">glTF-Sample-Models</a> GitHub repository.</p>                                                                                                <p class="">The Fox files are already located in the <code spellcheck="false">/public/Fox/</code> folder.</p>                                                                                                <p class="">We are going to create a <code spellcheck="false">Fox</code> component, load any of the model variations available in the <code spellcheck="false">/public/Fox/</code> folder with <code spellcheck="false">useGLTF</code> and add it to the scene.</p>                                                                                                <p class="">Now would be a good opportunity to try it yourself.</p>                                                                                                <p class="">Let’s do it together.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Component
+
+        
+                <span class="anchor js-anchor" data-slug="component">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#component"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="component"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">In the <code spellcheck="false">/src/</code> folder, create a <code spellcheck="false">Fox.jsx</code> file.</p>                                                                                                <p class="">In that file add and export as <code spellcheck="false">default</code> a component function named Fox:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Fox()
+{
+    return null
+}</code></pre>                                                                                                <p class="">Back to <code spellcheck="false">Experience.jsx</code>, import <code spellcheck="false">Fox</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import Fox from './Fox.jsx'</code></pre>                                                                                                <p class="">And add it to the scene:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Experience()
+{
+    return &lt;&gt;
+
+        {/* ... */}
+
+        &lt;Fox /&gt;
+
+    &lt;/&gt;
+}</code></pre>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Load the model
+
+        
+                <span class="anchor js-anchor" data-slug="load-the-model">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#load-the-model"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="load-the-model"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">In <code spellcheck="false">Fox.jsx</code>, import <code spellcheck="false">useGLTF</code> from <code spellcheck="false">@react-three/drei</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useGLTF } from '@react-three/drei'</code></pre>                                                                                                <p class="">In the <code spellcheck="false">Fox</code> function, load the model with <code spellcheck="false">useGLTF</code> and name the variable <code spellcheck="false">fox</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Fox()
+{
+    const fox = useGLTF('./Fox/glTF/Fox.gltf')
+
+    return null
+}</code></pre>                                                                                                <p class="">Now return a <code spellcheck="false">&lt;primitive&gt;</code> with its object attribute set to <code spellcheck="false">fox.scene</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useGLTF } from '@react-three/drei'
+
+export default function Fox()
+{
+    const fox = useGLTF('./Fox/glTF/Fox.gltf')
+
+    return &lt;primitive object={ fox.scene } /&gt;
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/027.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The Fox is way too big.</p>                                                                                                <p class="">Use the various attributes like <code spellcheck="false">scale</code>, <code spellcheck="false">position</code> and <code spellcheck="false">rotation</code> to move it in front of the hamburger:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">&lt;primitive
+    object={ fox.scene }
+    scale={ 0.02 }
+    position={ [ - 2.5, 0, 2.5 ] }
+    rotation-y={ 0.3 }
+/&gt;</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/028.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Play the animation
+
+        
+                <span class="anchor js-anchor" data-slug="play-the-animation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#play-the-animation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="play-the-animation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Great, we have our fox, but how do we animate it?</p>                                                                                                <p class="">You probably guess it, but there is a drei helper named <a href="https://github.com/pmndrs/drei#useanimations" target="_blank">useAnimations</a> for that.</p>                                                                                                <p class="">Import <code spellcheck="false">useAnimations</code> from <code spellcheck="false">@react-three/drei</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useAnimations, useGLTF } from '@react-three/drei'</code></pre>                                                                                                <p class="">If you remember from the previous lessons, when loading a GLTF file, we get access to various information in the object (<code spellcheck="false">fox</code> in our case):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Fox()
+{
+    const fox = useGLTF('./Fox/glTF/Fox.gltf')
+    console.log(fox)
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/029.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Currently, we are already using the <code spellcheck="false">fox.scene</code> in our <code spellcheck="false">&lt;primitive&gt;</code>, but we also have access to the animations that come with the model in <code spellcheck="false">fox.animations</code>.</p>                                                                                                <p class="">And those are the two elements we need to provide to <code spellcheck="false">useAnimations</code>.</p>                                                                                                <p class="">After calling <code spellcheck="false">useGLTF</code>, call <code spellcheck="false">useAnimation</code> and send it <code spellcheck="false">fox.animations</code> and <code spellcheck="false">fox.scene</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Fox()
+{
+    const fox = useGLTF('./Fox/glTF/Fox.gltf')
+    const animations = useAnimations(fox.animations, fox.scene)
+    console.log(animations)
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/030.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We now have access to the various animations provided with the model and each one has been converted into an <a href="https://threejs.org/docs/?q=action#api/en/animation/AnimationAction" target="_blank">AnimationAction</a> using the name of the animation (<code spellcheck="false">Run</code>, <code spellcheck="false">Survey</code> and <code spellcheck="false">Walk</code> in the case of the Fox) and those actions are available in the <code spellcheck="false">animation.actions</code> object.</p>                                                                                                <p class="">But before starting any of those actions, it’s better to do it once the component as finished rendering for the first time and we can do that using <code spellcheck="false">useEffect</code>.</p>                                                                                                <p class="">Import <code spellcheck="false">useEffect</code> from <code spellcheck="false">react</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useEffect } from 'react'</code></pre>                                                                                                <p class="">Call it in <code spellcheck="false">Fox</code>, send it a function and an empty array as dependencies:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Fox()
+{
+    // ...
+
+    useEffect(() =&gt;
+    {
+        
+    }, [])
+
+    // ...
+}</code></pre>                                                                                                <p class="">And here, we can choose an animation we want to play from the actions property:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Fox()
+{
+    // ...
+
+    useEffect(() =&gt;
+    {
+        const action = animations.actions.Run
+    }, [])
+
+    // ...
+}</code></pre>                                                                                                <p class="">And play it:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Fox()
+{
+    // ...
+
+    useEffect(() =&gt;
+    {
+        const action = animations.actions.Run
+        action.play()
+    }, [])
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/031.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">React Three Fiber and the <code spellcheck="false">useAnimations</code> helper will take care of updating the animation on each frame.</p>                                                                                                <p class="">If you want the fox to start walking after a few seconds, you can use the various methods available in <a href="https://threejs.org/docs/?q=action#api/en/animation/AnimationAction" target="_blank">AnimationAction</a> like <code spellcheck="false">crossFadeFrom</code> which is going to <code spellcheck="false">fadeOut</code> the <code spellcheck="false">Run</code> and <code spellcheck="false">fadeIn</code> the <code spellcheck="false">Walk</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    animations.actions.Run.play()
+
+    window.setTimeout(() =&gt;
+    {
+        animations.actions.Walk.play()
+        animations.actions.Walk.crossFadeFrom(animations.actions.Run, 1)
+    }, 2000)
+}, [])</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/032.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Animation control and cleanup phase
+
+        
+                <span class="anchor js-anchor" data-slug="animation-control-and-cleanup-phase">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#animation-control-and-cleanup-phase"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="animation-control-and-cleanup-phase"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are going to push that animation topic even further by letting the user choose the animation using Leva and fade the incoming animation so that we don’t get a brutal change.</p>                                                                                                <p class="">First, we must add Leva to the project.</p>                                                                                                <p class="">In the terminal, install <code spellcheck="false">leva</code> with <code spellcheck="false">npm install leva@0.10</code> (we force the version to prevent surprises, you can ignore potential vulnerability warnings).</p>                                                                                                <p class="">In <code spellcheck="false">Fox.jsx</code>, import <code spellcheck="false">useControls</code> from <code spellcheck="false">leva</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import { useControls } from 'leva'</code></pre>                                                                                                <p class="">In the <code spellcheck="false">Fox</code> function, after the <code spellcheck="false">useAnimations</code>, call <code spellcheck="false">useControls</code> to create a tweak with a <code spellcheck="false">&lt;select&gt;</code> where the choices are the available animations in the model.</p>                                                                                                <p class="">Now would be a good time to try on your own.</p>                                                                                                <p class="">Here’s the solution with the result of the tweak named <code spellcheck="false">animationName</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">export default function Fox()
+{
+    const fox = useGLTF('./Fox/glTF/Fox.gltf')
+    const animations = useAnimations(fox.animations, fox.scene)
+
+    const { animationName } = useControls({
+        animationName: { options: animations.names }
+    })
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/49/033.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">In the <code spellcheck="false">useEffect</code>, instead of using the <code spellcheck="false">Run</code> animation, we can use the <code spellcheck="false">animationName</code> variable:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    const action = animations.actions[animationName]
+    action.play()
+}, [])</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/034.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The fox model is now playing the <code spellcheck="false">Survey</code> animation because it’s the first one in the list of choices.</p>                                                                                                <p class="">Now, we want to play a different animation when the user changes the <code spellcheck="false">animationName</code> tweak.</p>                                                                                                <p class="">Currently, the <code spellcheck="false">useEffect</code> dependencies array is empty, meaning that the function will only be called once after the first render. This is exactly where setting a specific dependency gets useful. We want the function to be called on the first render but also when the <code spellcheck="false">animationName</code> changes.</p>                                                                                                <p class="">Add the <code spellcheck="false">animationName</code> to the dependencies array:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    // ...
+}, [ animationName ])</code></pre>                                                                                                <p class="">And add a <code spellcheck="false">console.log</code> if you want to check how the function is being called:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    console.log('animationName', animationName)
+    
+    // ...
+}, [ animationName ])</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/035.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The function is being called when we change the <code spellcheck="false">animationName</code>, but the animation of the fox looks weird after we change it to the second animation and weirder if we change it to third animation.</p>                                                                                                <p class="">The reason is that all animations are playing together and Three.js will mix them. First, you are seeing the <code spellcheck="false">Survey</code> animation; then a mix of the <code spellcheck="false">Survey</code> and the <code spellcheck="false">Walk</code> animations; and finally a mix of the <code spellcheck="false">Survey</code>, the <code spellcheck="false">Walk</code> and the <code spellcheck="false">Run</code> animations.</p>                                                                                                <p class="">To fix that, we need to stop the old animation progressively (<code spellcheck="false">fadeOut</code>) and start the new animation progressively (<code spellcheck="false">fadeIn</code>).</p>                                                                                                <p class="">First, remove the <code spellcheck="false">console.log</code>.</p>                                                                                                <p class="">Then, instead of just calling <code spellcheck="false">play()</code>, we are going to fade it in first by adding <code spellcheck="false">fadeIn</code> before the <code spellcheck="false">play</code> with a value of <code spellcheck="false">0.5</code> (the duration of the <code spellcheck="false">fadeIn</code> in seconds):</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    const action = animations.actions[animationName]
+    action.fadeIn(0.5).play()
+}, [ animationName ])</code></pre>                                                                                                <p class="">Now, we need a way to fade out the old animation.</p>                                                                                                <p class="">If you remember from the previous lessons, when you <code spellcheck="false">return</code> a function in <code spellcheck="false">useEffect</code>, that function will be called when the component is being disposed of or just re-rendered:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    const action = animations.actions[animationName]
+    action.fadeIn(0.5).play()
+
+    return () =&gt;
+    {
+        console.log('dispose')
+    }
+}, [ animationName ])</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/036.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">This is the perfect opportunity to fade out the currently playing animation that we saved in the <code spellcheck="false">action</code> variable.</p>                                                                                                <p class="">In React, we call this the cleanup phase. It’s where we make sure to dispose of what needs to be disposed of.</p>                                                                                                <p class="">And since it’s inside the function where we created the <code spellcheck="false">action</code> variable, we can call <code spellcheck="false">fadeOut</code> on it with <code spellcheck="false">0.5</code> as the duration:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    // ...
+
+    return () =&gt;
+    {
+        action.fadeOut(0.5)
+    }
+}, [ animationName ])</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/037.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">And that’s it. The fox animations are cross fading properly.</p>                                                                                                <p class="">For some reasons, going back to an animation that faded out won’t work and we need to reset it.</p>                                                                                                <p class="">Although it’s not relevant in the case of the fox animations, reseting the animation will also make it start from the beginning.</p>                                                                                                <p class="">You can do that by calling the <code spellcheck="false">reset</code> method right before the <code spellcheck="false">fadeIn</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">useEffect(() =&gt;
+{
+    const action = animations.actions[animationName]
+    action
+        .reset()
+        .fadeIn(0.5)
+        .play()
+
+    // ...
+}, [ animationName ])</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/49/038.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">No big difference in this case, but you might need that for more specific animations.</p>                                                                                                <p class="">In the next lessons, we will have opportunities to load models.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">3D Text</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/3d-text-with-r3f" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/49/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(251deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

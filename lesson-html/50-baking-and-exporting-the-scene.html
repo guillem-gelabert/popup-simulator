@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>50. baking and exporting the scene</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/creating-a-scene-in-blender"><div class="sibling-info"><div class="sibling-label">49.</div><div class="sibling-title">Creating a scene in Blender</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">50.</div><h2 class="title">Baking and exporting the scene</h2><p class="difficulty">Difficulty <span class="value">
+                                Very hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/importing-and-optimizing-the-scene"><div class="sibling-info"><div class="sibling-label">51.</div><div class="sibling-title">Importing and optimizing the scene</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/35/50-baking-and-exporting-the-scene-resources.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Resources</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/35" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">We created a scene that looks good when doing a render, but our final goal is to export it to Three.js.</p>                                                                                <p class="">We need to optimize it, but also to bake it. If you remember from the previous lesson, baking consists of saving the good-looking render result into a texture that we will then place on the geometry in Three.js. Because of that, we need to UV unwrap our scene.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="39">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:39</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">You can start from the blender file you made in the previous lesson, or you can get the same file as is in that lesson by using the starter file.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Optimization
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="81">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:21</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="optimization">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#optimization"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="optimization"></span>
+        </span>
+        
+</h2>
+
+                                                                                
+<h3 class="title has-anchor ">
+    
+    Removing hidden faces
+
+        
+                <span class="anchor js-anchor" data-slug="removing-hidden-faces">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#removing-hidden-faces"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="removing-hidden-faces"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">The first thing we need to do is remove all the hidden faces. That would mean faces directly on the floor like the bottom of the trunks. And, it would also mean faces against other faces like the back of the stair steps.</p>                                                                                <p class="">In order to see the faces more clearly, we can switch between the <code spellcheck="false">Wireframe</code> and the <code spellcheck="false">Solid</code> shadings:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/000.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Trunks
+
+        
+                <span class="anchor js-anchor" data-slug="trunks">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#trunks"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="trunks"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">We are going to start with the trunks.</p>                                                                                <p class="">You can deactivate the collections you are not working on at the moment by unchecking them in the <code spellcheck="false">Outliner</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">To optimize the trunks and logs:</p>                                                                                <ul class="">
+            <li>Select all of them.</li>
+            <li>Go into <code spellcheck="false">Edit Mode</code>.</li>
+            <li>Switch to the <code spellcheck="false">face</code> selection.</li>
+            <li>Select all the faces as shown below and delete them with <code spellcheck="false">X</code>.</li>
+    </ul>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">You should get something like this:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Fences
+
+        
+                <span class="anchor js-anchor" data-slug="fences">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fences"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fences"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">Repeat the process with the fences:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Pole lights
+
+        
+                <span class="anchor js-anchor" data-slug="pole-lights">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#pole-lights"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="pole-lights"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">Repeat the process with the pole lights. You only need to do one of the pole lights because they are linked duplicates.</p>                                                                                <p class="">Don't forget to delete the bottom cap of the main beam and the caps of the rope:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Rocks
+
+        
+                <span class="anchor js-anchor" data-slug="rocks">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#rocks"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="rocks"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">Repeat the process with the rocks:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">Though it isn't mandatory, if some rocks are overflowing into the ground, you can fix that with the <code spellcheck="false">bissect</code> tool we used in the previous lesson. Select all the faces in <code spellcheck="false">Edit Mode</code>, press <code spellcheck="false">F3</code> and search for <code spellcheck="false">bissect</code>. Then slice the overflowing parts of the rocks you want to cut out.</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Portal
+
+        
+                <span class="anchor js-anchor" data-slug="portal">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#portal"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="portal"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">For the portal, most of the optimization concerns the stairs.</p>                                                                                <p class="">You can start by resizing them so that they don't overlap too much:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">Then you can remove the bottom faces but also the hidden faces between the steps:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">If you did the previous lessons exactly as I said, and you now try to remove the faces of the bricks inside the stairs, you will see that you can't do it without editing all the bricks at the same time because they are linked duplicates.</p>                                                                                <p class="">If you didn't use linked duplicates, you shouldn't have this problem, but we are going to make sure that none of the objects in the scene are linked duplicates anyway.</p>                                                                                
+<h4 class="title has-anchor ">
+    
+    Unlink duplicates
+
+        
+                <span class="anchor js-anchor" data-slug="unlink-duplicates">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#unlink-duplicates"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="unlink-duplicates"></span>
+        </span>
+        
+</h4>
+
+                                                                                <p class="">We need to unlink the duplicates in order to fix the bricks, as well as for the next step, which will consist of unwrapping the geometries. If we were to keep the links, both pole lights would be unwrapped on the same coordinates. This would result in the baking being done twice in the same position of the texture.</p>                                                                                <p class="">To unlink the duplicates, go into <code spellcheck="false">Object Mode</code> and select all objects with <code spellcheck="false">A</code>. Even if we are only concerned with the portal bricks and the pole lights, the action we are taking can be applied to the whole scene without consequences.</p>                                                                                <p class="">While all the objects are selected, press <code spellcheck="false">F3</code> and search for <code spellcheck="false">make single</code>. Then choose <code spellcheck="false">Make Single User &gt; Object &amp; Data</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/009.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">All previously linked duplicates are now unlinked and we can edit the bricks that overlap the stairs without changing all the bricks.</p>                                                                                <p class="">Remove the faces of the bricks inside the stairs:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/010.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">Check the whole scene and make sure that you are done with removing the hidden faces.</p>                                                                                <p class="">Forgetting some isn't a big issue and you can still remove them later. But once we start unwrapping the geometries, removing faces at that time might have some consequences.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Fixing faces orientation
+
+        
+                <span class="anchor js-anchor" data-slug="fixing-faces-orientation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fixing-faces-orientation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fixing-faces-orientation"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">One issue we can't see has to do with the orientation of faces. All faces have a front and a back. While this isn't a problem when doing a render, it might create bugs during the baking process and some of the faces might become black. Those faces won't even be rendered in Three.js because, by default, back sides are hidden.</p>                                                                                <p class="">As you might have guessed, this orientation is a matter of normals. When doing extrudes, insets, and other operations like that, we might have flipped the normals unintentionally.</p>                                                                                <p class="">First, we need a way to see the faces orientation. While in <code spellcheck="false">Object Mode</code>, in the top right corner of the Blender <code spellcheck="false">Viewport 3D</code>, click on the following icon:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/011.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 86 56'%3E%3C/svg%3E" width="86" height="56"></span>
+</p>                                                                                <p class="">On the menu which should open, check <code spellcheck="false">Face Orientation</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/012.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 375 515'%3E%3C/svg%3E" width="375" height="515"></span>
+</p>                                                                                <p class="">You should now see blue faces when the orientation is good and red faces when the orientation is wrong:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/013.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">In this case only the pole lights are wrong, but you might have a very different result with your model.</p>                                                                                <p class="">If everything is already blue, congratulations, you can skip this step.</p>                                                                                <p class="">To fix the red faces:</p>                                                                                <ul class="">
+            <li>Select the object you want to fix.</li>
+            <li>Go into <code spellcheck="false">Edit Mode</code>.</li>
+            <li>Select the faces you want to flip.</li>
+            <li>Press <code spellcheck="false">F3</code>, search for <code spellcheck="false">flip</code> and choose <code spellcheck="false">Mesh &gt; Normals &gt; Flip</code>.</li>
+    </ul>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/014.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">Once the whole scene is blue, you can uncheck the <code spellcheck="false">Face Orientation</code> and continue:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/015.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Normalize scales
+
+        
+                <span class="anchor js-anchor" data-slug="normalize-scales">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#normalize-scales"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="normalize-scales"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Another problem is with scaling.</p>                                                                                <p class="">Some objects have been scaled in <code spellcheck="false">Edit Mode</code>, meaning that we are scaling the geometry and not the object itself. Some other objects have been scaled in <code spellcheck="false">Object Mode</code>, meaning that there is a transformation on the object but not on the geometry itself.</p>                                                                                <p class="">Again, while doing renders, it's not really important. But it might create issues when doing the UV unwrapping.</p>                                                                                <p class="">Later in the lesson, we are going to use automatic UV unwrapping and Blender will take into account the geometry size but not the object scale. This might result in some objects taking more space or not as much space as they should. For example, you might end up with the axe taking only half of the texture because the geometry is still huge even though we reduced the object scale.</p>                                                                                <p class="">To fix that, we need to normalize all the scales.</p>                                                                                <p class="">In <code spellcheck="false">Object Mode</code>, select all the objects with <code spellcheck="false">A</code> , press <code spellcheck="false">CTRL + A</code> to open the <code spellcheck="false">Apply</code> menu and choose <code spellcheck="false">Scale</code>:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/016.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">You can't see a difference, but all of the object scales have been applied to their geometries instead. This way, all our objects now have a scale of <code spellcheck="false">1</code>.</p>                                                                                <p class="">We are done with the optimization and we can start to UV unwrap our scene.</p>                                                                                <p class="">Don't forget to save.</p>                                    
+                                                                                                        
+<h2 class="title has-anchor ">
+    
+    UV unwrapping
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1568">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">26:08</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="uv-unwrapping">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#uv-unwrapping"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="uv-unwrapping"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The idea is to unfold all the geometry composing our scene into a square. Later, this will enable us to bake the render into a texture that will follow the unwrapping we set.</p>                                                                                                <p class="">The scene:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/017.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="">The unfold scene:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/018.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2048 2048'%3E%3C/svg%3E" width="2048" height="2048"></span>
+</p>                                                                                                <p class="">There are multiple ways of unwrapping a geometry. We can use a "smart" automatic version that will do a pretty good job. Or, we can do a manual version to create a more optimized version, but at the price of more effort.</p>                                                                                                <p class="">We are going to do a mix of both techniques depending on the objects.</p>                                                                                                <p class="">First, we can change the bottom right area to <code spellcheck="false">UV Editor</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/019.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                                <p class="">The <code spellcheck="false">UV Editor</code> displays a square that represents our unfold. We need to make everything fit inside that square. We could have used multiple textures, which would mean independent UV unwraps, but our scene isn't that complex or big.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Floor
+
+        
+                <span class="anchor js-anchor" data-slug="floor">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#floor"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="floor"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Let's start by unwrapping the easiest element, the floor.</p>                                                                                                <ul class="">
+            <li>Select the floor.</li>
+            <li>Go into <code spellcheck="false">Edit Mode</code>.</li>
+            <li>Select the whole geometry with <code spellcheck="false">A</code>.</li>
+    </ul>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/020.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                                <p class="">As you can see in the <code spellcheck="false">UV Editor</code>, the plane is already unwrapped and takes the whole UV. By default, Blender generates UV coordinates for most of the primitives. This is good, and we can simply move that square to a corner of the UV map.</p>                                                                                                <p class="">To edit the UV, the shortcuts are almost the same as editing an object. While hovering the <code spellcheck="false">UV Editor</code> area, press <code spellcheck="false">A</code> to select everything, <code spellcheck="false">S</code> to scale it and <code spellcheck="false">G</code> to move it:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/021.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Don't spend too much time on placing it exactly. In the end, we will reorganize things.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Fences
+
+        
+                <span class="anchor js-anchor" data-slug="fences-1">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fences-1"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fences-1"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Let's try a more difficult shape and unwrap the fences.</p>                                                                                                <ul class="">
+            <li>Select one of the fences.</li>
+            <li>Go into <code spellcheck="false">Edit Mode</code>.</li>
+            <li>Select all the faces with <code spellcheck="false">A</code>.</li>
+    </ul>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/022.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">As you can see, the geometry is already unwrapped, but the 4 boxes that compose our fence are stacked one above the other and in a cross shape that doesn't match the proportions of our geometry. This is the default UV unwrap of a cube. We need to unwrap it ourselves.</p>                                                                                                <p class="">We are going to focus on one of the poles of the fence first. To select a pole, click on one of the faces:</p>                                                                                                <p class="">Press <code spellcheck="false">CTRL + L</code> and all the other faces of the pole should now be selected (make sure that <code spellcheck="false">Seam</code> is active on the menu which should open in the bottom left of the area:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/023.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                                <p class="">This technique is very useful to select what we call islands. An island is a group of faces that are connected together.</p>                                                                                                <p class="">To unwrap the pole, press <code spellcheck="false">U</code> and choose <code spellcheck="false">Unwrap</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/024.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Unfortunately, this isn't a good unwrap:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/025.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And this is because we didn't provide information on how to "cut" the geometry.</p>                                                                                                <p class="">If you try to unfold a cube without cutting some of the edges, you'll end up with a mess. Those cuts are called <code spellcheck="false">seams</code>.</p>                                                                                                <p class="">To create a seam, go into <code spellcheck="false">Edge</code> selection and select the edges you want to be cut when unwrapped:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/026.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Press <code spellcheck="false">U</code> and choose <code spellcheck="false">Mark seam</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/027.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                                <p class="">If you unselect everything, you'll see that those seams are now in red:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/028.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 289 392'%3E%3C/svg%3E" width="289" height="392"></span>
+</p>                                                                                                <p class="">If your seams are fine, don't touch them, but be aware that you can remove them if you need to.  To do that (and don't, if you don't need to), select the concerned edge, press <code spellcheck="false">U</code> and choose <code spellcheck="false">Clear Seam</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/029.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Finding where to cut the geometry can be very hard. You'll have to anticipate the result and try until it works. Just make sure that the faces aren't distorted.</p>                                                                                                <p class="">Select the whole pole again (select one part and press <code spellcheck="false">CTRL + L</code> to select the whole island), press <code spellcheck="false">U</code> and choose <code spellcheck="false">Unwrap</code> to unwrap it again:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/030.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">As you can see, this unwrap is much better.</p>                                                                                                <p class="">Let's do the same with the other pole. Select the same edges, press <code spellcheck="false">U</code> and choose <code spellcheck="false">Mark Seam</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/031.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Then select the whole pole, press <code spellcheck="false">U</code> and choose <code spellcheck="false">Unwrap</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/032.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">You should get the same result. The unwraps of the two poles are overlapping but we will fix that later. For now, we should only focus on setting the seams right.</p>                                                                                                <p class="">Cut one of the planks the same way:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/033.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                                <p class="">Unwrap it:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/034.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And this time, instead of doing the same thing for the other plank, simply remove the bottom one, duplicate the top (already unwrapped) one and place it where the bottom one was:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/035.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 542 408'%3E%3C/svg%3E" width="542" height="408"></span>
+</p>                                                                                                <p class="">This is just a way to gain some time.</p>                                                                                                <p class="">Now that all the different parts of the fence are well cut with seams, select all the geometry, press <code spellcheck="false">U</code> and do the unwrap again:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/036.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">The unwrap is looking great, unfortunately the island are way too close to each other. This will be an issue when we will bake because the baking will overflow a little. We need to move them apart.</p>                                                                                                <p class="">When you choose <code spellcheck="false">Unwrap</code>, a small menu appears on the bottom left of the area (if you lost that menu, unwrap again):</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/037.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 404 210'%3E%3C/svg%3E" width="404" height="210"></span>
+</p>                                                                                                <p class="">Here, you can change the <code spellcheck="false">Margin</code>. Increase it a little to something like <code spellcheck="false">0.15</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/038.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">As you can see, the islands are now slightly separated.</p>                                                                                                <p class="">Before moving those UV coordinates somewhere in the map, we need to handle the other fences.</p>                                                                                                <p class="">Instead of cutting and unwrapping all of the fences, we can simply remove the previous ones and duplicate the unwrapped one at its positions. Don't spend too much time positioning at the exact same position.</p>                                                                                                <p class="">In <code spellcheck="false">Object Mode</code>, duplicate the unwrapped fence with <code spellcheck="false">SHIFT + D</code> and replace the others.</p>                                                                                                <p class="">Now select all the fences, go in <code spellcheck="false">Edit Mode</code>, select all the faces and unwrap them again, but this time, all together.</p>                                                                                                <p class="">You should change the <code spellcheck="false">Margin</code> to something like <code spellcheck="false">0.065</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/039.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">(You might have noticed that there are more islands in the above screenshot. This is due to an error in which I duplicated one of the fences at the same place. Ignore this.)</p>                                                                                                <p class="">Put those unwraps in a corner of the UV map:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/040.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Again, the exact position isn't important and we will reorganize everything later.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Separating the Emission material
+
+        
+                <span class="anchor js-anchor" data-slug="separating-the-emission-material">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#separating-the-emission-material"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="separating-the-emission-material"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are going to repeat the whole process for the pole lights, but before doing so, we need to separate the objects that emit lights.</p>                                                                                                <p class="">We are doing this because we don't want to bake those objects. In the end, they are uniform colors and we are going to create materials within Three.js to give them those colors.</p>                                                                                                <p class="">We could have baked those objects, but it's a waste of space in the texture.</p>                                                                                                <p class="">Create a <code spellcheck="false">emissions</code> collection and put the two lamps and the portal (only the emission part) in it:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/041.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Make this collection unselectable so that we don't select them while doing the baking:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/042.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 342 94'%3E%3C/svg%3E" width="342" height="94"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Pole lights
+
+        
+                <span class="anchor js-anchor" data-slug="pole-lights-1">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#pole-lights-1"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="pole-lights-1"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We can now unwrap the pole lights.</p>                                                                                                <p class="">As with the fences, start with only one and, once you are happy, duplicate it and put it in place of the other pole light.</p>                                                                                                <p class="">To help you focus on the object you want to unwrap, you can select it and press <code spellcheck="false">/</code> on the numpad. This will isolate it:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/043.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">If you want to leave that isolation, press <code spellcheck="false">/</code> again.</p>                                                                                                <p class="">You can try the unwrap on your own. Take your time, it's a long process. But with time, you'll be able to do it fast and efficiently.</p>                                                                                                <p class="">You'll probably get a different result than in the lesson and that's totally normal. There are so many different ways of unwrapping and we don't really know if we are doing mistakes yet. Just do your best and don't hesitate to create too many cuts.</p>                                                                                                <p class="">Here is how I did it:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/044.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">The lamp frame is especially hard to cut. Here, I decided to make only one cut that goes from the bottom up. This is not always a good idea because, as you can see, it creates some distortion once you unwrap it:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/045.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">But it's not that bad and at least we minimize the number of islands.</p>                                                                                                <p class="">The unwrap looks like this:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/046.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Before reorganizing the islands, we can duplicate the pole in place of the other one and unwrap both of them together:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/047.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Since the islands are curvy, Blender doesn't do a great job placing them. Optimize the placement a little bit and put them in another corner of the UV map. Always make sure to leave some space between them:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/048.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Portal
+
+        
+                <span class="anchor js-anchor" data-slug="portal-1">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#portal-1"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="portal-1"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Apply the same process for the portal. Isolate each object, add the seams, test the result by unwrapping and once you're done with all the parts of the portal, select them all and unwrap everything.</p>                                                                                                <p class="">Here is the stair:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/049.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Here are the bricks:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/050.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And here is the whole portal:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/051.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Rocks
+
+        
+                <span class="anchor js-anchor" data-slug="rocks-1">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#rocks-1"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="rocks-1"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Do not worry, we are <strong>not </strong>going to cut them ourselves. Even if we did, it would have taken ages and we would have ended up with distorted unwraps. Instead, we are going to use an automatic "smart" unwrap.</p>                                                                                                <ul class="">
+            <li>Select all the rocks.</li>
+            <li>Go into <code spellcheck="false">Edit Mode</code>.</li>
+            <li>Select all the faces.</li>
+            <li>Press <code spellcheck="false">U</code> and choose <code spellcheck="false">Smart UV Project</code>.</li>
+    </ul>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/052.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Validate the window that should open (we get access to the same parameters right after):</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/053.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 461 266'%3E%3C/svg%3E" width="461" height="266"></span>
+</p>                                                                                                <p class="">And here is your automatic unwrap:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/054.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Increase the Islands Margin to something like <code spellcheck="false">0.025</code> to make some space between the islands.</p>                                                                                                <p class="">Unfortunately, we already used all the corners of our map. For now, let's move the unwraps out of the map. This isn't a problem because, in the end, we will reorganize everything.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/055.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">As you can see, automatic unwraps are decent. We could have used this technique for the whole scene. But, doing it on our own let us optimize things a bit more by minimizing the number of islands and reducing the seams. It's also a good way to keep the different groups of islands separated. This might get handy if we decide to remove an object. We will get the full area available for more unwrapping.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Trunks, logs and axe
+
+        
+                <span class="anchor js-anchor" data-slug="trunks-logs-and-axe">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#trunks-logs-and-axe"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="trunks-logs-and-axe"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Cut the trunks. Don't forget to also add a cut for the ring all around each trunk.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/056.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Cut the logs:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/057.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Cut the axe:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/058.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Unwrap them all (trunks, logs and axe) at once and place them somewhere outside of the UV map:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/059.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Reorganizing
+
+        
+                <span class="anchor js-anchor" data-slug="reorganizing">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#reorganizing"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="reorganizing"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">That's it, we've unwrapped the whole scene.</p>                                                                                                <p class="">Currently, however, the groups of islands are spread all around the UV map and even outside of it.</p>                                                                                                <p class="">Select all the unwrap objects (not the emissions objects). Then, go into <code spellcheck="false">Edit Mode</code> and select all the faces to get a preview of the current UV unwrap:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/060.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">If you don't have this or if you have overlapping unwraps, try to figure out which object is the problem and fix it. You might also have forgotten some objects.</p>                                                                                                <p class="">Before trying to make everything fit inside the UV map, we need to make sure that the proportions are the same between the different groups. We don't want an object to take a smaller or bigger space than it really needs.</p>                                                                                                <p class="">Use the following icon on the top right part of the <code spellcheck="false">UV Editor</code> (if you can't see it, enlarge the area):</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/061.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 64'%3E%3C/svg%3E" width="90" height="64"></span>
+</p>                                                                                                <p class="">In the menu that should open, check <code spellcheck="false">Display Stretch</code> and change it to <code spellcheck="false">Area</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/062.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 338 128'%3E%3C/svg%3E" width="338" height="128"></span>
+</p>                                                                                                <p class="">For some older versions of Blender, this option might be located in a different place. If you have a <code spellcheck="false">Display</code> button on the top right corner, open it and you should find a <code spellcheck="false">stretch</code> or <code spellcheck="false">stretching</code> checkbox. If you don't have any of those, open the sidebar with <code spellcheck="false">N</code> (if not already open) and go to the <code spellcheck="false">view</code> tab to find the checkbox.</p>                                                                                                <p class="">You'll now know if the area taken by an island is bigger or smaller than the others by using the colors:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/063.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Scale the different parts until everything has a similar color. The color might be different from mine.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/064.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">It's now time to make everything fit in the UV map. One very important step here is to listen to the Tetris music theme at the same time.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/065.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Few tips:</p>                                                                                                <ul class="">
+            <li>Start by placing the groups in a rough square shape without looking at the UV map limits. Then resize the whole thing to make it fit in the UV map.</li>
+            <li>Keep some space between the islands.</li>
+            <li>You can scale some islands up to have a better quality for them in the final texture. It's good practice to do that for big surface or surfaces that the camera can see from up close. In our case, we can make the floor a little bit bigger.</li>
+            <li>If you have some room left, keep it. It might become useful if you forgot an object or if you want to add one.</li>
+            <li>The groups don't have to fit in perfect rectangles. Usually, I use one group with a lot of small islands like the rocks to fill the holes.</li>
+    </ul>                                                                                                <p class="">Once you're happy with the result, you can deactivate the <code spellcheck="false">Display Stretch</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/066.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 393 128'%3E%3C/svg%3E" width="393" height="128"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Baking
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="5370">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:29:30</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="baking">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#baking"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="baking"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Now that our scene is nicely unwrapped, we can start to bake it.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Creating the texture
+
+        
+                <span class="anchor js-anchor" data-slug="creating-the-texture">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#creating-the-texture"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="creating-the-texture"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">First we need to create a texture in Blender and we can use the <code spellcheck="false">UV Editor</code> area to manage that image.</p>                                                                                                <p class="">Leave the <code spellcheck="false">Edit Mode</code>. On the top of the area, you should have a <code spellcheck="false">+ New</code> button:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/067.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 276 153'%3E%3C/svg%3E" width="276" height="153"></span>
+</p>                                                                                                <p class="">Click on it to open the <code spellcheck="false">New Image</code> menu:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/068.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 436 325'%3E%3C/svg%3E" width="436" height="325"></span>
+</p>                                                                                                <p class="">Use the following parameters:</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Name
+
+        
+                <span class="anchor js-anchor" data-slug="name">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#name"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="name"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Use <code spellcheck="false">baked</code>.</p>                                                                                                <p class="">It could be anything, but we are going to have only one texture and it's going to contain the "baked" texture.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Width and Height
+
+        
+                <span class="anchor js-anchor" data-slug="width-and-height">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#width-and-height"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="width-and-height"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Use <code spellcheck="false">4096</code>.</p>                                                                                                <p class="">We use a power of 2 size because this texture will be used in Three.js. <code spellcheck="false">4096</code> is a lot but we want a good quality. <code spellcheck="false">8192</code> textures might not work for every browser.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Color
+
+        
+                <span class="anchor js-anchor" data-slug="color">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#color"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="color"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Use a white color.</p>                                                                                                <p class="">This isn't that important but, in Three.js, when looking at the model from specific angles, the mip mapping might let that color appear on edges of the geometry. A white tint will look like a reflection and users won't notice it.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Alpha
+
+        
+                <span class="anchor js-anchor" data-slug="alpha">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#alpha"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="alpha"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Unchecked.</p>                                                                                                <p class="">We don't need alpha in our texture.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Generated Type
+
+        
+                <span class="anchor js-anchor" data-slug="generated-type">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#generated-type"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="generated-type"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Use <code spellcheck="false">Blank</code>.</p>                                                                                                <p class="">We want the initial texture to be the color we chose right above. The other options create grids that can be used to see how the texture looks on the geometry, but we don't need that.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    32-bit Float
+
+        
+                <span class="anchor js-anchor" data-slug="32-bit-float">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#32-bit-float"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="32-bit-float"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Checked.</p>                                                                                                <p class="">This is a very important part that we will explain a bit later.</p>                                                                                                
+<h4 class="title has-anchor ">
+    
+    Tiled
+
+        
+                <span class="anchor js-anchor" data-slug="tiled">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#tiled"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="tiled"></span>
+        </span>
+        
+</h4>
+
+                                                                                                <p class="">Unchecked.</p>                                                                                                <p class="">We don't need the texture to repeat itself.</p>                                                                                                <p class="">Here is the final setup:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/069.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 374 289'%3E%3C/svg%3E" width="374" height="289"></span>
+</p>                                                                                                <p class="">Validate it and the background of your UV map should now use that image. Zoom out if you can't see the edges of your map:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/070.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Be aware, that you can show any texture as the background of the <code spellcheck="false">UV Editor</code>. The goal here is to help you see both the UV Mapping and the texture at the same time.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Saving the texture
+
+        
+                <span class="anchor js-anchor" data-slug="saving-the-texture">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#saving-the-texture"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="saving-the-texture"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Before baking anything in the texture, we are going to save it somewhere. This is actually not mandatory and textures can live inside the Blender file without being available as a separate file.</p>                                                                                                <p class="">You might think that we have to save it in a file because we want to use it later in WebGL, but this texture is actually not the texture we are going to use.</p>                                                                                                <p class="">If you remember, we chose to check <code spellcheck="false">32-bit float</code>. This made the texture data much more precise than a classic texture. In a way, we made an HDR texture. The problem with HDR textures is that they are way too heavy.</p>                                                                                                <p class="">The question is, why do we need this HDR texture? We will answer that question later. For now, we are baking our scene inside a HDR texture in order to keep all the data.</p>                                                                                                <p class="">Still, for the purpose of this lesson, we want to save the image in a separate file. On the top of the <code spellcheck="false">UV Editor</code> area go into <code spellcheck="false">Image &gt; Save As</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/071.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 301 437'%3E%3C/svg%3E" width="301" height="437"></span>
+</p>                                                                                                <p class="">A saving window should open. Choose <code spellcheck="false">Radiance HDR</code> as the <code spellcheck="false">File Format</code> and change the name to <code spellcheck="false">baked.hdr</code>. Make sure to save in the same folder as your <code spellcheck="false">.blend</code> file:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/072.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 724 492'%3E%3C/svg%3E" width="724" height="492"></span>
+</p>                                                                                                <p class="">We chose <code spellcheck="false">Radiance HDR</code> as the <code spellcheck="false">File Format</code> but some other formats can support high precision textures like <code spellcheck="false">OpenEXR</code> However, the file is going to be huge.</p>                                                                                                <p class="">If you open the right menu of the <code spellcheck="false">UV Editor</code> (press <code spellcheck="false">N</code> while hovering the area) in the <code spellcheck="false">Image</code> tab, you should see that the texture is now the <code spellcheck="false">baked.hdr</code> file in the same folder:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/073.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 354 297'%3E%3C/svg%3E" width="354" height="297"></span>
+</p>                                                                                                <p class="">If you want to share your <code spellcheck="false">.blend</code> file or move it in another folder, you'll have to keep the <code spellcheck="false">baked.hdr</code> file with it.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Preparing the materials
+
+        
+                <span class="anchor js-anchor" data-slug="preparing-the-materials">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#preparing-the-materials"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="preparing-the-materials"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are almost ready to bake. Because we can have multiple textures in our project, we need a way to tell Blender that the texture we created is the one in which each object has to be baked. This information has to be provided on each material.</p>                                                                                                <p class="">We can start with the floor.</p>                                                                                                <p class="">Select the floor.</p>                                                                                                <p class="">To define in which texture the material should be baked, we need to use the <code spellcheck="false">Shader Editor</code> . Take one of the areas (or create a new one) on your layout and change it to <code spellcheck="false">Shader Editor</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/074.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 291 327'%3E%3C/svg%3E" width="291" height="327"></span>
+</p>                                                                                                <p class="">This will be a <code spellcheck="false">Shader Editor</code> for the <code spellcheck="false">grass</code> material and it uses nodes. We won't go into details about nodes because we only need to create one and then make it active.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/075.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">If you can't see these two nodes, make sure <code spellcheck="false">Use Nodes</code> on the top part of the area is checked:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/076.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 147 71'%3E%3C/svg%3E" width="147" height="71"></span>
+</p>                                                                                                <p class="">Also make sure that you selected the floor and that the <code spellcheck="false">grass</code> material is applied to it.</p>                                                                                                <p class="">To create a new node, press <code spellcheck="false">SHIFT + A</code> while hovering the <code spellcheck="false">Shader Editor</code> area:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/077.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 305 360'%3E%3C/svg%3E" width="305" height="360"></span>
+</p>                                                                                                <p class="">Here, you can navigate to <code spellcheck="false">Texture &gt; Image Texture</code></p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/078.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 454 504'%3E%3C/svg%3E" width="454" height="504"></span>
+</p>                                                                                                <p class="">This is an <code spellcheck="false">Image Texture</code> node:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/079.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 351 302'%3E%3C/svg%3E" width="351" height="302"></span>
+</p>                                                                                                <p class="">Click on the drop-down image icon and choose our <code spellcheck="false">baked</code> texture:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/080.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 289 270'%3E%3C/svg%3E" width="289" height="270"></span>
+</p>                                                                                                <p class="">And that's it. Our material now knows it's supposed to bake itself inside the <code spellcheck="false">baked</code> texture. We don't need to link that node to another node. We just need it to be here.</p>                                                                                                <p class="">Make sure that this texture node is selected (it should have a white outline).</p>                                                                                                <p class="">If you have multiple texture nodes in your shader, the active one will be the one used for baking.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/081.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 353 336'%3E%3C/svg%3E" width="353" height="336"></span>
+</p>                                                                                                <p class="">Also, we leave the <code spellcheck="false">Color Space</code> as linear. This might sound strange because we learned that sRGB enables better color management, but don't forget that this is still an HDR texture and we are not going to use it directly in the WebGL.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Baking the floor
+
+        
+                <span class="anchor js-anchor" data-slug="baking-the-floor">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#baking-the-floor"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="baking-the-floor"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">It's finally time to do our first bake.</p>                                                                                                <p class="">First of all,</p>                                                                                                <p class="">While the floor is still selected, in the <code spellcheck="false">Properties</code> area, go to the <code spellcheck="false">Render Properties</code> tab and then in the <code spellcheck="false">Bake</code> section:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/082.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 462 194'%3E%3C/svg%3E" width="462" height="194"></span>
+</p>                                                                                                <p class="">If you can't see this section, you are probably using <code spellcheck="false">Eevee</code>. Change the <code spellcheck="false">Render Engine</code> to <code spellcheck="false">Cycles</code>.</p>                                                                                                <p class="">The <code spellcheck="false">Bake</code> button will start the baking process. Don’t click on it yet because we need to tweak some parameters.</p>                                                                                                <p class="">The <code spellcheck="false">Bake Type</code> menu lets us choose what we want to bake. For example, this is where we could have created an <code spellcheck="false">Ambient Occlusion</code> texture. Leave it on <code spellcheck="false">Combined</code> in order to bake everything.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/083.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 372'%3E%3C/svg%3E" width="360" height="372"></span>
+</p>                                                                                                <p class="">The <code spellcheck="false">View From</code> will decide where the camera should be when rendering each surface. This can have quite a huge impact on reflection. In our case, we can’t see much reflection because of the roughness of the materials, yet, we want something as close as the render we made earlier so we are going to go for <code spellcheck="false">Active Camera</code>.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/084.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 462 177'%3E%3C/svg%3E" width="462" height="177"></span>
+</p>                                                                                                <p class="">The <code spellcheck="false">Margin</code> property lets us control how much the baking will overflow from the area it is supposed to fill. We can keep <code spellcheck="false">16 px</code> for now. If we see that the baked islands are overlapping on their neighbors, we can reduce the margin.</p>                                                                                                <p class="">Still in <code spellcheck="false">Margin</code>, the <code spellcheck="false">Type</code> property will decide if the margin will contain the pixels of the adjacent face or extend the existing face. Let’s use <code spellcheck="false">Extend</code> which usually result in cleaner edges once used in WebGL.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/085.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 447 112'%3E%3C/svg%3E" width="447" height="112"></span>
+</p>                                                                                                <p class="">The <code spellcheck="false">Clear Image</code> property will erase the current image in the texture each time we do a bake. Because we are not going to do all the baking at once, uncheck it.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/086.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 453 107'%3E%3C/svg%3E" width="453" height="107"></span>
+</p>                                                                                                <p class="">Before we can bake, we have to choose a <code spellcheck="false">Sampling</code> quality. Scroll up to the <code spellcheck="false">Sampling &gt; Render</code> section.</p>                                                                                                <p class="">Set the Samples to <code spellcheck="false">128</code> which might sound low, but it’s quite a huge texture and we don’t want to wait hours for the render to finish.</p>                                                                                                <p class="">Also deactivate the <code spellcheck="false">Denoise</code> because we are going to apply it later on the final baked texture. Keeping it checked might result in visual artefacts for some Blender versions.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/087.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 449 149'%3E%3C/svg%3E" width="449" height="149"></span>
+</p>                                                                                                <p class="">Make sure you selected only the floor and that the Texture node is active. Now, hit the <code spellcheck="false">Bake</code> button and wait.</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/088.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 452 76'%3E%3C/svg%3E" width="452" height="76"></span>
+</p>                                                                                                <p class="">You can see the progress at the bottom of Blender:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/089.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 225 53'%3E%3C/svg%3E" width="225" height="53"></span>
+</p>                                                                                                <p class="">The floor is the biggest and longest part to render, but if you want to accelerate the process, you can change the <code spellcheck="false">Sampling</code> to <code spellcheck="false">128</code> and it should look good enough.</p>                                                                                                <p class="">Here is your floor baked onto the texture:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/090.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                                <p class="">If the baking has ended, but you can't see the result in the texture, it might be a Blender bug. Do not worry, the process probably worked alright. Save the image with <code spellcheck="false">ALT + S</code>  while hovering the <code spellcheck="false">UV Editor</code> area. Then, click on the refresh button you can find in the menu on the right of that same area (press <code spellcheck="false">N</code> to toggle the menu):</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/091.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 133 93'%3E%3C/svg%3E" width="133" height="93"></span>
+</p>                                                                                                <p class="">Even if the baking worked, now is a good time to save the image. Since the image is a separate file in Blender, you have to save the image independently. If you try to leave Blender with an unsaved image, do not worry, Blender will alert you.</p>                                                                                                <p class="">To save the image, while hovering in the <code spellcheck="false">UV Editor</code> area, press <code spellcheck="false">ALT + S</code>.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Baking the other objects
+
+        
+                <span class="anchor js-anchor" data-slug="baking-the-other-objects">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#baking-the-other-objects"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="baking-the-other-objects"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We can now repeat the process for the other objects. Let's start with the fences.</p>                                                                                                <p class="">Select the fences:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/092.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3072 1920'%3E%3C/svg%3E" width="3072" height="1920"></span>
+</p>                                                                                                <p class="">Add the same <code spellcheck="false">Image Texture</code> node and change it to the <code spellcheck="false">baked</code> texture. Also make sure that the node is active:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/093.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Click the <code spellcheck="false">Bake</code> button and wait:</p>                                                                                                <p class="">You can continue like this with all the objects in the scene.</p>                                                                                                <p class="">If you try to bake the trunks, the axe handle or the logs, you'll see that the texture is already set in the <code spellcheck="false">Shader Editor</code> nodes. It's because they are sharing the same material.</p>                                                                                                <p class="">You can try to bake multiple objects at once, as long as the texture node is set for all concerned materials.</p>                                                                                                <p class="">Here is the final baked texture:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/094.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Don't forget to save both the <code spellcheck="false">.blend</code> file and the image.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Troubleshooting
+
+        
+                <span class="anchor js-anchor" data-slug="troubleshooting">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#troubleshooting"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="troubleshooting"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">If you see some parts overlapping, select the object, go into <code spellcheck="false">Edit Mode</code>, select all the faces and start moving the UV mapping to separate the islands a little. Then do the baking process of those parts again.</p>                                                                                                <p class="">If some islands look unusually black, you might have flipped their normals accidentally. You need to locate them and flip them back.</p>                                                                                                <ul class="">
+            <li>Display the normal orientation like we did previously.</li>
+            <li>Locate the problematic ones (they should be red).</li>
+            <li>Select the object and go into <code spellcheck="false">Edit Mode</code>.</li>
+            <li>Select the red faces.</li>
+            <li>Press <code spellcheck="false">F3</code>, search for <code spellcheck="false">flip</code> and choose <code spellcheck="false">Mesh &gt; Normals &gt; Flip</code>.</li>
+    </ul>                                                                                                <p class="">You can bake them on top of the previous bake.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Exporting the image
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="6862">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:54:22</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="exporting-the-image">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#exporting-the-image"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="exporting-the-image"></span>
+        </span>
+        
+</h2>
+
+                                                                                                
+<h3 class="title has-anchor ">
+    
+    The color issue
+
+        
+                <span class="anchor js-anchor" data-slug="the-color-issue">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#the-color-issue"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="the-color-issue"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">As you can see, the colors are all burned out. If you compare to the render, the colors will have less contrast and look like this:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/095.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="">It's as if they are being toned in the render and that's exactly the case. When you do a render in Blender, a color manager is used. The default is <strong>Filmic</strong> (or <strong>AgX</strong> since the version <strong>4</strong> of Blender).</p>                                                                                                <p class=""><strong>AgX</strong> is considered as the new standard and the main difference with <strong>Filmic</strong> is how it handles over-exposed areas, but it doesn’t mean you have to use this one specifically.</p>                                                                                                <p class="">More info about <strong>AgX</strong> support in Blender here: <a href="https://developer.blender.org/docs/release_notes/4.0/color_management/" target="_blank">https://developer.blender.org/docs/release_notes/4.0/color_management/</a></p>                                                                                                <p class="">You can find it at the bottom of the <code spellcheck="false">Render Properties</code> tab in the <code spellcheck="false">Color Management</code> section:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/096.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 344 228'%3E%3C/svg%3E" width="344" height="228"></span>
+</p>                                                                                                <p class="">If you want to test a render without any color manager, change the <code spellcheck="false">View Transform</code> to <code spellcheck="false">Standard</code> and do a render with <code spellcheck="false">F12</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/097.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3C/svg%3E" width="1920" height="1080"></span>
+</p>                                                                                                <p class="">As you can see, we have the same ugly colors with high contrast.</p>                                                                                                <p class="">This tells us that, when baking in Blender, we are losing Filmic.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    The noise issue
+
+        
+                <span class="anchor js-anchor" data-slug="the-noise-issue">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#the-noise-issue"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="the-noise-issue"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Another problem is the visual noise. When you do a render and if you have checked the <code spellcheck="false">denoise</code> parameter, you can see a smooth render without noise.</p>                                                                                                <p class="">When baking, the noise is back:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/098.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 590 596'%3E%3C/svg%3E" width="590" height="596"></span>
+</p>                                                                                                <p class="">As with the color management, Blender seems to ignore the denoise parameter.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    The image type issue
+
+        
+                <span class="anchor js-anchor" data-slug="the-image-type-issue">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#the-image-type-issue"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="the-image-type-issue"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Finally, we want to export a compressed image that we can use in Three.js. We want it to be light and because we don't need transparency, we can use JPEG. Also, we want to apply the sRGB encoding to improve the color quality.</p>                                                                                                <p class="">But currently, all we have is our fancy HDR image.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    The solution
+
+        
+                <span class="anchor js-anchor" data-slug="the-solution">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#the-solution"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="the-solution"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">All of these problems can be fixed with the Blender <strong>Compositor</strong>.</p>                                                                                                <p class="">The Compositor can be accessed within an area. Change one of the current areas (or create a new one) and choose <code spellcheck="false">Compositor</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/099.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 278 176'%3E%3C/svg%3E" width="278" height="176"></span>
+</p>                                                                                                <p class="">The compositor uses nodes and, by default, your should have a <code spellcheck="false">Render Layers</code> node and a <code spellcheck="false">Composite</code> node:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/100.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 835 671'%3E%3C/svg%3E" width="835" height="671"></span>
+</p>                                                                                                <p class="">To tell Blender to use those nodes when rendering, make sure to check the <code spellcheck="false">Use Nodes</code> on top of the <code spellcheck="false">Compositor</code> area:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/101.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 164 87'%3E%3C/svg%3E" width="164" height="87"></span>
+</p>                                                                                                <p class="">The idea, here, is to create some nodes that will take our texture, apply a denoise on it and then apply Filmic. Then we output that texture to the render by sending it to the <code spellcheck="false">Composite</code> node.</p>                                                                                                <p class="">Start by creating an <code spellcheck="false">Image</code> node with <code spellcheck="false">SHIFT + A</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/102.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 504 393'%3E%3C/svg%3E" width="504" height="393"></span>
+</p>                                                                                                <p class="">Change the image to our <code spellcheck="false">baked</code>, using the dropdown menu:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/103.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 503'%3E%3C/svg%3E" width="400" height="503"></span>
+</p>                                                                                                <p class="">Normally, you should see your texture in the node preview, but this feature sometimes has bugs. Save everything and reopen it if you want to see the preview:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/104.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 385 582'%3E%3C/svg%3E" width="385" height="582"></span>
+</p>                                                                                                <p class="">Now create a <code spellcheck="false">Denoise</code> node to the right of the <code spellcheck="false">Image</code> node:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/105.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 487 523'%3E%3C/svg%3E" width="487" height="523"></span>
+</p>                                                                                                <p class="">Keep the default parameters:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/106.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 281 244'%3E%3C/svg%3E" width="281" height="244"></span>
+</p>                                                                                                <p class="">Link the <code spellcheck="false">Image</code> output of the <code spellcheck="false">Image</code> node to the <code spellcheck="false">Image</code> input of the <code spellcheck="false">Denoise</code> node:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/107.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 488'%3E%3C/svg%3E" width="620" height="488"></span>
+</p>                                                                                                <p class="">Link this <code spellcheck="false">Denoise</code> output to the <code spellcheck="false">Composite</code> input:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/108.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 957 788'%3E%3C/svg%3E" width="957" height="788"></span>
+</p>                                                                                                <p class="">But where is the color management? you might ask.</p>                                                                                                <p class=""><strong>Filmic</strong> (or <strong>AgX</strong>) will automatically be applied as long as you have set it in the parameters of the render:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/109.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 359 139'%3E%3C/svg%3E" width="359" height="139"></span>
+</p>                                                                                                <p class="">Doing the compositing is like doing a render. But we don't want to render the scene, we want to render our image through the nodes we created. To deactivate the default render of the scene, select the <code spellcheck="false">Render Layers</code> and press <code spellcheck="false">M</code> to "mute" it.</p>                                                                                                <p class="">It should appear gray:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/110.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1030 796'%3E%3C/svg%3E" width="1030" height="796"></span>
+</p>                                                                                                <p class="">If you want to do a classic render again, you'll have to mute the two nodes we've made, unmute the <code spellcheck="false">Render Layers</code> and link this last one to the Composite.</p>                                                                                                <p class="">We also need to change the resolution of the render so it matches the texture resolution.</p>                                                                                                <p class="">Go into the <code spellcheck="false">Output Properties</code> and change the resolution to <code spellcheck="false">4096x4096</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/111.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 365 119'%3E%3C/svg%3E" width="365" height="119"></span>
+</p>                                                                                                <p class="">Finally, render with <code spellcheck="false">F12</code>.</p>                                                                                                <p class="">This operation shouldn't take too long and you should see a beautiful render with the right colors and no noise on it:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/112.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2048 2048'%3E%3C/svg%3E" width="2048" height="2048"></span>
+</p>                                                                                                <p class="">With the render window open and while hovering it, press <code spellcheck="false">ALT + S</code> to save it.</p>                                                                                                <p class="">Change the <code spellcheck="false">File Format</code> to <code spellcheck="false">JPEG</code>, lower the quality a little (<code spellcheck="false">75%</code> should be enough) and name it <code spellcheck="false">baked.jpg</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/113.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 980 502'%3E%3C/svg%3E" width="980" height="502"></span>
+</p>                                                                                                <p class="">Save it where you want. We are going to use it later in Three.js.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Exporting the model
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="7684">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">02:08:04</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="exporting-the-model">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#exporting-the-model"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="exporting-the-model"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We need to apply some modifications to the model in order to optimize it a bit more. But we are not going to do that now because we want to witness the issues when importing it into Three.js. This will help us understand better why we are doing these optimizations.</p>                                                                                                <p class="">For now, let's simply export the whole scene.</p>                                                                                                <p class="">Make all the collections selectable but not the <code spellcheck="false">others</code> collection (even the <code spellcheck="false">emissions</code> collection):</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/114.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 365 272'%3E%3C/svg%3E" width="365" height="272"></span>
+</p>                                                                                                <p class="">In <code spellcheck="false">Object Mode</code>, select everything with <code spellcheck="false">A</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/115.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">Now export as <code spellcheck="false">glTF 2.0</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/116.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 557 551'%3E%3C/svg%3E" width="557" height="551"></span>
+</p>                                                                                                <p class="">Here are the exporting parameters:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/35/117.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 368 815'%3E%3C/svg%3E" width="368" height="815"></span>
+</p>                                                                                                <p class="">Some more information:</p>                                                                                                <ul class="">
+            <li>Check <code spellcheck="false">Remember Export Settings</code>, so you don't have to set those settings every time you want to export.</li>
+            <li>Use <code spellcheck="false">.glb</code> because it's lighter, though it won't make a huge difference.</li>
+            <li>Export only the <code spellcheck="false">Selected Objects</code>. We don't want to export the camera and the light.</li>
+            <li>Check  <code spellcheck="false">+Y Up</code> because the <code spellcheck="false">Y</code> axis is going up on Three.js.</li>
+            <li>In the geometry, we only need the <code spellcheck="false">UVs</code>. Remember that we just want to place the baked texture on it.</li>
+            <li>Activate the <code spellcheck="false">Compression</code>. We are going to use Draco.</li>
+            <li>Deactivate everything related to the <code spellcheck="false">Animation</code> because we have none.</li>
+    </ul>                                                                                                <p class="">Name your file <code spellcheck="false">portal.glb</code> and put it with your <code spellcheck="false">baked.jpg</code> file.</p>                                                                                                <p class="">We now have both the <code spellcheck="false">baked.jpg</code> file and the <code spellcheck="false">portal.glb</code> files. In the next lesson, we are going to import them into Three.js as well as optimize the model a bit more.</p>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Importing and optimizing the scene</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/importing-and-optimizing-the-scene" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/35/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(22deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>

@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>33. hologram shader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: #e0e0e8;
+  background: #1a1a2e;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+header.details {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header.details .side.aside { display: none; }
+
+header.details .side.informations {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header.details .sibling { display: none; }
+
+header.details .current-lesson .label {
+  font-size: 0.85rem;
+  color: #8888aa;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+header.details .current-lesson .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
+}
+
+header.details .difficulty {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+header.details .difficulty .value {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+h2.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a2a4a;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d0d0e0;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 0.75rem 0;
+  color: #c0c0d4;
+}
+
+a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong, b { color: #fff; font-weight: 600; }
+em, i { color: #c8b8e8; }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  background: #12122a;
+  color: #e8d0ff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d0d0e8;
+}
+
+ul, ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  color: #c0c0d4;
+}
+
+li { margin: 0.35rem 0; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #2a2a4a;
+}
+
+.video-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8888aa;
+  font-size: 0.8rem;
+}
+.video-jump .play { display: none; }
+.video-jump .time {
+  background: #2a2a4a;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.anchor .link { display: none; }
+
+svg { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+th, td {
+  border: 1px solid #2a2a4a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th { background: #12122a; color: #fff; }
+
+blockquote {
+  border-left: 3px solid #a78bfa;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #b0b0c8;
+  background: #12122a;
+  border-radius: 0 6px 6px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 2rem 0;
+}
+
+section.text { margin-bottom: 3rem; }
+</style>
+</head>
+<body>
+  <div class="content">
+    
+
+                        <header class="details">
+                <div class="side informations"><div class="sibling is-previous"><a class="sibling-link" href="https://threejs-journey.com/lessons/coffee-smoke-shader"><div class="sibling-info"><div class="sibling-label">32.</div><div class="sibling-title">Coffee Smoke</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div><div class="current-lesson"><div class="label">33.</div><h2 class="title">Hologram</h2><p class="difficulty">Difficulty <span class="value">
+                                Hard
+                            </span></p></div><div class="sibling is-next"><a class="sibling-link" href="https://threejs-journey.com/lessons/fireworks-shaders"><div class="sibling-info"><div class="sibling-label">34.</div><div class="sibling-title">Fireworks</div></div><span class="arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 7C5.10218 7 4.72064 6.84197 4.43934 6.56066L0.439339 2.56066C-0.146447 1.97487 -0.146447 1.02513 0.439339 0.43934C1.02513 -0.146446 1.97487 -0.146446 2.56066 0.43934L5.5 3.37868L8.43934 0.43934C9.02513 -0.146447 9.97487 -0.146447 10.5607 0.439339C11.1464 1.02513 11.1464 1.97487 10.5607 2.56066L6.56066 6.56066C6.27936 6.84197 5.89782 7 5.5 7Z" fill="white"></path></svg></span></a></div></div><div class="side aside"><div class="aside-section files"><div class="title"><span class="icon"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 15 18" xml:space="preserve"><path class="st0" d="M13.5,18h-12C0.7,18,0,17.3,0,16.5S0.7,15,1.5,15h12c0.8,0,1.5,0.7,1.5,1.5S14.3,18,13.5,18z"></path><path class="st0" d="M13.7,8.6c-0.5-0.7-1.4-0.8-2.1-0.4L9,10.1V1.5C9,0.7,8.3,0,7.5,0S6,0.7,6,1.5v8.6L3.4,8.3C2.7,7.8,1.7,8,1.3,8.6C0.8,9.3,1,10.3,1.6,10.7l5.9,4.1l5.9-4.1C14,10.3,14.2,9.3,13.7,8.6z"></path></svg></span><span class="label">Downloads</span><button class="js-popin-trigger info-button is-link" data-popin-name="popin-how-to"><span class="icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.80558 13.1944 0 8.5 0C3.80558 0 0 3.80558 0 8.5C0 13.1944 3.80558 17 8.5 17ZM9.75287 12.4921L9.87931 11.9206C9.81418 11.9545 9.70881 11.9947 9.56322 12.0413C9.41762 12.0836 9.28736 12.1048 9.17241 12.1048C8.9272 12.1048 8.75479 12.0603 8.65517 11.9714C8.55556 11.8825 8.50575 11.7153 8.50575 11.4698C8.50575 11.3725 8.52107 11.2286 8.55172 11.0381C8.58238 10.8476 8.61686 10.6783 8.65517 10.5302L9.12644 8.68254C9.17241 8.51323 9.20306 8.32698 9.21839 8.12381C9.23755 7.92064 9.24713 7.77884 9.24713 7.69841C9.24713 7.30899 9.12261 6.99365 8.87356 6.75238C8.62835 6.50688 8.27778 6.38413 7.82184 6.38413C7.56897 6.38413 7.30077 6.43492 7.01724 6.53651C6.73372 6.63386 6.43678 6.75238 6.12644 6.89206L6 7.46349C6.09195 7.4254 6.20115 7.38519 6.32759 7.34286C6.45785 7.30053 6.58429 7.27937 6.7069 7.27937C6.95594 7.27937 7.12452 7.32593 7.21264 7.41905C7.30077 7.51217 7.34483 7.67725 7.34483 7.91429C7.34483 8.0455 7.3295 8.19153 7.29885 8.35238C7.27203 8.509 7.23755 8.67619 7.1954 8.85397L6.72414 10.7079C6.68199 10.9026 6.65134 11.0783 6.63218 11.2349C6.61303 11.3873 6.60345 11.5376 6.60345 11.6857C6.60345 12.0667 6.72989 12.382 6.98276 12.6317C7.23946 12.8772 7.5977 13 8.05747 13C8.35632 13 8.61877 12.9556 8.84483 12.8667C9.07088 12.782 9.37356 12.6571 9.75287 12.4921ZM9.66667 4.99365C9.88889 4.76508 10 4.48995 10 4.16825C10 3.84656 9.88889 3.57143 9.66667 3.34286C9.44828 3.11429 9.18391 3 8.87356 3C8.56322 3 8.29694 3.11429 8.07471 3.34286C7.85249 3.57143 7.74138 3.84656 7.74138 4.16825C7.74138 4.48995 7.85249 4.76508 8.07471 4.99365C8.29694 5.21799 8.56322 5.33016 8.87356 5.33016C9.18391 5.33016 9.44828 5.21799 9.66667 4.99365Z" fill="white"></path></svg></span><span class="label">How to?</span></button></div><a href="/assets/lessons/61/33-hologram-shader.zip" data-router-disabled="" download="" class="button starter"><span class="hover"></span><span class="label">Starter pack</span></a><a href="/assets/lessons/61/33-hologram-shader-final.zip" data-router-disabled="" download="" class="button final"><span class="hover"></span><span class="label">Final project</span></a></div><div class="aside-section certificate"><div class="title"><span class="icon"><svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M7.6355 0.0308563C7.82953 0.0525006 7.99499 0.112933 8.14615 0.192759C8.29376 0.271987 8.42231 0.377073 8.55678 0.490415C8.69004 0.610819 8.825 0.764194 8.96408 0.936416L8.97295 0.948799C9.14933 1.15996 9.34762 1.39296 9.57925 1.5807C9.76941 1.73244 10.0773 1.79497 10.4018 1.86754C11.0141 1.992 11.6785 2.13248 12.0092 2.85617C12.2932 3.4885 12.2524 3.92109 12.2039 4.35602L12.2031 4.40312C12.1783 4.61322 12.1701 4.8116 12.2088 5.03598C12.2462 5.26742 12.3346 5.52194 12.4995 5.84376C12.8121 6.4373 12.9747 6.92217 12.9975 7.34726C13.0202 7.79413 12.8905 8.16824 12.6023 8.52668L12.5934 8.53607C12.3815 8.79107 12.1045 8.95526 11.8644 9.09658C11.6849 9.20448 11.5262 9.29772 11.4672 9.38588C11.3088 9.62806 11.2649 9.86402 11.2222 10.1147C11.1573 10.4525 11.0941 10.8014 10.7934 11.2122L10.788 11.2222C10.5951 11.4731 10.3739 11.6757 10.1248 11.8264C9.86804 11.9795 9.57994 12.0801 9.26466 12.1253C8.98323 12.1652 8.74001 12.1099 8.50095 12.0517C8.30401 12.0041 8.12426 11.9631 7.97579 11.9963L7.95739 11.9968C7.64798 12.072 7.34844 12.2397 7.06615 12.3921C6.75056 12.568 6.45162 12.7321 6.13634 12.7773C5.90359 12.8109 5.68103 12.8063 5.46032 12.7693C5.23961 12.7323 5.02787 12.6641 4.8192 12.5564L4.80912 12.5511C4.5293 12.4098 4.30555 12.1543 4.0658 11.8853C3.84736 11.6417 3.61649 11.3851 3.34209 11.212C3.21348 11.1286 3.02892 11.1159 2.82777 11.093C2.59041 11.0677 2.33465 11.043 2.07855 10.9129L2.06551 10.9034C1.7863 10.7586 1.55406 10.5744 1.36169 10.3496C1.17349 10.1219 1.0281 9.85787 0.937418 9.55213C0.788986 9.06964 0.845012 8.7195 0.895674 8.37935C0.931288 8.12747 0.971614 7.89091 0.905799 7.61113L0.902843 7.607C0.87402 7.49685 0.751487 7.35645 0.620683 7.20014C0.437789 6.98425 0.230029 6.74241 0.117988 6.43308L0.110318 6.41364C-0.0441836 5.98824 -0.0361376 5.59737 0.132807 5.18626C0.295182 4.79221 0.616649 4.38853 1.10503 3.92931C1.37389 3.68386 1.53526 3.46759 1.64733 3.26122C1.7582 3.06191 1.82099 2.86543 1.86718 2.65891L1.88152 2.61774C1.97987 2.19116 2.0901 1.75932 2.56254 1.26473L2.57503 1.25593C3.12243 0.686761 3.79174 0.77721 4.40408 0.858108C4.73339 0.902438 5.04967 0.937318 5.27956 0.856024L5.28788 0.850156C5.56531 0.74778 5.82564 0.595326 6.06637 0.450478C6.25836 0.333774 6.4337 0.228806 6.61015 0.160339C6.77235 0.0894847 6.9345 0.0404113 7.0966 0.0131198C7.27234 -0.00825312 7.44743 -0.00431418 7.6355 0.0308563ZM9.4635 4.34318C8.93403 3.60431 8.12512 3.06554 7.14972 2.90197C6.17432 2.7384 5.23179 2.98346 4.48684 3.5086C3.74189 4.03375 3.19869 4.83606 3.03377 5.80349C2.86945 6.76739 3.11593 7.70575 3.6454 8.44461C4.17487 9.18348 4.98378 9.72225 5.95918 9.88582C6.93102 10.0488 7.87711 9.80433 8.62206 9.27919C9.36701 8.75404 9.91021 7.95173 10.0751 6.9843C10.2353 6.02334 9.99297 5.08204 9.4635 4.34318Z" fill="white"></path><path d="M1.44731 18.7103L3.05329 18.3021L3.97009 19.6785C3.97809 19.6887 3.98556 19.6917 3.99356 19.7019C4.37052 20.098 4.67885 20.0575 4.93297 19.8235C5.21071 19.5662 5.36773 19.0485 5.46547 18.7074L5.50659 18.5788L4.78726 14.0963C4.51167 14.0965 4.24321 14.0708 3.98653 14.0041C3.56932 13.8946 3.18454 13.6857 2.8457 13.3155C2.76706 13.2315 2.64331 13.2226 2.555 13.3009C2.53499 13.3239 2.51498 13.3469 2.5063 13.3763L0.795476 17.3432L0.650244 17.7273L0.64183 17.7602C0.580509 18.0555 0.584415 18.303 0.695163 18.478C0.818571 18.6772 1.03923 18.7724 1.39357 18.7178C1.41517 18.7162 1.43317 18.7149 1.44731 18.7103Z" fill="white"></path><path d="M9.74199 18.1987L11.2371 18.9093C11.2535 18.9175 11.2725 18.9301 11.282 18.9364C11.6188 19.0584 11.8529 19.0111 12.0141 18.8361C12.158 18.6824 12.207 18.4395 12.2073 18.1423C12.2102 18.132 12.2096 18.1207 12.2055 18.1084L12.1385 17.7037L11.2393 13.4822C11.2365 13.4517 11.2214 13.4253 11.2063 13.3989C11.141 13.3104 11.0119 13.2899 10.9173 13.3606C10.5078 13.6607 10.0894 13.7913 9.66662 13.8166C9.23781 13.8365 8.78875 13.7544 8.34272 13.621C8.28548 13.5979 8.22751 13.6043 8.17518 13.6308C7.88085 13.7731 7.59541 13.9103 7.33098 14.0125C7.07892 14.1106 6.85483 14.1755 6.66448 14.1865C6.65752 14.1846 6.64612 14.1852 6.63376 14.1892C6.52286 14.2108 6.45189 14.3177 6.47621 14.4321L7.27304 18.0125L7.28367 18.1492C7.31606 18.5036 7.36842 19.0417 7.58685 19.3468C7.7892 19.6288 8.08908 19.7221 8.53216 19.4089C8.54452 19.4049 8.55437 19.3964 8.56073 19.387L9.74199 18.1987Z" fill="white"></path></g></svg></span><span class="label">Certificate</span></div><a href="https://threejs-journey.com/certificate/quiz/61" class="button is-white"><span class="hover"></span><span class="label">Answer the quiz</span></a></div></div>            </header>
+
+                        <section class="text js-text">
+                                                                            
+<h2 class="title has-anchor ">
+    
+    Introduction
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="0">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:00</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="introduction">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#introduction"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="introduction"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">In this lesson we are going to learn how to create holographic material that is often used in Sci-Fi movies such as Star Wars:</p>                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/000.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                <p class="">Most of the effect is done in the fragment shader, but there is also a glitch effect on the vertex shader, making the vertices go a little crazy in waves.</p>                                                                                <p class="">We are going to rely quite a lot on the Fresnel effect that enables visual variations according to the angle between the face and the camera angle. More about this in due time.</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Setup
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="28">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">00:28</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="setup">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#setup"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="setup"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">The starter already contains the following:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/001.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <ul class="">
+            <li>3 rotating objects: a sphere, Suzanne and a torus knot</li>
+            <li>A single instance of <a href="https://threejs.org/docs/#api/en/materials/MeshBasicMaterial" target="_blank">MeshBasicMaterial</a> for all 3 objects</li>
+            <li>An instance of <code spellcheck="false">lil-gui</code> with the <code spellcheck="false">clearColor</code> already set if you want to change the background color</li>
+            <li>An instance of <code spellcheck="false">Clock</code> from which we get the <code spellcheck="false">elapsedTime</code> in the <code spellcheck="false">tick</code> function</li>
+            <li>The <code spellcheck="false">vite-plugin-glsl</code> dependency to handle GLSL files</li>
+            <li><code spellcheck="false">OrbitControls</code> to rotate around</li>
+    </ul>                                                                                
+<h2 class="title has-anchor ">
+    
+    Material
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="97">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:37</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="material">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#material"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="material"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Let’s start by changing the <a href="https://threejs.org/docs/#api/en/materials/MeshBasicMaterial" target="_blank">MeshBasicMaterial</a> to <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a>:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">const material = new THREE.ShaderMaterial()</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/002.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                <p class="">The objects become red because of the default vertex and fragment shaders provided by Three.js.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Create the shader files
+
+        
+                <span class="anchor js-anchor" data-slug="create-the-shader-files">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#create-the-shader-files"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="create-the-shader-files"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">In <code spellcheck="false">src/</code>, create a <code spellcheck="false">shaders/</code> folder and, in that <code spellcheck="false">src/shaders/</code> folder, create a <code spellcheck="false">holographic/</code> folder.</p>                                                                                <p class="">In the <code spellcheck="false">src/shaders/holographic/</code> folder, create a <code spellcheck="false">vertex.glsl</code> file and add the minimum program we need to position the vertices:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Position
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // Final position
+    gl_Position = projectionMatrix * viewMatrix * modelPosition;
+}</code></pre>                                                                                <p class="">We’ve separated the <code spellcheck="false">modelPosition</code> because we need to work on it before applying the other matrices. It’ll make more sense shortly.</p>                                                                                <p class="">Still in the <code spellcheck="false">src/shaders/holographic/</code> folder, create a <code spellcheck="false">fragment.glsl</code> file and add the minimum program we need to color the fragments in yellow:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Final color
+    gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+}</code></pre>                                                                                <p class="">To that fragment shader, we are going to add two <code spellcheck="false">#include</code> at the very end of the <code spellcheck="false">main()</code> function:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Final color
+    gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    #include &lt;tonemapping_fragment&gt;
+    #include &lt;colorspace_fragment&gt;
+}</code></pre>                                                                                <p class="">Those are instructions for Three.js that will inject corresponding chunks to handle tone mapping, and color spacing as explained in the previous lessons.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Use the shader files
+
+        
+                <span class="anchor js-anchor" data-slug="use-the-shader-files">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#use-the-shader-files"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="use-the-shader-files"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">Back in <code spellcheck="false">src/script.js</code>, import both shaders as <code spellcheck="false">holographicVertexShader</code> and <code spellcheck="false">holographicFragmentShader</code>:</p>                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">import holographicVertexShader from './shaders/holographic/vertex.glsl'
+import holographicFragmentShader from './shaders/holographic/fragment.glsl'</code></pre>                                                                                <p class="">Send those shaders to the <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial" target="_blank">ShaderMaterial</a> using the <code spellcheck="false">vertexShader</code> and <code spellcheck="false">fragmentShader</code> properties:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    vertexShader: holographicVertexShader,
+    fragmentShader: holographicFragmentShader
+})</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/003.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                
+<h2 class="title has-anchor ">
+    
+    Stripes
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="407">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">06:47</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="stripes">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#stripes"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="stripes"></span>
+        </span>
+        
+</h2>
+
+                                                                                <p class="">Let’s start with the fragment shader.</p>                                                                                
+<h3 class="title has-anchor ">
+    
+    Pattern
+
+        
+                <span class="anchor js-anchor" data-slug="pattern">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#pattern"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="pattern"></span>
+        </span>
+        
+</h3>
+
+                                                                                <p class="">We are going to draw a striped pattern. We want to create small gradients that keep on repeating as we go up.</p>                                                                                <p class="">The technique is very similar to one of the very first patterns from the <strong>Shader Patterns</strong> lesson:</p>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/004.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3C/svg%3E" width="512" height="512"></span>
+</p>                                                                                <p class="">But instead of relying on the UV coordinates, we are going to use the <code spellcheck="false">modelPosition</code>.</p>                                                                                <p class="">In <code spellcheck="false">vertex.glsl</code>, create a <code spellcheck="false">vec3 vPosition</code> varying and assign the <code spellcheck="false">modelPosition</code> to it:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">varying vec3 vPosition;
+
+void main()
+{
+    // Position
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // Final position
+    gl_Position = projectionMatrix * viewMatrix * modelPosition;
+
+    // Varyings
+    vPosition = modelPosition.xyz;
+}</code></pre>                                                                                <p class="">Note that <code spellcheck="false">vPosition</code> is a <code spellcheck="false">vec3</code> while <code spellcheck="false">modelPosition</code> is a <code spellcheck="false">vec4</code> which is why we extract only the <code spellcheck="false">xyz</code> (called swizzling).</p>                                                                                <p class="">In <code spellcheck="false">fragment.glsl</code>, retrieve the <code spellcheck="false">vPosition</code> and send it to the <code spellcheck="false">gl_FragColor</code> to make sure it’s working:</p>                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">varying vec3 vPosition;
+
+void main()
+{
+    // Final color
+    gl_FragColor = vec4(vPosition, 1.0);
+    // ...
+}</code></pre>                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/005.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                    
+                                                                                                        <p class="">Create a <code spellcheck="false">float stripes</code> variable and assign it <code spellcheck="false">vPosition.y</code>. Then send it to the first 3 values of the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Stripes
+    float stripes = vPosition.y;
+
+    // Final color
+    gl_FragColor = vec4(stripes, stripes, stripes, 1.0);
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/006.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We get one gradient.</p>                                                                                                <p class="">We now want that gradient to get back to <code spellcheck="false">0.0</code> when reaching <code spellcheck="false">1.0</code> so that it repeats itself. We can achieve that using the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/mod.xhtml" target="_blank">mod</a> function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Stripes
+    float stripes = mod(vPosition.y, 1.0);
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/007.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">The gradient seems to repeat itself, but we can only see two or three repetitions.</p>                                                                                                <p class="">Increase the frequency of the gradients by multiplying <code spellcheck="false">vPosition.y</code> by <code spellcheck="false">20.0</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Stripes
+    float stripes = mod(vPosition.y * 20.0, 1.0);
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/008.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">If you search for the modulo definition you might be overwhelmed, especially if mathematics isn’t your thing. But I like to think of it as: You send a value as a the first parameter and when that value reaches the second parameter it goes back to <code spellcheck="false">0</code>:</p>                                                                                                <div class="desmos">
+    <iframe src="https://www.desmos.com/calculator/ve7jf1mean?embed" frameborder="0"></iframe>
+</div>                                                                                                <p class="">You might have noticed that the gradient pattern seems to be the same in space, meaning that it doesn’t rotate with the objects, which is exactly what we wanted.</p>                                                                                                <p class="">Out of curiosity, in <code spellcheck="false">vertex.glsl</code>, send <code spellcheck="false">position</code> instead of <code spellcheck="false">modelPosition</code> to <code spellcheck="false">vPosition</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    vPosition = position.xyz;
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/009.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The pattern now follows the object transformation. This could be the style you’d want, but I prefer to have the “world space” pattern we had before.</p>                                                                                                <p class="">Add <code spellcheck="false">modelPosition.xyz</code> back in:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    vPosition = modelPosition.xyz;
+}</code></pre>                                                                                                <p class="">Back to <code spellcheck="false">fragment.glsl</code>: we want the gradient to be sharper. We still want the value to go from <code spellcheck="false">0.0</code> to <code spellcheck="false">1.0</code> but to take longer to take off, slowly increase, and then reach <code spellcheck="false">1.0</code> fast. And we already know how to do that. We can use a power:</p>                                                                                                <div class="desmos">
+    <iframe src="https://www.desmos.com/calculator/ahnuqdbr7c?embed" frameborder="0"></iframe>
+</div>                                                                                                <p class="">Note that using a power to crush a value like this only works because that value goes from <code spellcheck="false">0</code> to <code spellcheck="false">1</code>.</p>                                                                                                <p class="">Apply a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/pow.xhtml" target="_blank">pow</a> on <code spellcheck="false">stripes</code> and set the second parameter to <code spellcheck="false">3.0</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Stripes
+    float stripes = mod(vPosition.y * 20.0, 1.0);
+    stripes = pow(stripes, 3.0);
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/010.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Animation
+
+        
+                <span class="anchor js-anchor" data-slug="animation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#animation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="animation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Finally, we want the pattern to move up in order to add some life and animation to static objects.</p>                                                                                                <p class="">In <code spellcheck="false">script.js</code>, add a <code spellcheck="false">uTime</code> uniform to the material and assign an instance of the <a href="https://threejs.org/docs/#api/en/core/Uniform" target="_blank">Uniform</a> class to it, which is set to <code spellcheck="false">0</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    // ...
+    uniforms:
+    {
+        uTime: new THREE.Uniform(0),
+    },
+    // ...
+})</code></pre>                                                                                                <p class="">In the <code spellcheck="false">tick</code> function, assign the <code spellcheck="false">elapsedTime</code> to the uniform’s <code spellcheck="false">value</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    const elapsedTime = clock.getElapsedTime()
+
+    // Update material
+    material.uniforms.uTime.value = elapsedTime
+
+    // ...
+}</code></pre>                                                                                                <p class="">Back in <code spellcheck="false">fragment.glsl</code>, retrieve the <code spellcheck="false">uTime</code> uniform, and subtract it from the <code spellcheck="false">vPosition.y</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uTime;
+
+// ...
+
+void main()
+{
+    // Stripes
+    float stripes = mod((vPosition.y - uTime) * 20.0, 1.0);
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/011.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Slow it down by multiplying it by <code spellcheck="false">0.02</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uTime;
+// ...
+
+void main()
+{
+    // Stripes
+    float stripes = mod((vPosition.y - uTime * 0.02) * 20.0, 1.0);
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/012.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">You can deactivate the rotation of the objects if you want to appreciate the result more clearly.</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/013.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">As you can see, we are only using the <code spellcheck="false">y</code> property of <code spellcheck="false">vPosition</code> and we could have sent only that value as a varying instead of a <code spellcheck="false">vec3</code>, but let’s keep it like this because we’re gonna need the whole <code spellcheck="false">vec3</code> shortly.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Alpha
+
+        
+                <span class="anchor js-anchor" data-slug="alpha">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#alpha"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="alpha"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Until now, we have been using the <code spellcheck="false">stripes</code> as the color. Let’s try it on the <code spellcheck="false">alpha</code> of <code spellcheck="false">gl_FragColor</code> and set the rest to <code spellcheck="false">1.0</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    gl_FragColor = vec4(1.0, 1.0, 1.0, stripes);
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/014.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">As always we need to set <code spellcheck="false">transparent</code> to <code spellcheck="false">true</code> on the material to support transparency:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    // ...
+    transparent: true
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/015.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Fresnel
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="1199">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">19:59</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="fresnel">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fresnel"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fresnel"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">The pattern is looking good but a bit too regular. Most of the time, holograms are represented with their outside looking brighter than the inside.</p>                                                                                                <p class="">We can do that using the normal and the view angle.</p>                                                                                                <p class="">We want a value to be <code spellcheck="false">1.0</code> when the view angle is perpendicular to normal and <code spellcheck="false">0.0</code> when the view angle is aligned with the normal:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/016.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 550 568'%3E%3C/svg%3E" width="550" height="568"></span>
+</p>                                                                                                <p class="">This effect is called “Fresnel”.</p>                                                                                                <p class="">Fresnel is used a lot even though we barely notice it. It’s used to create cool effects like we are doing right now, but it’s also used for physically accurate rendering when handling reflection because a surface is more reflective when seen at an narrow angle. You can witness that when watching the surface of a lake. When seen from above, you can see the rocks and fishes in the water. But when seen at a narrow angle, you can’t see what’s in the water because of the reflection.</p>                                                                                                <p class="">Here is an example with photos I took a few seconds apart.</p>                                                                                                <p class="">When seen at a narrow angle, the sky reflection is bright and we can hardly see the bottom of the plate:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/017.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">When seen at a perpendicular angle, we can see the bottom of the plate and we can even notice small scratches:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/018.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">If you are curious, here are some articles tackling the topic in depth:</p>                                                                                                <ul class="">
+            <li><a href="https://www.racoon-artworks.de/cgbasics/fresnel.php" target="_blank">https://www.racoon-artworks.de/cgbasics/fresnel.php</a></li>
+            <li><a href="https://www.dorian-iten.com/fresnel/" target="_blank">https://www.dorian-iten.com/fresnel/</a></li>
+            <li><a href="https://shanesimmsart.wordpress.com/2022/03/29/fresnel-reflection/" target="_blank">https://shanesimmsart.wordpress.com/2022/03/29/fresnel-reflection/</a></li>
+    </ul>                                                                                                <p class="">By the way, Three.js materials like the <code spellcheck="false">MeshStandardMaterial</code> are using Fresnel to mimic realistic materials.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Normal
+
+        
+                <span class="anchor js-anchor" data-slug="normal">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#normal"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="normal"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We are going to calculate the Fresnel in the fragment shader to avoid visual artifacts. First, let’s send the normal to the fragment as a varying.</p>                                                                                                <p class="">In <code spellcheck="false">vertex.glsl</code>, create a <code spellcheck="false">vec3 vNormal</code> varying and assign it the <code spellcheck="false">normal</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+varying vec3 vNormal;
+
+void main()
+{
+    // ...
+    vNormal = normal;
+}</code></pre>                                                                                                <p class="">In <code spellcheck="false">fragment.glsl</code>, retrieve the <code spellcheck="false">vNormal</code> varying and send it to the <code spellcheck="false">gl_FragColor</code> with <code spellcheck="false">1.0</code> on the <code spellcheck="false">alpha</code>, just to have a look at it:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+varying vec3 vNormal;
+
+void main()
+{
+    // ...
+    gl_FragColor = vec4(vNormal, 1.0);
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/019.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">It looks fine, but we’ve actually made two mistakes. Since we can’t notice those mistakes yet, let’s continue for now and we will circle back to it in due time.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Dot product
+
+        
+                <span class="anchor js-anchor" data-slug="dot-product">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#dot-product"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="dot-product"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Remember that we want to know how perpendicular are the normal and the view vector. But what is the view vector exactly?</p>                                                                                                <p class="">It’s a 3D vector that goes from the camera position to the fragment position:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/020.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 614 535'%3E%3C/svg%3E" width="614" height="535"></span>
+</p>                                                                                                <p class="">The good news is that we already have the 3D position of the fragment thanks to <code spellcheck="false">vPosition</code> and we already have access to the camera position thanks to the built-in Three.js uniforms and more precisely <code spellcheck="false">cameraPosition</code>.</p>                                                                                                <p class="">To get the vector between two vectors, we can simply subtract the origin from the destination:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/021.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 637 321'%3E%3C/svg%3E" width="637" height="321"></span>
+</p>                                                                                                <p class="">In our case, the destination is <code spellcheck="false">vPosition</code> and the origin is <code spellcheck="false">cameraPosition</code>.</p>                                                                                                <p class="">Save the result as <code spellcheck="false">viewDirection</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Fresnel
+    vec3 viewDirection = vPosition - cameraPosition;
+
+    // ...
+}</code></pre>                                                                                                <p class="">We are going to compare <code spellcheck="false">viewDirection</code> with <code spellcheck="false">vNormal</code> using a special function that requires the vectors to have the same length, which is not the case right now.</p>                                                                                                <p class=""><code spellcheck="false">vNormal</code> should have a length of <code spellcheck="false">1</code> but <code spellcheck="false">viewDirection</code> can vary a lot. To force it to have a length of <code spellcheck="false">1</code>, we can use <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/normalize.xhtml" target="_blank">normalize</a>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Fresnel
+    vec3 viewDirection = normalize(vPosition - cameraPosition);
+
+    // ...
+}</code></pre>                                                                                                <p class="">It’s finally time to compare <code spellcheck="false">viewDirection</code> with <code spellcheck="false">vNormal</code> and we are going to use a dot product.</p>                                                                                                <p class="">Let me explain what the dot product does in simple words:</p>                                                                                                <p class="">Considering two vectors of the same length:</p>                                                                                                <ul class="">
+            <li>If they are in the same direction, we get <code spellcheck="false">1</code></li>
+            <li>If they they are perpendicular, we get <code spellcheck="false">0</code></li>
+            <li>If they are opposite, we get <code spellcheck="false">-1</code></li>
+            <li>In between values are interpolated</li>
+    </ul>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/022.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 806 180'%3E%3C/svg%3E" width="806" height="180"></span>
+</p>                                                                                                <p class="">Create a <code spellcheck="false">float fresnel</code> variable, and assign the result of a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/dot.xhtml" target="_blank">dot</a> of <code spellcheck="false">viewDirection</code> and <code spellcheck="false">vNormal</code> to it. Send the result to <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    vec3 viewDirection = normalize(vPosition - cameraPosition);
+    float fresnel = dot(viewDirection, vNormal);
+
+    // Final color
+    gl_FragColor = vec4(1.0, 1.0, 1.0, fresnel);
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/023.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Not the expected result. We have a few things to fix.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Fix the normal orientation
+
+        
+                <span class="anchor js-anchor" data-slug="fix-the-normal-orientation">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fix-the-normal-orientation"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fix-the-normal-orientation"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">First of all, the Fresnel value shouldn’t change with the object rotation. If you watch the sphere, you can see that the Fresnel rotates with the sphere although it should stay the same, relative to the camera.</p>                                                                                                <p class="">This is because we are using the base <code spellcheck="false">normal</code> attribute which doesn’t take into account the transformation of the object.</p>                                                                                                <p class="">And we already know how to retrieve and apply the transformation of the object. We can use the <code spellcheck="false">modelMatrix</code> as we did for the <code spellcheck="false">position</code>.</p>                                                                                                <p class="">In <code spellcheck="false">vertex.glsl</code>, create a <code spellcheck="false">modelNormal</code>, and apply the <code spellcheck="false">modelMatrix</code> to it, but this time, set the fourth value to <code spellcheck="false">0.0</code> instead of <code spellcheck="false">1.0</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Model normal
+    vec4 modelNormal = modelMatrix * vec4(normal, 0.0);
+
+    // ...
+}</code></pre>                                                                                                <p class="">When the fourth value is set to <code spellcheck="false">1.0</code>, it means that our vector is “homogeneous” and all 3 transformations (translation, rotation, scale) implied by the <code spellcheck="false">modelMatrix</code> will be applied, which is perfect in the case of a position.</p>                                                                                                <p class="">When the fourth value is set to <code spellcheck="false">0.0</code>, it means that our vector is not homogeneous and the translation won’t be applied, which is ideal in the case of a normal, because the normal is not a position, it’s a direction.</p>                                                                                                <p class="">To understand this, imagine that we apply a translation on a simple geometry and focus on one vertex and one normal:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/024.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 752 411'%3E%3C/svg%3E" width="752" height="411"></span>
+</p>                                                                                                <p class="">In the case of the vertex, we want to apply the translation so that it moves to the right:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/025.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1265 428'%3E%3C/svg%3E" width="1265" height="428"></span>
+</p>                                                                                                <p class="">If we apply that same translation to the normal, that normal would end up lining to the right too, which is wrong:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/026.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1265 428'%3E%3C/svg%3E" width="1265" height="428"></span>
+</p>                                                                                                <p class="">But if we set the fourth value of the <code spellcheck="false">vec4</code> to <code spellcheck="false">0.0</code> before applying the <code spellcheck="false">modelMatrix</code>, only the rotation is applied. In this case, since there is only a translation, the normal orientation is preserved:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/027.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1256 430'%3E%3C/svg%3E" width="1256" height="430"></span>
+</p>                                                                                                <p class="">As for the scale, yes it’ll be applied, but it’s not an issue because we are going to normalize the varying again in the fragment shader a bit later.</p>                                                                                                <p class="">Now we can assign the <code spellcheck="false">xyz</code> of the <code spellcheck="false">modelNormal</code> to the <code spellcheck="false">vNormal</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    vNormal = modelNormal.xyz;
+}</code></pre>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Fix the range
+
+        
+                <span class="anchor js-anchor" data-slug="fix-the-range">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#fix-the-range"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="fix-the-range"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">You might think that you’ve made a mistake because there is nothing on screen anymore, but watch closely and you’ll notice the borders of the objects.</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/028.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Remember what we said about the output of <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/dot.xhtml" target="_blank">dot</a>:</p>                                                                                                <ul class="">
+            <li>If they are in the same direction, we get <code spellcheck="false">1</code></li>
+            <li>If they they are perpendicular, we get <code spellcheck="false">0</code></li>
+            <li>If they are opposites, we get <code spellcheck="false">-1</code></li>
+    </ul>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/029.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 806 180'%3E%3C/svg%3E" width="806" height="180"></span>
+</p>                                                                                                <p class="">We can’t see anything because the normal vector is oriented toward the camera:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/030.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 424 500'%3E%3C/svg%3E" width="424" height="500"></span>
+</p>                                                                                                <p class="">There are multiple ways of fixing that, but personally, I like to add <code spellcheck="false">1.0</code> to the output of <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/dot.xhtml" target="_blank">dot</a> so that the value goes from <code spellcheck="false">0.0</code> (opposite) to <code spellcheck="false">1.0</code> (perpendicular) to <code spellcheck="false">2.0</code> (same direction):</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float fresnel = dot(viewDirection, vNormal) + 1.0;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/031.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">And that’s the Fresnel we wanted to see.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Normalize the normal?
+
+        
+                <span class="anchor js-anchor" data-slug="normalize-the-normal">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#normalize-the-normal"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="normalize-the-normal"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">But we aren’t done fixing it. If you watch the sphere, you might notice a grid pattern on the surface. This might not be visible on the video because of the compression but you can test it on your computer.</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/032.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">It’s barely visible, but it’s there.</p>                                                                                                <p class="">This is due to the normal length not being <code spellcheck="false">1.0</code>. Isn’t it weird? Even though we’ve applied the <code spellcheck="false">modelMatrix</code> to the <code spellcheck="false">normal</code> before sending it to the fragment as a varying, its length should be <code spellcheck="false">1.0</code>.</p>                                                                                                <p class="">The reason is that, between vertices, varying are being interpolated. And if you interpolate two normalized vectors, you don’t necessarily end up with a vector of length <code spellcheck="false">1</code>:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/033.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 678 486'%3E%3C/svg%3E" width="678" height="486"></span>
+</p>                                                                                                <p class="">Fortunately, we can fix that easily by normalizing it again in the fragment shader.</p>                                                                                                <p class="">At the beginning of the fragment shader, create a <code spellcheck="false">vec3 normal</code> variable, assign a normalized version of the <code spellcheck="false">vNormal</code> to it and send it to the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/dot.xhtml" target="_blank">dot</a> instead of <code spellcheck="false">vNormal</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Normal
+    vec3 normal = normalize(vNormal);
+
+    // ...
+    float fresnel = dot(viewDirection, normal) + 1.0;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/034.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The grid artifact is gone.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Power
+
+        
+                <span class="anchor js-anchor" data-slug="power">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#power"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="power"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">Let’s apply a power to the <code spellcheck="false">fresnel</code> to make it sharper using the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/pow.xhtml" target="_blank">pow</a> function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float fresnel = dot(viewDirection, normal) + 1.0;
+    fresnel = pow(fresnel, 2.0);
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/035.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Combine with the stripes
+
+        
+                <span class="anchor js-anchor" data-slug="combine-with-the-stripes">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#combine-with-the-stripes"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="combine-with-the-stripes"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">It’s time to combine the <code spellcheck="false">stripes</code> pattern with the <code spellcheck="false">fresnel</code>.</p>                                                                                                <p class="">To do that, we are going to create a new variable named <code spellcheck="false">holographic</code>, which will be the final variable we use on the <code spellcheck="false">alpha</code> of <code spellcheck="false">gl_FragColor</code> and assign <code spellcheck="false">stripes</code> to it, multiplied by <code spellcheck="false">fresnel</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Holographic
+    float holographic = stripes * fresnel;
+
+    // Final color
+    gl_FragColor = vec4(1.0, 1.0, 1.0, holographic);
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/036.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">The combination looks good but it’s too dim, as we can barely see the objects.</p>                                                                                                <p class="">We are going to add the <code spellcheck="false">fresnel</code> on top of it and make it even stronger by multiplying it by <code spellcheck="false">1.25</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Holographic
+    float holographic = stripes * fresnel;
+    holographic += fresnel * 1.25;
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/037.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Back side
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="2866">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">47:46</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="back-side">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#back-side"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="back-side"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Real-life holograms (as we imagine them at least) should be transparent. We should be able to see the front side and the back side.</p>                                                                                                <p class="">Let’s try to set <code spellcheck="false">side</code> to <code spellcheck="false">DoubleSide</code> in the <code spellcheck="false">material</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    // ...
+    side: THREE.DoubleSide
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/038.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">This is not what we were going for.</p>                                                                                                <p class="">First of all, if you remember what we did with the Fresnel, we added <code spellcheck="false">1.0</code> to the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/dot.xhtml" target="_blank">dot</a> resulting in values going from <code spellcheck="false">1.0</code> to <code spellcheck="false">2.0</code> in the back, which is why it looks so bright now:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/039.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 478 484'%3E%3C/svg%3E" width="478" height="484"></span>
+</p>                                                                                                <p class="">To fix that, we are going to invert the normals, but only for the back side.</p>                                                                                                <p class="">There is a built-in variable named <code spellcheck="false">gl_FrontFacing</code> which is a boolean being <code spellcheck="false">true</code> if the fragment we are drawing is facing the camera and <code spellcheck="false">false</code> otherwise.</p>                                                                                                <p class="">In <code spellcheck="false">fragment.glsl</code>, right after normalizing the <code spellcheck="false">vNormal</code>, test if it’s the back side by inverting <code spellcheck="false">gl_FrontFacing</code> with <code spellcheck="false">!</code>. Next, in the <code spellcheck="false">if</code> statement, multiply <code spellcheck="false">normal</code> by <code spellcheck="false">- 1.0</code> to invert it:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // Normal
+    vec3 normal = normalize(vNormal);
+    if(!gl_FrontFacing)
+        normal *= - 1.0;
+
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/040.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">We end up with a better looking result, but there seem to be some glitches. This is due to the front side occluding the back side because it is currently writing on the depth buffer.</p>                                                                                                <p class="">Set <code spellcheck="false">depthWrite</code> to <code spellcheck="false">false</code> on the <code spellcheck="false">material</code> to stop rendering on the depth buffer:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    // ...
+    depthWrite: false
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/041.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">And to go even further, since holograms are supposedly composed of light, we can change the <code spellcheck="false">blending</code> to <code spellcheck="false">AdditiveBlending</code> in the <code spellcheck="false">material</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    // ...
+    blending: THREE.AdditiveBlending
+})</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/042.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Falloff
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3214">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">53:34</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="falloff">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#falloff"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="falloff"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We are going to fade out the alpha on the edges.</p>                                                                                                <p class="">To do that, we are going to use the same Fresnel, but remap it using a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a> so that the value is <code spellcheck="false">1.0</code> near the edge, and drops down smoothly to <code spellcheck="false">0.0</code> at the very edge:</p>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/043.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 436 389'%3E%3C/svg%3E" width="436" height="389"></span>
+</p>                                                                                                <p class="">Create a <code spellcheck="false">float falloff</code> variable after the Fresnel part and apply a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a> from <code spellcheck="false">0.8</code> to <code spellcheck="false">0.0</code> on the <code spellcheck="false">fresnel</code> variable:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Falloff
+    float falloff = smoothstep(0.8, 0.0, fresnel);
+
+    // ...
+}</code></pre>                                                                                                <p class="">Multiply the <code spellcheck="false">holographic</code> by <code spellcheck="false">falloff</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Holographic
+    float holographic = stripes * fresnel;
+    holographic += fresnel * 1.25;
+    holographic *= falloff;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/044.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The <code spellcheck="false">0.8</code> and <code spellcheck="false">0.0</code> limits for the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a> might sound odd, but it’s because we’ve already applied a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/pow.xhtml" target="_blank">pow</a> on <code spellcheck="false">fresnel</code> and also because the <code spellcheck="false">AdditiveBlending</code> is making the edges already quite bright since we see both faces.</p>                                                                                                <p class="">It’s the kind of situation where you have to test various numbers until you are happy with the result.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Color
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3354">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">55:54</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="color">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#color"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="color"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Let’s change the color.</p>                                                                                                <p class="">This time, we are going to use a uniform and make it tweakable.</p>                                                                                                <p class="">In <code spellcheck="false">script.js</code>, add a <code spellcheck="false">uColor</code> uniform using a <a href="https://threejs.org/docs/#api/en/math/Color" target="_blank">Color</a> instance inside a <a href="https://threejs.org/docs/#api/en/core/Uniform" target="_blank">Uniform</a> instance and set the color to <code spellcheck="false">'red'</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    // ...
+    uniforms:
+    {
+        // ...
+        uColor: new THREE.Uniform(new THREE.Color('red'))
+    },
+    // ...
+})</code></pre>                                                                                                <p class="">Be careful, it’s easy to make mistakes when nesting that many instances.</p>                                                                                                <p class="">In <code spellcheck="false">fragment.glsl</code>, retrieve the <code spellcheck="false">uColor</code> uniform and set it on the first three values of the <code spellcheck="false">gl_FragColor</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform vec3 uColor;
+// ...
+
+void main()
+{
+    // ...
+    gl_FragColor = vec4(uColor, holographic);
+    // ...
+}</code></pre>                                                                                                <p class="is-image ">
+    <span class="image-inner"><img data-src="/assets/lessons/61/045.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1536 960'%3E%3C/svg%3E" width="1536" height="960"></span>
+</p>                                                                                                <p class="">In <code spellcheck="false">script.js</code>, we want to tweak that color.</p>                                                                                                <p class="">Tweaking the <a href="https://threejs.org/docs/#api/en/math/Color" target="_blank">Color</a> directly will result in color spacing issues. We need to create a “dummy” object as seen in previous lessons.</p>                                                                                                <p class="">Before the material, create a <code spellcheck="false">materialParameters</code> object with a <code spellcheck="false">color</code> property set to <code spellcheck="false">'#70c1ff'</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">/**
+ * Material
+ */
+const materialParameters = {}
+materialParameters.color = '#70c1ff'
+
+const material = new THREE.ShaderMaterial({
+    // ...
+})</code></pre>                                                                                                <p class="">Now create the corresponding tweak using the <code spellcheck="false">addColor()</code> function on <code spellcheck="false">gui</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui.addColor(materialParameters, 'color')</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/046.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">First, chain an <code spellcheck="false">onChange()</code> at the end of the <code spellcheck="false">addColor()</code>, send it a function. Next, update the <code spellcheck="false">uColor</code> uniform in that function:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">gui
+    .addColor(materialParameters, 'color')
+    .onChange(() =&gt;
+    {
+        material.uniforms.uColor.value.set(materialParameters.color)
+    })</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/047.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Send the <code spellcheck="false">materialParameters.color</code> to the initial color of the <code spellcheck="false">uColor</code> uniform instead of the <code spellcheck="false">'red'</code>:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const material = new THREE.ShaderMaterial({
+    // ...
+    uniforms:
+    {
+        uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
+        // ...
+    },
+    // ...
+})</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/048.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Glitch effect
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="3684">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:01:24</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="glitch-effect">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#glitch-effect"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="glitch-effect"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">We are done with the fragment shader.</p>                                                                                                <p class="">Now we want to create that glitch effect as if the hologram lens or whatever technical component was damaged, causing the image to jump a little.</p>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Base effect
+
+        
+                <span class="anchor js-anchor" data-slug="base-effect">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#base-effect"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="base-effect"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">At first, we are going to make all the vertices glitch and then make the effect more sporadic.</p>                                                                                                <p class="">First, we want the vertices to move randomly on the <code spellcheck="false">x</code> and <code spellcheck="false">z</code> axes. But “randomly” in GLSL isn’t that easy and we need to find some hacks in order to generate random values. These hacks are very well explained in this <a href="https://thebookofshaders.com/10/" target="_blank">Book of Shaders article</a>, which also contains the following random function:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float random (vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))*
+        43758.5453123);
+}</code></pre>                                                                                                <p class="">I’ve re-written that function like this:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float random2D(vec2 value)
+{
+    return fract(sin(dot(value.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}</code></pre>                                                                                                <p class="">The main idea is that we are creating a hardly predictable number and we extract the decimals using <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/fract.xhtml" target="_blank">fract</a>.</p>                                                                                                <p class="">Note that in this case we are using a 2D random, meaning that we send a <code spellcheck="false">vec2</code> as the input and get a “random” <code spellcheck="false">float</code> from <code spellcheck="false">0.0</code> to <code spellcheck="false">1.0</code>. However, there are other types of random functions.</p>                                                                                                <p class="">Let’s add that function before the <code spellcheck="false">main()</code> in our vertex shader:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+float random2D(vec2 value)
+{
+    return fract(sin(dot(value.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}
+
+void main()
+{
+    // ...
+}</code></pre>                                                                                                <p class="">We are going to update the <code spellcheck="false">modelPosition</code> and start with the <code spellcheck="false">x</code>.</p>                                                                                                <p class="">Use <code spellcheck="false">modelPosition.xz</code> as the parameter of <code spellcheck="false">random2D()</code> and add the result to <code spellcheck="false">modelPosition.x</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+
+    // Glitch
+    modelPosition.x += random2D(modelPosition.xz);
+
+    // Final position
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/049.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We are using <code spellcheck="false">modelPosition.xz</code> as the input so that we get different offsets for each vertex. Yet, if the model stops moving, the glitch will look static.</p>                                                                                                <p class="">Comment the object rotations to see it:</p>                                                                                                <pre contenteditable="" class="language-javascript "><code spellcheck="false">const tick = () =&gt;
+{
+    // ...
+
+    // // Rotate objects
+    // if(suzanne)
+    // {
+    //     suzanne.rotation.x = - elapsedTime * 0.1
+    //     suzanne.rotation.y = elapsedTime * 0.2
+    // }
+
+    // sphere.rotation.x = - elapsedTime * 0.1
+    // sphere.rotation.y = elapsedTime * 0.2
+
+    // torusKnot.rotation.x = - elapsedTime * 0.1
+    // torusKnot.rotation.y = elapsedTime * 0.2
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/050.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">What we can do to fix that, is retrieve the <code spellcheck="false">uTime</code> uniform and add it to the <code spellcheck="false">modelPosition.xz</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uTime;
+
+// ...
+
+void main()
+{
+    // ...
+    modelPosition.x += random2D(modelPosition.xz + uTime);
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/051.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Vertices are glitching even though the model isn’t moving.</p>                                                                                                <p class="">Uncomment the object rotations:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">const tick = () =&gt;
+{
+    // ...
+
+    // Rotate objects
+    if(suzanne)
+    {
+        suzanne.rotation.x = - elapsedTime * 0.1
+        suzanne.rotation.y = elapsedTime * 0.2
+    }
+
+    sphere.rotation.x = - elapsedTime * 0.1
+    sphere.rotation.y = elapsedTime * 0.2
+
+    torusKnot.rotation.x = - elapsedTime * 0.1
+    torusKnot.rotation.y = elapsedTime * 0.2
+
+    // ...
+}</code></pre>                                                                                                <p class="">We can now do the same for the <code spellcheck="false">modelPosition.z</code> and use the <code spellcheck="false">modelPosition.zx</code> as the input to achieve a different result:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uTime;
+
+// ...
+
+void main()
+{
+    // ...
+    modelPosition.x += random2D(modelPosition.xz + uTime);
+    modelPosition.z += random2D(modelPosition.zx + uTime);
+
+    // ...
+}</code></pre>                                                                                                <p class="">You might have noticed that the objects, although very fuzzy, aren’t at their initial position anymore:</p>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/052.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">It’s because <code spellcheck="false">random2D()</code> returns a value from <code spellcheck="false">0.0</code> to <code spellcheck="false">1.0</code> making it only positive which results in the vertices going in the same general direction.</p>                                                                                                <p class="">We can fix that by subtracting <code spellcheck="false">0.5</code> from both <code spellcheck="false">random2D()</code>. This way, the value goes from<code spellcheck="false">-0.5</code> to <code spellcheck="false">+0.5</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">uniform float uTime;
+
+// ...
+
+void main()
+{
+    // ...
+    modelPosition.x += random2D(modelPosition.xz + uTime) - 0.5;
+    modelPosition.z += random2D(modelPosition.zx + uTime) - 0.5;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/053.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                
+<h3 class="title has-anchor ">
+    
+    Variation in time and space
+
+        
+                <span class="anchor js-anchor" data-slug="variation-in-time-and-space">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#variation-in-time-and-space"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="variation-in-time-and-space"></span>
+        </span>
+        
+</h3>
+
+                                                                                                <p class="">We now want that effect to look like waves going from the bottom to the top, sporadically.</p>                                                                                                <p class="">To achieve this, we are going to create a <code spellcheck="false">glitchStrength</code> variable and assign the result of the <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/sin.xhtml" target="_blank">sin</a> function to it, with <code spellcheck="false">uTime</code> as its input.</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float glitchStrength = sin(uTime);
+    modelPosition.x += random2D(modelPosition.xz + uTime) - 0.5;
+    modelPosition.z += random2D(modelPosition.zx + uTime) - 0.5;
+
+    // ...
+}</code></pre>                                                                                                <p class="">We now multiply the <code spellcheck="false">x</code> and <code spellcheck="false">z</code> by <code spellcheck="false">glitchStrength</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float glitchStrength = sin(uTime);
+    modelPosition.x += (random2D(modelPosition.xz + uTime) - 0.5) * glitchStrength;
+    modelPosition.z += (random2D(modelPosition.zx + uTime) - 0.5) * glitchStrength;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/054.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">We now have the whole effect being applied back and forth because of the <code spellcheck="false">sin()</code>.</p>                                                                                                <p class="">Let’s lower the effect by multiplying <code spellcheck="false">glitchStrength</code> by <code spellcheck="false">0.25</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float glitchStrength = sin(uTime);
+    glitchStrength *= 0.25;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/055.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">And now, to make the effect move from the bottom to the top, we are going to subtract <code spellcheck="false">modelPosition.y</code> from <code spellcheck="false">uTime</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float glitchStrength = sin(uTime - modelPosition.y);
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/056.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">It’s the same effect but offset in time according to the <code spellcheck="false">modelPosition.y</code>.</p>                                                                                                <p class="">Since we are using a <code spellcheck="false">sin()</code>, the value goes from <code spellcheck="false">-1</code> to <code spellcheck="false">+1</code> like waves, making it active most of the time:</p>                                                                                                <div class="desmos">
+    <iframe src="https://www.desmos.com/calculator/shzgendw60?embed" frameborder="0"></iframe>
+</div>                                                                                                <p class="">We want the effect to appear less often and we need to remap it. We are going to use the usual <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a>:</p>                                                                                                <div class="desmos">
+    <iframe src="https://www.desmos.com/calculator/cm88gihwlr?embed" frameborder="0"></iframe>
+</div>                                                                                                <p class="">Apply a <a href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml" target="_blank">smoothstep</a> to the <code spellcheck="false">glitchStrength</code> with <code spellcheck="false">0.3</code> and <code spellcheck="false">1.0</code> as the limits:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float glitchStrength = sin(uTime - modelPosition.y);
+    glitchStrength = smoothstep(0.3, 1.0, glitchStrength);
+    glitchStrength *= 0.25;
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/057.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">The effect is only applied when the value goes from <code spellcheck="false">0.3</code> to <code spellcheck="false">1.0</code> which is a lot less often.</p>                                                                                                <p class="">We now need to add more randomness by combining multiple <code spellcheck="false">sin()</code> with different frequencies.</p>                                                                                                <p class="">First, we are going to put the <code spellcheck="false">uTime - modelPosition.y</code> in a <code spellcheck="false">glitchTime</code> variable so that we don’t repeat the formula multiple times:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float glitchTime = uTime - modelPosition.y;
+    float glitchStrength = sin(glitchTime);
+
+    // ...
+}</code></pre>                                                                                                <p class="">Now, we are going to combine multiple <code spellcheck="false">sin()</code> together with various frequencies:</p>                                                                                                <div class="desmos">
+    <iframe src="https://www.desmos.com/calculator/uc3hoiag81?embed" frameborder="0"></iframe>
+</div>                                                                                                <p class="">Add 3 <code spellcheck="false">sin()</code> together with random frequencies. <code spellcheck="false">3.45</code> for the second <code spellcheck="false">sin()</code> and <code spellcheck="false">8.76</code> for the third <code spellcheck="false">sin()</code> should look random enough:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float glitchTime = uTime - modelPosition.y;
+    float glitchStrength = sin(glitchTime) + sin(glitchTime * 3.45) +  sin(glitchTime * 8.76);
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/058.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">Finally, divide the combination of <code spellcheck="false">sin()</code> by <code spellcheck="false">3.0</code> so that it still goes from <code spellcheck="false">-1.0</code> to <code spellcheck="false">+1.0</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">void main()
+{
+    // ...
+    float glitchStrength = sin(glitchTime) + sin(glitchTime * 2.34) +  sin(glitchTime * 5.67);
+    glitchStrength /= 3.0;
+
+    // ...
+}</code></pre>                                                                                                <div class="js-video video ">
+    <video class="js-element element" width="1792" height="1120" controls="" src="/assets/lessons/61/059.mp4"></video>
+    <div class="js-overlay overlay"></div>
+    <div class="logo">
+        <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58.5 66.6" style="enable-background:new 0 0 58.5 66.6;" xml:space="preserve">
+            <path class="face-1" d="M23.1,55.7l16.1-9.3c0,0,0,0,0,0c1.1-0.7,1.8-1.9,1.8-3.1l0.1-19.1L23.1,34.4V55.7z"></path>
+            <path class="face-2" d="M21.3,10L2.9,20.5l18,10.2l18.4-10.5c0,0,0,0-0.1,0l-17.4-10C21.7,10.1,21.5,10.1,21.3,10z"></path>
+            <path class="face-3" d="M1.8,46.7L18,56.6c0,0,0,0,0,0c0.3,0.2,0.5,0.3,0.8,0.3V34.5L0,23.8v19.7C0,44.9,0.7,46.1,1.8,46.7z"></path>
+            <path class="triangle-1" d="M56.8,30.4l-11.4-6.6l-0.1,19.2l11.5-6.7c1-0.6,1.7-1.7,1.7-2.9C58.5,32.1,57.9,31,56.8,30.4z"></path>
+            <path class="triangle-2" d="M0,50.7v12.6c0,1.2,0.6,2.3,1.7,2.9c0.5,0.3,1.1,0.5,1.7,0.5c0.6,0,1.2-0.2,1.7-0.5l10.4-6L0,50.7z"></path>
+            <path class="triangle-3" d="M16.4,7L5.1,0.5c-1-0.6-2.3-0.6-3.4,0C0.6,1.1,0,2.2,0,3.4v13.2L16.4,7z"></path>
+        </svg>
+    </div>
+</div>                                                                                                <p class="">And we are done with the glitch effect and the holographic material.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Separating shader chunks
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4696">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:18:16</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="separating-shader-chunks">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#separating-shader-chunks"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="separating-shader-chunks"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">Just like before, we are going to move the <code spellcheck="false">random2D</code> function in a separate file and include it.</p>                                                                                                <p class="">In <code spellcheck="false">src/shaders/</code>, create a <code spellcheck="false">includes/</code> folder.</p>                                                                                                <p class="">In that <code spellcheck="false">src/shaders/includes/</code> folder, create a <code spellcheck="false">random2D.glsl</code> file and add the <code spellcheck="false">random2D</code> function in it:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">float random2D(vec2 value)
+{
+    return fract(sin(dot(value.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}</code></pre>                                                                                                <p class="">Back in <code spellcheck="false">vertex.glsl</code>, instead of the function, use an <code spellcheck="false">#include</code>:</p>                                                                                                <pre contenteditable="" class="language-glsl "><code spellcheck="false">// ...
+
+#include ../includes/random2D.glsl
+
+void main()
+{
+    // ...
+}</code></pre>                                                                                                <p class="">Make sure everything is saved and the project should work like before.</p>                                                                                                <p class="">This is not mandatory, but it’s considered good practice and it makes the functions easily reusable in other shaders.</p>                                                                                                
+<h2 class="title has-anchor ">
+    
+    Going further
+
+                
+        
+            
+            
+            <a href="#" class="video-jump js-video-jump" data-time="4778">
+                <span class="play">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 10.5 11.8" style="enable-background:new 0 0 10.5 11.8;" xml:space="preserve">
+<path class="st0" d="M0,1.5c0-1.2,1.3-1.9,2.3-1.3l7.5,4.4c1,0.6,1,2,0,2.6l-7.5,4.4c-1,0.6-2.3-0.1-2.3-1.3V1.5z"></path>
+</svg>
+                </span>
+                <span class="time" data-nosnippet="">01:19:38</span>
+            </a>
+        
+        
+    
+                <span class="anchor js-anchor" data-main-section="" data-slug="going-further">
+            <span class="link js-anchor-link">
+                <a class="js-anchor-a" href="#going-further"></a>
+                <svg class="icon" width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.8" d="M22.1706 2.38836H23.9177C26.7246 2.38836 29 4.66379 29 7.47067V7.47067C29 10.2776 26.7246 12.553 23.9177 12.553H16.9202C14.0307 12.553 11.6884 10.2106 11.6884 7.32119V7.32119" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                    <path opacity="0.8" d="M9.46464 12.5529L7.0823 12.5529C4.27542 12.5529 2 10.2775 2 7.47061V7.47061C2 4.66373 4.27543 2.38831 7.08231 2.38831L14.0798 2.38831C16.9693 2.38831 19.3116 4.73066 19.3116 7.62009V7.62009" stroke="white" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="copied js-anchor-copied"></span>
+            </span>
+            <span class="target" id="going-further"></span>
+        </span>
+        
+</h2>
+
+                                                                                                <p class="">As always, feel free to go further.</p>                                                                                                <p class="">Here are some ideas:</p>                                                                                                <ul class="">
+            <li>Add tweaks to control the animation</li>
+            <li>Add tweaks to control the pattern</li>
+            <li>Add sounds</li>
+            <li>Add scenery like R2D2 displaying the hologram</li>
+            <li>Create color variation instead of a uniform color</li>
+    </ul>                                                                                                <p class=""><a href="https://twitter.com/Andersonmancini" target="_blank">Anderson Mancini</a> also made a nice holographic material if you want some inspiration</p>                                                                                                <ul class="">
+            <li><a href="https://twitter.com/Andersonmancini/status/1729842797660823888" target="_blank">https://twitter.com/Andersonmancini/status/1729842797660823888</a></li>
+            <li><a href="https://threejs-holographic-material.vercel.app/" target="_blank">https://threejs-holographic-material.vercel.app</a></li>
+    </ul>                                                                        </section>
+
+                                                                                                                                    <footer class="end">
+                <div class="left">
+                    <div class="sur-title">Next lesson</div>
+                    <h2 class="title">Fireworks</h2>
+                </div>
+                                    <div class="right">
+                        <a href="https://threejs-journey.com/lessons/fireworks-shaders" class="js-do-trigger button is-do has-icon-left" data-url-do="https://threejs-journey.com/api/lessons/status/61/1" data-router-disabled="">
+                            <div class="hover"></div>
+                            <span class="icon">
+                                <div class="default"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                <div class="disc">
+                                    <div class="inner"><svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 9.9 9" style="enable-background:new 0 0 9.9 9;" xml:space="preserve">
+<path d="M5.3,8.4l4.3-6c0.5-0.7,0.4-1.6-0.3-2.1C8.6-0.2,7.7-0.1,7.2,0.6L3.8,5.3L2.4,4.1C1.8,3.6,0.8,3.7,0.3,4.3c-0.5,0.6-0.4,1.6,0.2,2.1l2.7,2.2C3.5,8.9,3.8,9,4.2,9h0.1C4.8,8.9,5.1,8.7,5.3,8.4z"></path>
+</svg>
+</div>
+                                </div>
+                                <div class="sparkles is-purple" style="transform: rotate(224deg);">
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                    <div class="sparkle"><div class="inner"></div></div>
+                                </div>
+                            </span>
+                            <span class="label">
+                                Complete and continue
+                            </span>
+                        </a>
+                    </div>
+                            </footer>
+
+        
+  </div>
+</body>
+</html>
