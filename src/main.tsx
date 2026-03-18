@@ -14,10 +14,10 @@ root.render(
   <Canvas
     shadows
     camera={{
-      fov: 45,
+      fov: 80,
       near: 0.1,
       far: 200,
-      position: [4, 2, 6],
+      position: [0, 8, 8],
     }}
   >
     <Perf position="top-left" />
