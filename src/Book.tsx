@@ -1,7 +1,8 @@
-import { Physics, RigidBody } from "@react-three/rapier";
+import { Physics } from "@react-three/rapier";
 
 import Fold from "./components/Fold";
 import ViewportGizmoHelper from "./helpers/ViewportGizmoHelper";
+import Tabletop from "./components/Tabletop";
 
 export default function Book() {
   return (
@@ -11,12 +12,7 @@ export default function Book() {
       <ambientLight intensity={1.5} />
       <Physics debug={true}>
         <Fold />
-        <RigidBody type="fixed">
-          <mesh receiveShadow position-y={-1.25}>
-            <boxGeometry args={[10, 0.5, 10]} />
-            <meshStandardMaterial color="greenyellow" />
-          </mesh>
-        </RigidBody>
+        <Tabletop />
       </Physics>
     </>
   );
