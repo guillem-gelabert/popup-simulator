@@ -1,7 +1,7 @@
 import { Physics } from "@react-three/rapier";
 
 import Fold from "./components/Fold";
-import ViewportGizmoHelper from "./helpers/ViewportGizmoHelper";
+import ViewportGizmoHelper from "./helpers/ViewportGizmo";
 import Tabletop from "./components/Tabletop";
 
 export default function Book() {
@@ -12,7 +12,7 @@ export default function Book() {
       <ambientLight intensity={1.5} />
       <Physics debug={true}>
         <Fold />
-        <Tabletop />
+        {/* <Tabletop /> */}
       </Physics>
     </>
   );

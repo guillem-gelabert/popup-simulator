@@ -50,7 +50,7 @@ export default function Fold() {
         parentPlanes={[left, right]}
         parentOrigins={childJointOrigins}
       />
-      <RigidBody ref={left} position={[-width / 2, 0, 0]} type="dynamic">
+      {/* <RigidBody ref={left} position={[-width / 2, 0, 0]} type="dynamic">
         <AnchorMarker position={new Vector3(...childJointOrigins[0])} />
         <mesh receiveShadow>
           <boxGeometry args={[width, thickness, height]} />
@@ -69,7 +69,7 @@ export default function Fold() {
           <boxGeometry args={[width, thickness, height]} />
           <meshStandardMaterial color="white" side={DoubleSide} />
         </mesh>
-      </RigidBody>
+      </RigidBody> */}
     </group>
   );
 }

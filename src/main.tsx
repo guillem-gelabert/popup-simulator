@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import Book from "./Book";
 import { OrbitControls } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-import ViewportGizmoHelper from "./helpers/ViewportGizmoHelper";
+import ViewportGizmoHelper from "./helpers/ViewportGizmo";
 
 const root = ReactDOM.createRoot(
   document.querySelector("#root") as HTMLElement,
