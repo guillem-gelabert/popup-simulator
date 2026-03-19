@@ -29,7 +29,7 @@ function HingeHelper({ name, data }: HingeHelperProps) {
   const ref = useRef<Group>(null);
 
   return (
-    <group ref={ref} position={data.position} quaternion={data.quaternion}>
+    <group ref={ref} position={data.position}>
       {/* Visualize hinge position */}
       <mesh>
         <sphereGeometry args={[0.05, 16, 16]} />
