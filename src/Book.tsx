@@ -1,8 +1,7 @@
 import { Physics } from "@react-three/rapier";
 
 import ViewportGizmoHelper from "./helpers/ViewportGizmo";
-import Tabletop from "./components/Tabletop";
-import Fold from "./components/Fold";
+import Mechanism from "./components/Mechanism";
 
 export default function Book() {
   return (
@@ -11,8 +10,7 @@ export default function Book() {
       <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
       <ambientLight intensity={1.5} />
       <Physics debug={true}>
-        <Fold />
-        <Tabletop />
+        <Mechanism />
       </Physics>
     </>
   );
