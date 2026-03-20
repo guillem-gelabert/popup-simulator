@@ -1,9 +1,16 @@
 import { useRef } from "react";
-import useCustomBlenderMeshLoader from "../hooks/useCustomBlenderMeshLoader";
-import { RapierRigidBody, RigidBody } from "@react-three/rapier";
+import {
+  RapierRigidBody,
+  RigidBody,
+  useRevoluteJoint,
+} from "@react-three/rapier";
+import useCustomBlenderLoader from "../hooks/useCustomBlenderLoader";
+import { DebugHinges } from "../helpers/DebugHinges";
+import { useFrame } from "@react-three/fiber";
+import type { HingeProps } from "../types";
 
 export default function SquareVFold() {
-  const { planes } = useCustomBlenderMeshLoader(
+  const { planes, hingeTransforms } = useCustomBlenderLoader(
     "../../models/vfold_mechanism.glb",
   );
 
@@ -31,26 +38,63 @@ export default function SquareVFold() {
     const map = getMap();
     map.set(plane, body);
 
-    console.log(body);
-
     return () => {
       map.delete(plane);
     };
   };
+
+  if (!hingeTransforms.length) {
+    return null;
+  }
 
   return (
     <>
       <group>
         {planes.map((plane) => (
           <RigidBody
-            type={plane.rigidBodyType}
+            type={"fixed"}
             colliders="cuboid"
             ref={getRefCallback(plane.name)}
+            key={plane.name}
           >
-            <primitive key={plane.name} object={plane.node} />
+            <primitive object={plane.node} />
           </RigidBody>
+        ))}
+      </group>
+      <group>
+        {hingeTransforms.map((hinge) => (
+          <group key={hinge.name}>
+            <RevoluteHinge hinge={hinge} />
+            <DebugHinges transforms={{ [hinge.name]: hinge }} />
+          </group>
         ))}
       </group>
     </>
   );
 }
+
+interface RevoluteJointProps {
+  hinge: HingeProps;
+}
+
+const RevoluteHinge = (props: RevoluteJointProps) => {
+  const joint = useRevoluteJoint(
+    props.hinge.constraintObjects[0],
+    props.hinge.constraintObjects[1],
+    [
+      props.hinge.position.toArray(),
+      props.hinge.position.toArray(),
+      props.hinge.rotationAxis.toArray(),
+      [0, Math.PI],
+    ],
+  );
+
+  useFrame(() => {
+    if (joint.current) {
+      joint.current.configureMotorPosition(0, 100, 10);
+    }
+  });
+
+  console.log(props);
+  return null;
+};
