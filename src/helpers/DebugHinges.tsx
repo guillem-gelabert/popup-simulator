@@ -2,7 +2,7 @@ import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { useRef } from "react";
 import type { HingeProps } from "../types";
-import { Euler, type Group } from "three";
+import { type Group } from "three";
 
 interface DebugHingesProps {
   transforms: Record<string, HingeProps>;

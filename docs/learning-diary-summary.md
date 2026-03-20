@@ -300,6 +300,15 @@ Success criterion:
 - Keep UI values in degrees, convert once to radians, then derive vectors and quaternions from that single source.
 - If a simulation explodes, first suspect bad initial alignment or conflicting constraints.
 - If a helper renders incorrectly in R3F, inspect lifecycle and render order before assuming the math is wrong.
+- Always clamp collider half-extents to a minimum thickness for flat geometry (zero volume = zero mass = no physics).
+- Use `Box3.getCenter()` for collider placement, not `node.position` — Blender origins may sit at the fold line, not the geometry center.
+- Use `colliders={false}` + explicit `<CuboidCollider>` when rendering `<primitive>` objects — auto-generation may not detect them.
+- When a body doesn't move at all, first check: does it have mass? (collider volume > 0).
+- When hooks need async data, split into parent (loader) and child (hook consumer) component — hooks can't run conditionally.
+- A collider provides three things: mass, inertia tensor, and collision shape. The `mass` prop only overrides one; inertia and collision still need a valid collider geometry.
+- Prefer thin boxes (0.02 height) over planes in Blender — gives real volume for physics, eliminates MIN_HALF hacks, and auto-generation just works.
+- Always apply modifiers (Solidify, etc.) before GLB export — Blender's viewport shows modifier effects but GLB export does not include them.
+- After re-exporting, verify geometry on the Three.js side with `Box3.getSize()` — never trust Blender's viewport alone.
 
 ## Suggested Next Learning Questions
 
@@ -308,6 +317,8 @@ Success criterion:
 - Can I create a visual helper that shows joint axes and anchor points live?
 - Can I document which paper connection maps to which Rapier joint type?
 - Can I reduce the current popup mechanism to the smallest stable two-body example and rebuild upward from there?
+- How does `@react-three/rapier` sync Three.js scene graph transforms with the Rapier physics world?
+- When should I use trimesh vs hull vs cuboid colliders?
 
 ## Bottom Line
 

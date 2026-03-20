@@ -44,6 +44,7 @@ Replace procedural `boxGeometry` with a Blender-exported `.glb` model, loading m
 ### 6. Blender Export Checklist (confirmed)
 
 - Apply transforms to meshes, **not** to empties (empties need their rotation preserved).
+- Apply all modifiers (e.g. Solidify) — unapplied modifiers are not included in the GLB export, even though they appear in Blender's viewport.
 - Disable animation export — physics will drive motion.
 - Enable "+Y Up" — but be aware it adds a root transform node.
 
