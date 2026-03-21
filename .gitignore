@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 threejs-journey
+models
+lesson-zips
