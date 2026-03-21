@@ -2,7 +2,7 @@ import { useGLTF } from "@react-three/drei";
 import { useEffect, useState } from "react";
 import { Quaternion, Vector3 } from "three";
 
-import type { HingeProps, PlaneProps } from "../types";
+import type { LoadedHingeProps, PlaneProps } from "../types";
 import z from "zod";
 import type { RigidBodyTypeString } from "@react-three/rapier";
 
@@ -10,7 +10,7 @@ export default function useLoadEmptiesToJoints(path: string) {
   // Question: why are we getting the scene instead of the nodes?
   // Aren't the transformations in the nodes?
   const { scene, nodes } = useGLTF(path);
-  const [hingeTransforms, setHingeTransforms] = useState<Array<HingeProps>>([]);
+  const [hingeTransforms, setHingeTransforms] = useState<Array<LoadedHingeProps>>([]);
 
   const [planes, setPlanes] = useState<Array<PlaneProps>>([]);
 

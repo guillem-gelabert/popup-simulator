@@ -62,7 +62,7 @@ export default function SquareVFold() {
             ref={getRefCallback(plane.name)}
             key={plane.name}
           >
-            <primitive object={plane.node} />
+            <primitive castShadow receiveShadow object={plane.node} />
             <Html
               position={(() => {
                 const box = new Box3().setFromObject(plane.node);
@@ -87,7 +87,12 @@ export default function SquareVFold() {
           const object2 = planeRefs.current?.get(
             hinge.constraintObjects[1].name,
           );
-          if (!object1 || !object2) {
+          if (
+            !object1 ||
+            !object2 ||
+            !isPopulatedRef(object1) ||
+            !isPopulatedRef(object2)
+          ) {
             return null;
           }
           return (
@@ -107,6 +112,12 @@ export default function SquareVFold() {
       </group>
     </>
   );
+}
+
+function isPopulatedRef(
+  ref: RefObject<RapierRigidBody | null>,
+): ref is RefObject<RapierRigidBody> {
+  return ref.current !== null;
 }
 
 const RevoluteHinge = (props: HingeProps) => {

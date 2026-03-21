@@ -6,14 +6,14 @@ import {
 } from "@react-three/rapier";
 import { useControls } from "leva";
 import { useRef } from "react";
-import type { HingeProps, PlaneProps } from "../types";
+import type { LoadedHingeProps, PlaneProps } from "../types";
 import { DebugHinges } from "../helpers/DebugHinges";
 
 export function HingedPlanes({
   hinge,
   planeObjects,
 }: {
-  hinge: HingeProps;
+  hinge: LoadedHingeProps;
   planeObjects: PlaneProps[];
 }) {
   const { angle, stiffness, damping } = useControls("Fold Motor", {
@@ -45,14 +45,22 @@ export function HingedPlanes({
         type={planeObjects[0].rigidBodyType}
         colliders="cuboid"
       >
-        <primitive recieveShadows castShadows object={planeObjects[0].node} />
+        <primitive
+          castShadow
+          receiveShadow
+          object={planeObjects[0].node}
+        />
       </RigidBody>
       <RigidBody
         ref={right}
         type={planeObjects[1].rigidBodyType}
         colliders="cuboid"
       >
-        <primitive recieveShadows castShadows object={planeObjects[1].node} />
+        <primitive
+          castShadow
+          receiveShadow
+          object={planeObjects[1].node}
+        />
       </RigidBody>
       <DebugHinges transforms={{ [hinge.name]: hinge }} />
     </group>

@@ -1,11 +1,11 @@
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { useRef } from "react";
-import type { HingeProps } from "../types";
+import type { LoadedHingeProps } from "../types";
 import { type Group } from "three";
 
 interface DebugHingesProps {
-  transforms: Record<string, HingeProps>;
+  transforms: Record<string, LoadedHingeProps>;
 }
 
 export function DebugHinges({ transforms }: DebugHingesProps) {
@@ -22,7 +22,7 @@ export function DebugHinges({ transforms }: DebugHingesProps) {
 
 interface HingeHelperProps {
   name: string;
-  data: HingeProps;
+  data: LoadedHingeProps;
 }
 
 function HingeHelper({ name, data }: HingeHelperProps) {

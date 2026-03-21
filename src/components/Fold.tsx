@@ -2,7 +2,7 @@ import useCustomBlenderLoader from "../hooks/useCustomBlenderLoader";
 import { useEffect, useState } from "react";
 
 import type { Object3D, Object3DEventMap } from "three";
-import type { HingeProps } from "../types";
+import type { LoadedHingeProps } from "../types";
 import { HingedPlanes } from "./HingedPlanes";
 
 export default function SquareVFold() {
@@ -11,7 +11,7 @@ export default function SquareVFold() {
   );
 
   interface State {
-    mainHinge: HingeProps | null;
+    mainHinge: LoadedHingeProps | null;
     planeObjects: [
       Object3D<Object3DEventMap> | null,
       Object3D<Object3DEventMap> | null,

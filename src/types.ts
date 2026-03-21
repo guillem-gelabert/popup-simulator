@@ -2,11 +2,23 @@ import type { RapierRigidBody, RigidBodyTypeString } from "@react-three/rapier";
 import type { RefObject } from "react";
 import type { Object3D, Vector3 } from "three";
 
+export interface LoadedHingeProps {
+  position: Object3D["position"];
+  quaternion: Object3D["quaternion"];
+  rotationAxis: Vector3;
+  constraintObjects: [Object3D, Object3D];
+  name: string;
+  node: Object3D;
+}
+
 export interface HingeProps {
   position: Object3D["position"];
   quaternion: Object3D["quaternion"];
   rotationAxis: Vector3;
-  constraintObjects: [RefObject<RapierRigidBody>, RefObject<RapierRigidBody>];
+  constraintObjects: [
+    RefObject<RapierRigidBody>,
+    RefObject<RapierRigidBody>,
+  ];
   name: string;
   node: Object3D;
 }
