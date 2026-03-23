@@ -58,7 +58,7 @@ export default function SquareVFold() {
         {planes.map((plane) => (
           <RigidBody
             type={plane.rigidBodyType}
-            colliders="trimesh"
+            colliders="cuboid"
             ref={getRefCallback(plane.name)}
             key={plane.name}
           >
@@ -73,7 +73,7 @@ export default function SquareVFold() {
               })()}
             >
               <div style={{ fontSize: "10px", color: "white" }}>
-                {plane.name}
+                {plane.name}, {plane.rigidBodyType}
               </div>
             </Html>
           </RigidBody>
@@ -133,7 +133,7 @@ const RevoluteHinge = (props: HingeProps) => {
   );
 
   const { angle, stiffness, damping } = useControls("Fold Motor", {
-    angle: { value: 0, max: 0, min: -Math.PI, step: -0.05 },
+    angle: { value: 0, min: 0, max: Math.PI, step: 0.05 },
     stiffness: { value: 3000, min: 0, max: 5000, step: 100 },
     damping: { value: 1500, min: 0, max: 2000, step: 100 },
   });

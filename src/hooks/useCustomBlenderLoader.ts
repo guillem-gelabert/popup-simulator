@@ -10,7 +10,9 @@ export default function useLoadEmptiesToJoints(path: string) {
   // Question: why are we getting the scene instead of the nodes?
   // Aren't the transformations in the nodes?
   const { scene, nodes } = useGLTF(path);
-  const [hingeTransforms, setHingeTransforms] = useState<Array<LoadedHingeProps>>([]);
+  const [hingeTransforms, setHingeTransforms] = useState<
+    Array<LoadedHingeProps>
+  >([]);
 
   const [planes, setPlanes] = useState<Array<PlaneProps>>([]);
 
