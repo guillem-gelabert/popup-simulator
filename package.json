@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "vitest --typecheck",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"*.{json,js,md}\"",
     "load-model": "node src/helpers/BlenderLoader.js"
   },
